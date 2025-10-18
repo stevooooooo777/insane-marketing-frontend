@@ -541,24 +541,42 @@ console.log('Total issues found:', allIssues.length); // Debug log
                 issuesSection.style.display = 'block';
                 emptyState.style.display = 'none';
 
-                issuesList.innerHTML = allIssues.map(issue => `
-                    <div class="issue-card ${issue.severity === 'high' ? 'critical' : issue.severity === 'medium' ? 'warning' : 'suggestion'}">
-                        <div class="issue-header">
-                            <div class="issue-title">${issue.category}: ${issue.type.replace(/_/g, ' ')}</div>
-                            <div class="issue-badge ${issue.severity === 'high' ? 'critical' : issue.severity === 'medium' ? 'warning' : 'suggestion'}">
-                                ${issue.severity}
-                            </div>
-                        </div>
-                        <div class="issue-description">${issue.message}</div>
-                        ${issue.endpoint ? `<div class="issue-code">Endpoint: ${issue.endpoint}</div>` : ''}
-                        ${issue.frontend ? `<div class="issue-code">File: ${issue.frontend}</div>` : ''}
-                        ${issue.autofix ? `
-                            <button class="fix-button" onclick="applyFix('${issue.type}')">
-                                Apply Auto-Fix
-                            </button>
-                        ` : ''}
-                    </div>
-                `).join('');
+issuesList.innerHTML = allIssues.map((issue, index) => `
+    <div class="issue-card ${issue.severity === 'high' ? 'critical' : issue.severity === 'medium' ? 'warning' : 'suggestion'}">
+        <div class="issue-header">
+            <div class="issue-title">
+                ${issue.category || 'Code Quality'}: ${issue.type.replace(/_/g, ' ')}
+            </div>
+            <div class="issue-badge ${issue.severity === 'high' ? 'critical' : issue.severity === 'medium' ? 'warning' : 'suggestion'}">
+                ${issue.severity}
+            </div>
+        </div>
+        <div class="issue-description">${issue.message}</div>
+        ${issue.file ? `<div class="issue-code">📄 File: ${issue.file}</div>` : ''}
+        ${issue.endpoint ? `<div class="issue-code">🔗 Endpoint: ${issue.endpoint}</div>` : ''}
+        ${issue.line ? `<div class="issue-code">📍 Line: ${issue.line}</div>` : ''}
+        ${issue.expectedField ? `<div class="issue-code">Expected: ${issue.expectedField}</div>` : ''}
+        
+        ${issue.suggestion ? `
+            <div style="margin-top: 10px; padding: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px;">
+                <strong style="color: #fbbf24;">💡 Suggestion:</strong>
+                <span style="color: #cbd5e1;">${issue.suggestion}</span>
+            </div>
+        ` : ''}
+        
+        <div style="margin-top: 15px; display: flex; gap: 10px;">
+            ${issue.autoFixAvailable || issue.autofix ? `
+                <button class="fix-button" onclick="applyAutoFix(${index})">
+                    🔧 Apply Auto-Fix
+                </button>
+            ` : `
+                <button class="fix-button" onclick="generateFix(${index})" style="background: linear-gradient(45deg, #3b82f6, #2563eb);">
+                    🤖 Generate AI Fix
+                </button>
+            `}
+        </div>
+    </div>
+`).join('');
             } else {
                 issuesSection.style.display = 'none';
                 emptyState.style.display = 'block';
