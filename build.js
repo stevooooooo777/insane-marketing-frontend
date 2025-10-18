@@ -9,20 +9,14 @@ if (!fs.existsSync('dist')) {
   console.log('✅ Created dist/ folder\n');
 }
 
-// HTML files (extract and obfuscate scripts)
-const htmlFiles = [
-  'login.html',
-  'welcome.html', 
-  'codeguard.html',
-  'venue-setup.html'
-];
+// AUTO-FIND all HTML files in root directory
+const allFiles = fs.readdirSync('.');
+const htmlFiles = allFiles.filter(f => f.endsWith('.html'));
 
+console.log(`📄 Found ${htmlFiles.length} HTML files:`, htmlFiles.join(', '), '\n');
+
+// Process each HTML file
 htmlFiles.forEach(file => {
-  if (!fs.existsSync(file)) {
-    console.log(`⚠️  Skipping ${file} (not found)`);
-    return;
-  }
-  
   console.log(`🔒 Processing ${file}...`);
   
   try {
@@ -103,7 +97,6 @@ if (fs.existsSync('_redirects')) {
 }
 
 // Copy CSS files
-const allFiles = fs.readdirSync('.');
 const cssFiles = allFiles.filter(f => f.endsWith('.css'));
 cssFiles.forEach(file => {
   fs.copyFileSync(file, `dist/${file}`);
