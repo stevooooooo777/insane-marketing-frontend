@@ -583,9 +583,85 @@ issuesList.innerHTML = allIssues.map((issue, index) => `
             }
         }
 
-        function applyFix(issueType) {
-            alert('Auto-fix coming in Phase 2! For now, follow the suggested fix manually.');
+let currentIssues = [];
+
+async function generateFix(issueIndex) {
+    const issue = currentIssues[issueIndex];
+    
+    if (!issue) {
+        alert('Issue not found');
+        return;
+    }
+
+    const button = event.target;
+    button.disabled = true;
+    button.innerHTML = '<div class="loading-spinner" style="width: 16px; height: 16px; border-width: 2px; margin: 0 auto;"></div>';
+
+    try {
+        const response = await fetch(`${API_URL}/codeguard/generate-fix`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ issue })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.fix) {
+            // Show the fix in an alert
+            const fixDescription = `Fix Generated! 🎉
+
+File: ${data.fix.file}
+Type: ${data.fix.fixType}
+
+${data.fix.explanation}
+
+Find:
+${data.fix.findText}
+
+Replace with:
+${data.fix.replaceText}
+
+Apply this fix manually in your code editor.`;
+            
+            alert(fixDescription);
+        } else {
+            alert('Could not generate fix. Try manually following the suggestion.');
         }
+    } catch (error) {
+        console.error('Fix generation error:', error);
+        alert('Failed to generate fix. Check console for details.');
+    } finally {
+        button.disabled = false;
+        button.innerHTML = '🤖 Generate AI Fix';
+    }
+}
+
+function applyAutoFix(issueIndex) {
+    const issue = currentIssues[issueIndex];
+    
+    if (!issue || !issue.autoFix) {
+        alert('No auto-fix available for this issue');
+        return;
+    }
+
+    const fix = issue.autoFix;
+    const confirmMsg = `Apply this fix?
+
+File: ${fix.file}
+Change: ${fix.oldField} → ${fix.newField}
+
+This will show you the exact change to make.`;
+
+    if (confirm(confirmMsg)) {
+        alert(`Auto-Fix Instructions:
+
+1. Open ${fix.file}
+2. Find: ${fix.oldField}
+3. Replace with: ${fix.newField}
+
+Make this change and redeploy to fix the issue!`);
+    }
+}
     </script>
 </body>
 </html>
