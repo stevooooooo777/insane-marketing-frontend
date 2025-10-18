@@ -551,7 +551,7 @@ issuesList.innerHTML = allIssues.map((issue, index) => `
                 ${issue.severity}
             </div>
         </div>
-        <div class="issue-description">${issue.message}</div>
+        <div class="issue-description">${issue.message || issue.suggestion || 'Issue detected'}</div>
         ${issue.file ? `<div class="issue-code">📄 File: ${issue.file}</div>` : ''}
         ${issue.endpoint ? `<div class="issue-code">🔗 Endpoint: ${issue.endpoint}</div>` : ''}
         ${issue.line ? `<div class="issue-code">📍 Line: ${issue.line}</div>` : ''}
