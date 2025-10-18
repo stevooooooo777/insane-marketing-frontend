@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Table Experience - Restaurant Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        #carousel-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            cursor: grab;
+        }
+
+        #carousel-container:active {
+            cursor: grabbing;
+        }
+
+        .ui-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+        }
+
+        .service-feedback {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            align-items: center;
+        }
+
+        .feedback-label {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .feedback-icon {
+            font-size: 0.9rem;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            padding: 3px;
+            border-radius: 4px;
+        }
+
+        .feedback-icon:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .feedback-icon.selected {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .restaurant-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            text-align: right;
+        }
+
+        .food-feedback {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .time-indicator {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px;
+            color: white;
+            text-align: right;
+            font-size: 0.8rem;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 12px 24px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .card-interaction {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px 35px;
+            color: white;
+            text-align: center;
+            min-width: 350px;
+            opacity: 0;
+            transition: all 0.5s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-interaction.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 24px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-content {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: scale(0.8) translateY(50px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .qr-code-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 3px solid #e9ecef;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2rem;
+            z-index: 50;
+            text-align: center;
+        }
+
+        .live-stats {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .ui-overlay, .restaurant-info {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+            
+            .card-interaction {
+                min-width: 280px;
+                padding: 20px 25px;
+            }
+
+            .controls {
+                bottom: 20px;
+            }
+
+            .control-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="carousel-container"></div>
+    
+    <div class="ui-overlay">
+        <div style="font-weight: bold; margin-bottom: 5px;">🍽️ <span id="tableNumber">Table 1</span></div>
+        <div style="font-size: 0.9rem; opacity: 0.8;">Tap Cards to Explore</div>
+        <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 5px;">Powered by Insane.Marketing</div>
+        <div class="service-feedback">
+            <span class="feedback-label">Rate Service:</span>
+            <span class="feedback-icon" onclick="rateFeedback('service', 'up')">👍</span>
+            <span class="feedback-icon" onclick="rateFeedback('service', 'down')">👎</span>
+        </div>
+    </div>
+
+    <div class="restaurant-info">
+        <div style="font-weight: bold; margin-bottom: 5px;" id="restaurantName">Loading...</div>
+        <div style="font-size: 0.9rem; opacity: 0.8;">Welcome to Your Table!</div>
+        <div class="food-feedback">
+            <span class="feedback-label">Food:</span>
+            <span class="feedback-icon" onclick="rateFeedback('food', 'up')">👍</span>
+            <span class="feedback-icon" onclick="rateFeedback('food', 'down')">👎</span>
+        </div>
+    </div>
+
+    <div class="time-indicator" id="timeIndicator">
+        <div id="currentTime">--:--</div>
+        <div id="mealPeriod" style="font-size: 0.7rem; opacity: 0.8;">--</div>
+    </div>
+
+    <div class="live-stats" id="liveStats">
+        <div>🔥 <span id="todayScans">--</span> scans today</div>
+        <div>⏱️ Avg wait: <span id="avgWait">--</span> min</div>
+    </div>
+
+    <div class="card-interaction" id="cardInteraction">
+        <div class="card-title" id="cardTitle">Digital Menu</div>
+        <div class="card-description" id="cardDescription">Browse our menu with photos, descriptions, and prices</div>
+        <div class="action-buttons">
+            <button class="action-btn" onclick="showQRCode()">Scan the QR</button>
+            <button class="action-btn secondary" onclick="directAction()">Scanless QR</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="autoRotate()">🔄 </button>
+        <button class="control-btn" onclick="resetView()">⬅️ </button>
+        <button class="control-btn" onclick="nextCard()">➡️ </button>
+        
+    </div>
+
+    <div class="qr-modal" id="qrModal">
+        <div class="qr-content">
+            <button class="close-btn" onclick="closeQRModal()">×</button>
+            <h2 style="margin-bottom: 15px; color: #333;" id="modalTitle">Digital Menu</h2>
+            <p style="color: #666; margin-bottom: 20px;" id="modalDescription">Scan this QR code with your phone camera</p>
+            
+            <div class="qr-code-container">
+                <div class="qr-code" id="qrCodeDisplay">
+                    <div id="qrCodeContent">📱</div>
+                </div>
+            </div>
+            
+            <div style="color: #666; font-size: 0.9rem; margin-top: 15px;">
+                QR Code URL: <span id="qrCodeUrl">Generating...</span>
+            </div>
+            
+            <button class="action-btn" style="margin-top: 20px;" onclick="openDirectly()">
+                Open Directly (no scan needed)
+            </button>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div>Loading Customer Service Hub...</div>
+        <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">Customer Service Hub Loading...</div>
+    </div>
+
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script>
+        // Inline CONFIG object (fallback if config.js not found)
+        const CONFIG = {
+            getApiBaseUrl() {
+                if (window.location.hostname === 'localhost') {
+                    return 'http://localhost:8080';
+                }
+                return ''; // Use Netlify proxy
+            }
+        };
+
+        // Wait for Three.js to load
+        function waitForThree() {
+            return new Promise((resolve) => {
+                if (typeof THREE !== 'undefined') {
+                    resolve();
+                } else {
+                    setTimeout(() => waitForThree().then(resolve), 100);
+                }
+            });
+        }
+
+        // Global variables
+        let scene, camera, renderer, carousel;
+        let cards = [];
+        let currentCard = 0;
+        let isRotating = false;
+        let mouseDown = false;
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+        let currentRotationX = 0, currentRotationY = 0;
+        let restaurantData = null;
+        let tableNumber = null;
+        let qrCodes = {};
+
+        // Magical particle system variables
+        let magicalParticles;
+        let particlePositions;
+        let particleVelocities;
+
+        // Time-Aware Intelligence System
+        let timeContext = {};
+        let smartCardConfigs = [];
+        let businessHours = {};
+        let specialEvents = [];
+        let currentTimeSlot = '';
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get('restaurant') || 'demo-restaurant';
+        tableNumber = urlParams.get('table') || '1';
+
+        // Time-Aware Intelligence Engine
+        function initializeTimeIntelligence() {
+            updateTimeContext();
+            loadBusinessHours();
+            generateSmartCardConfigs();
+            
+            // Update every minute to stay current
+            setInterval(() => {
+                updateTimeContext();
+                generateSmartCardConfigs();
+                // Rebuild carousel if time context significantly changed
+                if (shouldRebuildCarousel()) {
+                    rebuildCarousel();
+                }
+            }, 60000);
+        }
+
+        function updateTimeContext() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const dayOfWeek = now.getDay(); // 0 = Sunday, 6 = Saturday
+            
+            timeContext = {
+                hour,
+                minute,
+                dayOfWeek,
+                timeString: `${hour}:${minute.toString().padStart(2, '0')}`,
+                
+                // Meal periods
+                isBreakfast: hour >= 6 && hour < 11,
+                isLunch: hour >= 11 && hour < 17,
+                isDinner: hour >= 17 && hour < 22,
+                isLateNight: hour >= 22 || hour < 6,
+                
+                // Business contexts
+                isHappyHour: hour >= 16 && hour < 19,
+                isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
+                isPeakTime: (hour >= 12 && hour <= 14) || (hour >= 18 && hour <= 20),
+                isQuietTime: hour < 11 || (hour >= 14 && hour < 17) || hour > 21,
+                
+                // Special periods
+                isMorningRush: hour >= 7 && hour <= 9,
+                isLunchRush: hour >= 12 && hour <= 14,
+                isDinnerRush: hour >= 18 && hour <= 20
+            };
+            
+            currentTimeSlot = determineTimeSlot();
+            updateTimeDisplay();
+        }
+
+        function determineTimeSlot() {
+            if (timeContext.isBreakfast) return 'breakfast';
+            if (timeContext.isLunch) return 'lunch';
+            if (timeContext.isDinner) return 'dinner';
+            return 'late-night';
+        }
+
+        function updateTimeDisplay() {
+            document.getElementById('currentTime').textContent = timeContext.timeString;
+            
+            let mealPeriod = '';
+            if (timeContext.isBreakfast) mealPeriod = 'Breakfast';
+            else if (timeContext.isLunch) mealPeriod = 'Lunch';
+            else if (timeContext.isDinner) mealPeriod = 'Dinner';
+            else mealPeriod = 'Late Night';
+            
+            if (timeContext.isHappyHour) mealPeriod += ' • Happy Hour';
+            if (timeContext.isPeakTime) mealPeriod += ' • Peak Time';
+            
+            document.getElementById('mealPeriod').textContent = mealPeriod;
+        }
+
+        function loadBusinessHours() {
+            // This would eventually come from your restaurant data
+            businessHours = {
+                breakfast: { start: 6, end: 11 },
+                lunch: { start: 11, end: 17 },
+                dinner: { start: 17, end: 22 },
+                happyHour: { start: 16, end: 19 }
+            };
+        }
+
+        function generateSmartCardConfigs() {
+            // Base cards that are always available
+            const baseCards = [
+                {
+                    id: 'menu',
+                 // title: "Digital Menu",
+                    description: "Browse our full menu with photos, descriptions, and prices",
+                    color: 0xff6b6b,
+                    icon: "🍽️",
+                    qrType: 'menu',
+                    priority: 10,
+                    alwaysShow: true
+                },
+                {
+                    id: 'wifi',
+                // title: "Free WiFi",
+                    description: "Connect to our complimentary high-speed internet",
+                    color: 0x4ecdc4,
+                    icon: "📶",
+                    qrType: 'wifi',
+                    priority: 5,
+                    alwaysShow: true
+                }
+            ];
+            
+            // Time-contextual cards
+            const contextualCards = [];
+            
+            // Breakfast cards
+            if (timeContext.isBreakfast) {
+                contextualCards.push({
+                    id: 'breakfast-specials',
+                 // title: "Breakfast Specials",
+                    description: "Fresh morning favorites and coffee combinations",
+                    color: 0xfeca57,
+                    icon: "🌅",
+                    qrType: 'breakfast',
+                    priority: 15,
+                    timeRelevant: true
+                });
+            }
+            
+            // Lunch cards
+            if (timeContext.isLunch) {
+                contextualCards.push({
+                    id: 'events',
+                   // title: "Local Events",
+                    description: "Explore the Community for Things to Do",
+                    color: 0x26de81,
+                    icon: "⚡",
+                    qrType: 'events',
+                    priority: 14,
+                    timeRelevant: true
+                });
+            }
+            
+            // Happy Hour cards
+            if (timeContext.isHappyHour) {
+                contextualCards.push({
+                    id: 'happy-hour',
+                  //  title: "Happy Hour",
+                    description: "Check out todays Happy hour Specials",
+                    color: 0xff9ff3,
+                    icon: "🍹",
+                    qrType: 'happy-hour',
+                    priority: 20,
+                    timeRelevant: true,
+                    pulsing: true // Special effect for time-sensitive offers
+                });
+            }
+            
+            // Dinner cards
+            if (timeContext.isDinner) {
+                contextualCards.push({
+                    id: 'dinner-specials',
+                  //  title: "Chef's Selections",
+                    description: "Tonight's featured dishes and wine pairings",
+                    color: 0x6c5ce7,
+                    icon: "👨‍🍳",
+                    qrType: 'chef-specials',
+                    priority: 16,
+                    timeRelevant: true
+                });
+            }
+            
+            // Rush time efficiency cards
+            if (timeContext.isPeakTime) {
+                contextualCards.push({
+                    id: 'quick-service',
+                  //  title: "Express Order",
+                    description: "Skip the wait with our quick-service options",
+                    color: 0xff3838,
+                    icon: "🚀",
+                    qrType: 'express',
+                    priority: 18,
+                    timeRelevant: true
+                });
+            }
+            
+            // Quiet time entertainment
+            if (timeContext.isQuietTime) {
+                contextualCards.push({
+                    id: 'games',
+                  // title: "Table Games",
+                    description: "Play fun games while you relax and dine",
+                    color: 0x45b7d1,
+                    icon: "🎮",
+                    qrType: 'games',
+                    priority: 8,
+                    timeRelevant: true
+                });
+            }
+            
+            // Weekend specials
+            if (timeContext.isWeekend && (timeContext.isLunch || timeContext.isDinner)) {
+                contextualCards.push({
+                    id: 'weekend-special',
+                   // title: "Weekend Features",
+                    description: "Special weekend menu and extended hours",
+                    color: 0x00b894,
+                    icon: "🎉",
+                    qrType: 'weekend',
+                    priority: 12,
+                    timeRelevant: true
+                });
+            }
+            
+            // Always include service call
+            contextualCards.push({
+                id: 'service',
+               // title: "Call Server",
+                description: "Need assistance? Alert your server instantly",
+                color: 0xa29bfe,
+                icon: "🔔",
+                qrType: 'service',
+                priority: 7,
+                alwaysShow: true
+            });
+            
+            // Always include reviews, but lower priority during rush
+            contextualCards.push({
+                id: 'review',
+               // title: "Leave a Review",
+                description: "Share your experience and help other diners",
+                color: 0x96ceb4,
+                icon: "💭",
+                qrType: 'review',
+                priority: timeContext.isPeakTime ? 3 : 6,
+                alwaysShow: false
+            });
+            
+            // Combine and sort by priority and time relevance
+            const newConfigs = [...baseCards, ...contextualCards]
+                .sort((a, b) => {
+                    // Time-relevant cards get boost
+                    const aScore = a.priority + (a.timeRelevant ? 5 : 0);
+                    const bScore = b.priority + (b.timeRelevant ? 5 : 0);
+                    return bScore - aScore;
+                })
+                .slice(0, 6); // Keep top 6 cards
+            
+            // Check if configuration actually changed
+            const configChanged = JSON.stringify(smartCardConfigs) !== JSON.stringify(newConfigs);
+            smartCardConfigs = newConfigs;
+            
+            return configChanged;
+        }
+
+        function shouldRebuildCarousel() {
+            // Rebuild if it's a new hour or significant context change
+            const now = new Date();
+            return now.getMinutes() === 0; // Rebuild at the top of each hour
+        }
+
+        function rebuildCarousel() {
+            if (generateSmartCardConfigs()) {
+                createCarousel();
+                generateQRCodes(); // Regenerate QR codes for new cards
+            }
+        }
+
+        async function init() {
+            try {
+                // Wait for Three.js to load
+                await waitForThree();
+                
+                // Initialize time-aware intelligence
+                initializeTimeIntelligence();
+                
+                // Load restaurant data
+                await loadRestaurantData();
+                
+                // Initialize 3D scene
+                initializeScene();
+                
+                // Create carousel with smart data
+                createCarousel();
+                
+                // Generate QR codes
+                await generateQRCodes();
+                
+                // Setup interactions
+                setupEventListeners();
+                
+                // Start animation
+                animate();
+                
+                // Load live stats
+                loadLiveStats();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show first card
+                updateCardInfo();
+                
+                // Update stats every 30 seconds
+                setInterval(loadLiveStats, 30000);
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showError('Failed to load customer service hub. Please check your connection.');
+            }
+        }
+
+        async function loadRestaurantData() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                // Load restaurant info
+                const response = await fetch(`${apiUrl}/api/restaurant/${restaurantId}`);
+                if (response.ok) {
+                    restaurantData = await response.json();
+                    document.getElementById('restaurantName').textContent = restaurantData.name || 'Your Restaurant';
+                } else {
+                    // Fallback for demo
+                    restaurantData = { name: 'Demo Restaurant', id: restaurantId };
+                    document.getElementById('restaurantName').textContent = restaurantData.name;
+                }
+                
+                // Update table number
+                document.getElementById('tableNumber').textContent = `Table ${tableNumber}`;
+                
+            } catch (error) {
+                console.error('Error loading restaurant data:', error);
+                restaurantData = { name: 'VIP CONTROL HUB', id: restaurantId };
+                document.getElementById('restaurantName').textContent = restaurantData.name;
+            }
+        }
+
+        async function generateQRCodes() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                for (const config of smartCardConfigs) {
+                    try {
+                        // Generate QR code for each card type
+                        const response = await fetch(`${apiUrl}/api/qr/generate`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                restaurant_id: restaurantId,
+                                qr_type: config.qrType,
+                                table_number: tableNumber,
+                                destination_url: getDestinationUrl(config.qrType)
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            const qrData = await response.json();
+                            qrCodes[config.id] = qrData;
+                        } else {
+                            // Fallback QR URL
+                            qrCodes[config.id] = {
+                                tracking_url: `${apiUrl}/qr/${restaurantId}/table/${tableNumber}/${config.qrType}`,
+                                destination_url: getDestinationUrl(config.qrType)
+                            };
+                        }
+                    } catch (error) {
+                        console.error(`Error generating QR for ${config.qrType}:`, error);
+                        // Create fallback QR
+                        qrCodes[config.id] = {
+                            tracking_url: `${apiUrl}/qr/${restaurantId}/table/${tableNumber}/${config.qrType}`,
+                            destination_url: getDestinationUrl(config.qrType)
+                        };
+                    }
+                }
+                
+                console.log('QR codes generated:', qrCodes);
+                
+            } catch (error) {
+                console.error('Error in generateQRCodes:', error);
+            }
+        }
+
+        function getDestinationUrl(qrType) {
+            const baseUrl = window.location.origin;
+            
+            switch (qrType) {
+                case 'menu':
+                    return `${baseUrl}/menu.html?restaurant=${restaurantId}&table=${tableNumber}`;
+                case 'wifi':
+                    return `${baseUrl}/wifi.html?restaurant=${restaurantId}`;
+                case 'specials':
+                case 'breakfast':
+                case 'lunch-express':
+                case 'dinner-specials':
+                case 'chef-specials':
+                case 'weekend':
+                    return `${baseUrl}/specials.html?restaurant=${restaurantId}&type=${qrType}`;
+                case 'happy-hour':
+                    return `${baseUrl}/happy-hour.html?restaurant=${restaurantId}`;
+                case 'express':
+                    return `${baseUrl}/events.html?restaurant=${restaurantId}&table=${tableNumber}`;
+                case 'review':
+                    return `${baseUrl}/review.html?restaurant=${restaurantId}&table=${tableNumber}`;
+                case 'service':
+                    return `${baseUrl}/service-request.html?restaurant=${restaurantId}&table=${tableNumber}`;
+                case 'games':
+                    return `${baseUrl}/games.html?restaurant=${restaurantId}&table=${tableNumber}`;
+                default:
+                    return `${baseUrl}/default.html?restaurant=${restaurantId}&table=${tableNumber}`;
+            }
+        }
+
+        async function loadLiveStats() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                // Load today's scans
+                const scansResponse = await fetch(`${apiUrl}/api/analytics/${restaurantId}/scans-today`);
+                if (scansResponse.ok) {
+                    const scansData = await scansResponse.json();
+                    document.getElementById('todayScans').textContent = scansData.count || 0;
+                }
+                
+                // Load average wait time
+                const waitResponse = await fetch(`${apiUrl}/api/analytics/${restaurantId}/avg-wait`);
+                if (waitResponse.ok) {
+                    const waitData = await waitResponse.json();
+                    document.getElementById('avgWait').textContent = waitData.minutes || '--';
+                }
+                
+            } catch (error) {
+                console.error('Error loading live stats:', error);
+            }
+        }
+
+        function initializeScene() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x1e3c72, 10, 50);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 12);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x1e3c72, 0);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('carousel-container').appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            scene.add(directionalLight);
+
+            // Create magical particle system
+            createMagicalParticles();
+        }
+
+        function createMagicalParticles() {
+            const particleCount = 150;
+            const geometry = new THREE.BufferGeometry();
+            
+            // Create position and velocity arrays
+            particlePositions = new Float32Array(particleCount * 3);
+            particleVelocities = new Float32Array(particleCount * 3);
+            
+            // Initialize particles
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                
+                // Random positions in 3D space
+                particlePositions[i3] = (Math.random() - 0.5) * 20;
+                particlePositions[i3 + 1] = (Math.random() - 0.5) * 8;
+                particlePositions[i3 + 2] = (Math.random() - 0.5) * 20;
+                
+                // Random gentle velocities
+                particleVelocities[i3] = (Math.random() - 0.5) * 0.02;
+                particleVelocities[i3 + 1] = (Math.random() - 0.5) * 0.02;
+                particleVelocities[i3 + 2] = (Math.random() - 0.5) * 0.02;
+            }
+            
+            geometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+            
+            const material = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.1,
+                opacity: 0.6,
+                transparent: true,
+                blending: THREE.AdditiveBlending
+            });
+            
+            magicalParticles = new THREE.Points(geometry, material);
+            scene.add(magicalParticles);
+        }
+
+        function createCarousel() {
+            // Clear existing carousel if rebuilding
+            if (carousel) {
+                scene.remove(carousel);
+                cards = [];
+            }
+            
+            carousel = new THREE.Group();
+            
+            const radius = 8;
+            const cardCount = smartCardConfigs.length;
+
+            smartCardConfigs.forEach((config, index) => {
+                const angle = (index / cardCount) * Math.PI * 2;
+                
+                // Card geometry - size based on priority and time relevance
+                const cardScale = config.timeRelevant ? 1.2 : 1.0;
+                const cardGeometry = new THREE.BoxGeometry(3 * cardScale, 4 * cardScale, 0.1);
+                
+                const cardMaterial = new THREE.MeshLambertMaterial({ 
+                    color: config.color,
+                    transparent: true,
+                    opacity: config.timeRelevant ? 1.0 : 0.8
+                });
+                
+                const card = new THREE.Mesh(cardGeometry, cardMaterial);
+                
+                // Position cards in a circle
+                card.position.x = Math.cos(angle) * radius;
+                card.position.z = Math.sin(angle) * radius;
+                card.position.y = Math.sin(index * 0.5) * 0.5;
+                
+                // Rotate cards to face center
+                card.lookAt(0, card.position.y, 0);
+                
+                // Add icon
+                createCardIcon(card, config.icon, config.color);
+                
+                // Enhanced glow for time-relevant cards
+                const glowSize = config.timeRelevant ? 1.3 : 1.0;
+                const glowGeometry = new THREE.BoxGeometry(3.2 * glowSize, 4.2 * glowSize, 0.2);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: config.color,
+                    transparent: true,
+                    opacity: config.timeRelevant ? 0.4 : 0.2
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                card.add(glow);
+
+                // Store enhanced card data
+                card.userData = { 
+                    index, 
+                    config, 
+                    qrData: qrCodes[config.id],
+                    isTimeRelevant: config.timeRelevant,
+                    shouldPulse: config.pulsing
+                };
+                cards.push(card);
+                carousel.add(card);
+
+                // Add enhanced particles for time-relevant cards
+                createParticles(card, config.color, config.timeRelevant);
+            });
+
+            scene.add(carousel);
+            
+            // Add floating restaurant name
+            setTimeout(() => {
+                if (restaurantData && restaurantData.name) {
+                    createFloatingRestaurantName();
+                }
+            }, 500);
+        }
+
+        function createCardIcon(card, icon, cardColor) {
+            // Create a canvas for the icon
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 256;
+            
+            // Set transparent background
+            context.clearRect(0, 0, 256, 256);
+            
+            // Draw icon
+            context.font = 'bold 180px Arial';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            context.fillText(icon, 128, 128);
+            
+            // Create texture from canvas
+            const texture = new THREE.CanvasTexture(canvas);
+            
+            // Create plane geometry for icon
+            const iconGeometry = new THREE.PlaneGeometry(2.5, 2.5);
+            const iconMaterial = new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: false,
+                opacity: 1.5
+            });
+            
+            const iconMesh = new THREE.Mesh(iconGeometry, iconMaterial);
+            iconMesh.position.set(0, 0, 0.06);
+            
+            card.add(iconMesh);
+            card.userData.icon = iconMesh;
+        }
+
+        function createFloatingRestaurantName() {
+            if (!restaurantData || !restaurantData.name) return;
+            
+            // Create canvas for text
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 1024;
+            canvas.height = 256;
+            
+            // Set transparent background
+            context.clearRect(0, 0, 1024, 256);
+            
+            // Create gradient text
+            const gradient = context.createLinearGradient(0, 0, 1024, 0);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.5, '#feca57');
+            gradient.addColorStop(1, '#ff6b6b');
+            
+            context.font = 'bold 80px Arial';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillStyle = gradient;
+            context.shadowColor = 'rgba(255, 255, 255, 0.5)';
+            context.shadowBlur = 20;
+            context.fillText(restaurantData.name, 512, 128);
+            
+            // Create texture
+            const texture = new THREE.CanvasTexture(canvas);
+            
+            // Create floating text
+            const textGeometry = new THREE.PlaneGeometry(8, 2);
+            const textMaterial = new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+            textMesh.position.set(0, 0, 0);
+            
+            carousel.add(textMesh);
+            carousel.userData.restaurantName = textMesh;
+        }
+
+        function createParticles(card, color, enhanced = false) {
+            const particleCount = enhanced ? 30 : 20;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 6;
+                positions[i + 1] = (Math.random() - 0.5) * 6;
+                positions[i + 2] = (Math.random() - 0.5) * 2;
+            }
+
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                color: color,
+                size: enhanced ? 0.15 : 0.1,
+                transparent: true,
+                opacity: enhanced ? 0.8 : 0.6
+            });
+
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            card.add(particleSystem);
+            card.userData.particles = particleSystem;
+        }
+
+        function setupEventListeners() {
+            // Mouse controls
+            document.addEventListener('mousedown', onMouseDown);
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+            
+            // Touch controls
+            document.addEventListener('touchstart', onTouchStart);
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
+            
+            // Resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Click on cards
+            document.addEventListener('click', onCardClick);
+        }
+
+        function onMouseDown(event) {
+            mouseDown = true;
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        }
+
+        function onMouseMove(event) {
+            if (!mouseDown) return;
+            
+            const deltaX = event.clientX - mouseX;
+            const deltaY = event.clientY - mouseY;
+            
+            targetRotationY += deltaX * 0.01;
+            targetRotationX += deltaY * 0.01;
+            
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        }
+
+        function onMouseUp() {
+            mouseDown = false;
+        }
+
+        function onTouchStart(event) {
+            if (event.touches.length === 1) {
+                mouseX = event.touches[0].clientX;
+                mouseY = event.touches[0].clientY;
+                mouseDown = true;
+            }
+        }
+
+        function onTouchMove(event) {
+            if (event.touches.length === 1 && mouseDown) {
+                event.preventDefault();
+                
+                const deltaX = event.touches[0].clientX - mouseX;
+                const deltaY = event.touches[0].clientY - mouseY;
+                
+                targetRotationY += deltaX * 0.01;
+                targetRotationX += deltaY * 0.01;
+                
+                mouseX = event.touches[0].clientX;
+                mouseY = event.touches[0].clientY;
+            }
+        }
+
+        function onTouchEnd() {
+            mouseDown = false;
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onCardClick(event) {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(cards);
+            
+            if (intersects.length > 0) {
+                const clickedCard = intersects[0].object;
+                currentCard = clickedCard.userData.index;
+                focusOnCard(currentCard);
+                updateCardInfo();
+                
+                // Track interaction
+                trackCardInteraction(clickedCard.userData.config.qrType);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth rotation
+            currentRotationX += (targetRotationX - currentRotationX) * 0.05;
+            currentRotationY += (targetRotationY - currentRotationY) * 0.05;
+            
+            carousel.rotation.x = currentRotationX;
+            carousel.rotation.y = currentRotationY;
+
+            // Auto-rotate if enabled
+            if (isRotating) {
+                carousel.rotation.y += 0.005;
+                targetRotationY = carousel.rotation.y;
+            }
+
+            // Animate magical particles
+            if (magicalParticles && particlePositions) {
+                const time = Date.now() * 0.001;
+                
+                for (let i = 0; i < particlePositions.length / 3; i++) {
+                    const i3 = i * 3;
+                    
+                    // Gentle floating motion
+                    particlePositions[i3] += particleVelocities[i3];
+                    particlePositions[i3 + 1] += particleVelocities[i3 + 1] + Math.sin(time + i) * 0.001;
+                    particlePositions[i3 + 2] += particleVelocities[i3 + 2];
+                    
+                    // Attraction to current focused card
+                    if (currentCard !== -1 && cards[currentCard]) {
+                        const cardPos = cards[currentCard].position;
+                        const dx = cardPos.x - particlePositions[i3];
+                        const dy = cardPos.y - particlePositions[i3 + 1];
+                        const dz = cardPos.z - particlePositions[i3 + 2];
+                        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                        
+                        if (distance < 4) {
+                            particlePositions[i3] += dx * 0.008;
+                            particlePositions[i3 + 1] += dy * 0.008;
+                            particlePositions[i3 + 2] += dz * 0.008;
+                        }
+                    }
+                    
+                    // Boundary constraints
+                    if (Math.abs(particlePositions[i3]) > 12) particleVelocities[i3] *= -0.5;
+                    if (Math.abs(particlePositions[i3 + 1]) > 6) particleVelocities[i3 + 1] *= -0.5;
+                    if (Math.abs(particlePositions[i3 + 2]) > 12) particleVelocities[i3 + 2] *= -0.5;
+                    
+                    // Add subtle randomness
+                    particleVelocities[i3] += (Math.random() - 0.5) * 0.0002;
+                    particleVelocities[i3 + 1] += (Math.random() - 0.5) * 0.0002;
+                    particleVelocities[i3 + 2] += (Math.random() - 0.5) * 0.0002;
+                    
+                    // Damping
+                    particleVelocities[i3] *= 0.98;
+                    particleVelocities[i3 + 1] *= 0.98;
+                    particleVelocities[i3 + 2] *= 0.98;
+                }
+                
+                magicalParticles.geometry.attributes.position.needsUpdate = true;
+            }
+
+            // Animate cards with enhanced effects
+            cards.forEach((card, index) => {
+                // Floating animation
+                card.position.y = Math.sin(Date.now() * 0.001 + index) * 0.3;
+                
+                // Particle animation
+                if (card.userData.particles) {
+                    card.userData.particles.rotation.z += 0.01;
+                }
+
+                // Enhanced pulsing for time-relevant cards
+                if (card.userData.shouldPulse) {
+                    const pulseScale = 1 + Math.sin(Date.now() * 0.003) * 0.1;
+                    card.scale.setScalar(pulseScale);
+                } else if (index === currentCard) {
+                    card.scale.setScalar(1.1);
+                } else {
+                    card.scale.setScalar(card.userData.isTimeRelevant ? 1.05 : 1);
+                }
+
+                // Highlight current card
+                if (index === currentCard) {
+                    card.material.opacity = 1;
+                    if (card.userData.icon) {
+                        card.userData.icon.material.opacity = 0.9;
+                    }
+                } else {
+                    card.material.opacity = card.userData.isTimeRelevant ? 0.9 : 0.7;
+                    if (card.userData.icon) {
+                        card.userData.icon.material.opacity = card.userData.isTimeRelevant ? 0.8 : 0.6;
+                    }
+                }
+            });
+
+            // Animate floating restaurant name
+            if (carousel.userData.restaurantName) {
+                const time = Date.now() * 0.002;
+                carousel.userData.restaurantName.position.y = Math.sin(time) * 0.2;
+                carousel.userData.restaurantName.material.opacity = 0.4 + Math.sin(time * 2) * 0.2;
+                carousel.userData.restaurantName.rotation.z = Math.sin(time * 0.5) * 0.1;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function focusOnCard(index) {
+            const card = cards[index];
+            const angle = (index / smartCardConfigs.length) * Math.PI * 2;
+            
+            targetRotationY = -angle;
+            targetRotationX = 0;
+        }
+
+        function updateCardInfo() {
+            const config = smartCardConfigs[currentCard];
+            document.getElementById('cardTitle').textContent = config.title;
+            document.getElementById('cardDescription').textContent = config.description;
+            
+            const cardInfo = document.getElementById('cardInteraction');
+            cardInfo.classList.add('visible');
+            
+            // Clear any existing timeout
+            if (window.cardInfoTimeout) {
+                clearTimeout(window.cardInfoTimeout);
+            }
+            
+            // Set longer timeout for time-relevant cards
+            const timeout = config.timeRelevant ? 12000 : 8000;
+            window.cardInfoTimeout = setTimeout(() => {
+                cardInfo.classList.remove('visible');
+            }, timeout);
+        }
+
+        // Clear card info when user takes action
+        function hideCardInfo() {
+            if (window.cardInfoTimeout) {
+                clearTimeout(window.cardInfoTimeout);
+            }
+            document.getElementById('cardInteraction').classList.remove('visible');
+        }
+
+        // Interactive functions
+        function showQRCode() {
+            const config = smartCardConfigs[currentCard];
+            const qrData = qrCodes[config.id];
+            
+            if (!qrData) {
+                alert('QR code not available. Please try again.');
+                return;
+            }
+            
+            // Update modal content
+            document.getElementById('modalTitle').textContent = config.title;
+            document.getElementById('modalDescription').textContent = `Scan this QR code to ${config.description.toLowerCase()}`;
+            document.getElementById('qrCodeUrl').textContent = qrData.tracking_url;
+            
+            // Generate QR code visual (simplified for this demo)
+            document.getElementById('qrCodeContent').innerHTML = generateQRCodeHTML(qrData.tracking_url);
+            
+            // Show modal
+            document.getElementById('qrModal').style.display = 'flex';
+            
+            // Track QR display
+            trackQRDisplay(config.qrType);
+            hideCardInfo();
+        }
+
+        function generateQRCodeHTML(url) {
+            // In production, you'd use a real QR code library like qrcode.js
+            // For now, we'll show a simplified representation
+            return `
+                <div style="font-size: 0.8rem; line-height: 1.2;">
+                    📱<br>
+                    QR CODE<br>
+                    <div style="font-size: 0.6rem; margin-top: 10px; color: #666;">
+                        ${url.substring(0, 30)}...
+                    </div>
+                </div>
+            `;
+        }
+
+        function directAction() {
+            const config = smartCardConfigs[currentCard];
+            const qrData = qrCodes[config.id];
+            
+            if (qrData && qrData.destination_url) {
+                // Track direct action
+                trackDirectAction(config.qrType);
+                
+                // Open destination directly
+                window.open(qrData.destination_url, '_blank');
+                hideCardInfo();
+            } else {
+                alert(`${config.title} this new feature is coming soon!`);
+            }
+        }
+
+        function openDirectly() {
+            const config = smartCardConfigs[currentCard];
+            const qrData = qrCodes[config.id];
+            
+            closeQRModal();
+            
+            if (qrData && qrData.destination_url) {
+                window.open(qrData.destination_url, '_blank');
+            }
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        // Control functions
+        function autoRotate() {
+            isRotating = !isRotating;
+        }
+
+        function resetView() {
+            targetRotationX = 0;
+            targetRotationY = 0;
+            currentCard = 0;
+            updateCardInfo();
+        }
+
+        function nextCard() {
+            currentCard = (currentCard + 1) % smartCardConfigs.length;
+            focusOnCard(currentCard);
+            updateCardInfo();
+        }
+
+async function callServer() {
+    try {
+        const apiUrl = CONFIG.getApiBaseUrl();
+        
+        // Track the service request
+        const response = await fetch(`${apiUrl}/api/service/request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                restaurant_id: restaurantId,
+                table_number: tableNumber,
+                request_type: 'assistance',
+                message: 'Customer needs assistance at table ' + tableNumber
+            })
+        });
+        
+        // Navigate to service page immediately (no alert)
+        const qrData = qrCodes['service'];
+        const serviceUrl = qrData?.destination_url || 
+            `${window.location.origin}/service-request.html?restaurant=${restaurantId}&table=${tableNumber}`;
+        
+        window.open(serviceUrl, '_blank');
+        
+    } catch (error) {
+        console.error('Error calling server:', error);
+        // Still open page even if tracking fails
+        const serviceUrl = `${window.location.origin}/service-request.html?restaurant=${restaurantId}&table=${tableNumber}`;
+        window.open(serviceUrl, '_blank');
+    }
+}
+
+        // Silent feedback system
+        async function rateFeedback(type, rating) {
+            try {
+                // Visual feedback for user
+                const feedbackIcons = document.querySelectorAll(`.${type}-feedback .feedback-icon`);
+                feedbackIcons.forEach(icon => icon.classList.remove('selected'));
+                event.target.classList.add('selected');
+                
+                // Track feedback
+                const apiUrl = CONFIG.getApiBaseUrl();
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'feedback',
+                        feedback_type: type,
+                        feedback_rating: rating,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                // Silent alert for negative feedback
+                if (rating === 'down') {
+                    await sendSilentAlert(type, rating);
+                }
+                
+                // Subtle confirmation for user
+                setTimeout(() => {
+                    event.target.classList.remove('selected');
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error sending feedback:', error);
+            }
+        }
+
+        async function sendSilentAlert(type, rating) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const alertMessage = type === 'service' 
+                    ? `Table ${tableNumber} rated service negatively - check immediately`
+                    : `Table ${tableNumber} rated food negatively - kitchen/manager alert`;
+                
+                await fetch(`${apiUrl}/api/service/request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        request_type: 'feedback_alert',
+                        priority: 'high',
+                        message: alertMessage,
+                        feedback_type: type,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+            } catch (error) {
+                console.error('Error sending silent alert:', error);
+            }
+        }
+
+        // Analytics tracking
+        async function trackCardInteraction(qrType) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'card_focus',
+                        qr_type: qrType,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking interaction:', error);
+            }
+        }
+
+        async function trackQRDisplay(qrType) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'qr_display',
+                        qr_type: qrType,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking QR display:', error);
+            }
+        }
+
+        async function trackDirectAction(qrType) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'direct_action',
+                        qr_type: qrType,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking direct action:', error);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading').innerHTML = `
+                <div style="color: #ff6b6b;">❌ ${message}</div>
+                <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #ff6b6b; color: white; border: none; border-radius: 10px; cursor: pointer;">
+                    Retry
+                </button>
+            `;
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', async () => {
+            // Small delay to ensure all resources load
+            setTimeout(init, 500);
+        });
+    </script>
+</body>
+</html>

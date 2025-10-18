@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeGuard - insane.marketing Monitor</title>
+    <script src="config-client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge.healthy {
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid #22c55e;
+            color: #22c55e;
+        }
+
+        .status-badge.warning {
+            background: rgba(251, 191, 36, 0.2);
+            border: 2px solid #fbbf24;
+            color: #fbbf24;
+        }
+
+        .status-badge.critical {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .pulse.green { background: #22c55e; }
+        .pulse.yellow { background: #fbbf24; }
+        .pulse.red { background: #ef4444; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(251, 191, 36, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .issues-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .issue-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .issue-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        .issue-card.critical { border-color: #ef4444; }
+        .issue-card.warning { border-color: #fbbf24; }
+        .issue-card.suggestion { border-color: #3b82f6; }
+
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .issue-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .issue-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .issue-badge.critical {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .issue-badge.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .issue-badge.suggestion {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .issue-description {
+            color: #94a3b8;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .issue-code {
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .fix-button {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fix-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .scan-button {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .scan-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(251, 191, 36, 0.2);
+            border-top: 4px solid #fbbf24;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .last-scan {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .service-name {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .service-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <div class="logo">🛡️ CodeGuard</div>
+                <div style="color: #64748b; margin-top: 5px;">insane.marketing monitor</div>
+                <div class="last-scan" id="lastScan">Never scanned</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="status-badge healthy" id="overallStatus">
+                    <div class="pulse green"></div>
+                    All Systems Healthy
+                </div>
+                <button class="scan-button" id="scanButton" onclick="runScan()">
+                    <span>🔍</span>
+                    <span>Run Scan</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <div style="color: #94a3b8; font-size: 1.2rem;">Scanning your codebase...</div>
+        </div>
+
+        <div id="mainContent">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-label">Critical Issues</div>
+                    <div class="stat-value" id="criticalCount">0</div>
+                    <div class="stat-subtitle">Immediate attention required</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Warnings</div>
+                    <div class="stat-value" id="warningCount">0</div>
+                    <div class="stat-subtitle">Should be reviewed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Suggestions</div>
+                    <div class="stat-value" id="suggestionCount">0</div>
+                    <div class="stat-subtitle">Potential improvements</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Health Score</div>
+                    <div class="stat-value" id="healthScore">100%</div>
+                    <div class="stat-subtitle">Overall system health</div>
+                </div>
+            </div>
+
+            <div class="issues-section">
+                <div class="section-title">
+                    <span>⚙️</span>
+                    <span>System Services</span>
+                </div>
+                <div class="service-grid" id="servicesGrid">
+                    <div class="service-card">
+                        <div class="service-name">Backend (Railway)</div>
+                        <div class="service-status">
+                            <div class="pulse green"></div>
+                            <span id="backendStatus">Checking...</span>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-name">Database</div>
+                        <div class="service-status">
+                            <div class="pulse green"></div>
+                            <span id="databaseStatus">Checking...</span>
+                        </div>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-name">Memory Usage</div>
+                        <div class="service-status">
+                            <span id="memoryStatus">Checking...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="issues-section" id="issuesSection" style="display: none;">
+                <div class="section-title">
+                    <span>🚨</span>
+                    <span>Detected Issues</span>
+                </div>
+                <div id="issuesList"></div>
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">✅</div>
+                <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px;">
+                    No Issues Detected
+                </div>
+                <div>
+                    Click "Run Scan" to analyze your codebase
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = CONFIG.getApiBaseUrl();
+        let scanInProgress = false;
+
+        // Auto-load status on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStatus();
+            // Auto-refresh every 60 seconds
+            setInterval(loadStatus, 60000);
+        });
+
+        async function loadStatus() {
+            try {
+                const response = await fetch(`${API_URL}/codeguard/status`);
+                const data = await response.json();
+
+                if (data.success && data.services) {
+                    // Update service statuses
+                    if (data.services.backend) {
+                        document.getElementById('backendStatus').textContent = 
+                            `Online (${Math.round(data.services.backend.uptime)}s uptime)`;
+                    }
+                    if (data.services.database) {
+                        document.getElementById('databaseStatus').textContent = 
+                            data.services.database.status === 'connected' ? 'Connected' : 'Offline';
+                    }
+                    if (data.services.backend && data.services.backend.memory) {
+                        document.getElementById('memoryStatus').textContent = 
+                            data.services.backend.memory;
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load status:', error);
+            }
+        }
+
+        async function runScan() {
+            if (scanInProgress) return;
+            
+            scanInProgress = true;
+            const button = document.getElementById('scanButton');
+            button.disabled = true;
+            button.innerHTML = '<div class="loading-spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0;"></div> Scanning...';
+
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('mainContent').style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/codeguard/scan`);
+                const data = await response.json();
+
+                console.log('Scan results:', data);
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    alert('Scan failed: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Scan error:', error);
+                alert('Failed to run scan. Check console for details.');
+            } finally {
+                scanInProgress = false;
+                button.disabled = false;
+                button.innerHTML = '<span>🔍</span><span>Run Scan</span>';
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+        }
+
+        function displayResults(data) {
+            // Update last scan time
+            const lastScan = new Date(data.timestamp);
+            document.getElementById('lastScan').textContent = 
+                `Last scan: ${lastScan.toLocaleTimeString()}`;
+
+            // Update stats
+            const summary = data.summary || { critical: 0, warnings: 0, suggestions: 0 };
+            document.getElementById('criticalCount').textContent = summary.critical || 0;
+            document.getElementById('warningCount').textContent = summary.warnings || 0;
+            document.getElementById('suggestionCount').textContent = summary.suggestions || 0;
+
+            // Calculate health score
+            const totalIssues = (summary.critical * 3) + (summary.warnings * 2) + summary.suggestions;
+            const healthScore = Math.max(0, 100 - totalIssues * 5);
+            document.getElementById('healthScore').textContent = healthScore + '%';
+
+            // Update overall status badge
+            const statusBadge = document.getElementById('overallStatus');
+            if (summary.critical > 0) {
+                statusBadge.className = 'status-badge critical';
+                statusBadge.innerHTML = '<div class="pulse red"></div> Critical Issues Detected';
+            } else if (summary.warnings > 0) {
+                statusBadge.className = 'status-badge warning';
+                statusBadge.innerHTML = '<div class="pulse yellow"></div> Warnings Detected';
+            } else {
+                statusBadge.className = 'status-badge healthy';
+                statusBadge.innerHTML = '<div class="pulse green"></div> All Systems Healthy';
+            }
+
+            // Display issues
+            const issuesSection = document.getElementById('issuesSection');
+            const issuesList = document.getElementById('issuesList');
+            const emptyState = document.getElementById('emptyState');
+
+            const allIssues = [];
+
+            // Collect API mismatches
+            if (data.checks?.apiConsistency?.mismatches) {
+                allIssues.push(...data.checks.apiConsistency.mismatches.map(m => ({
+                    ...m,
+                    category: 'API Consistency'
+                })));
+            }
+
+            // Collect dependency issues
+            if (data.checks?.dependencies?.dependencies) {
+                allIssues.push(...data.checks.dependencies.dependencies.map(d => ({
+                    type: 'dependency',
+                    severity: 'low',
+                    message: d.message,
+                    name: d.name,
+                    current: d.current,
+                    category: 'Dependencies'
+                })));
+            }
+
+            if (allIssues.length > 0) {
+                issuesSection.style.display = 'block';
+                emptyState.style.display = 'none';
+
+                issuesList.innerHTML = allIssues.map(issue => `
+                    <div class="issue-card ${issue.severity === 'high' ? 'critical' : issue.severity === 'medium' ? 'warning' : 'suggestion'}">
+                        <div class="issue-header">
+                            <div class="issue-title">${issue.category}: ${issue.type.replace(/_/g, ' ')}</div>
+                            <div class="issue-badge ${issue.severity === 'high' ? 'critical' : issue.severity === 'medium' ? 'warning' : 'suggestion'}">
+                                ${issue.severity}
+                            </div>
+                        </div>
+                        <div class="issue-description">${issue.message}</div>
+                        ${issue.endpoint ? `<div class="issue-code">Endpoint: ${issue.endpoint}</div>` : ''}
+                        ${issue.frontend ? `<div class="issue-code">File: ${issue.frontend}</div>` : ''}
+                        ${issue.autofix ? `
+                            <button class="fix-button" onclick="applyFix('${issue.type}')">
+                                Apply Auto-Fix
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } else {
+                issuesSection.style.display = 'none';
+                emptyState.style.display = 'block';
+            }
+        }
+
+        function applyFix(issueType) {
+            alert('Auto-fix coming in Phase 2! For now, follow the suggested fix manually.');
+        }
+    </script>
+</body>
+</html>

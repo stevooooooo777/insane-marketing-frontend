@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Stop Getting Ripped Off! Complete SME Digital Transformation</title>
+<script src="/config-client.js"></script>
+<script>
+  window.addEventListener('load', async () => {
+    const user = CONFIG.getAuthenticatedUser();
+    const analytics = await CONFIG.makeApiCall(`/api/analytics/${user.restaurantId}`);
+    document.getElementById('total-scans').textContent = analytics.totalScans || 0;
+  });
+</script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section - The "WOW" Factor */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(0deg) translateY(0px); }
+            50% { transform: rotate(180deg) translateY(-30px); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: slideInDown 1s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .savings-highlight {
+            background: rgba(255,255,255,0.15);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px auto;
+            max-width: 800px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: scaleIn 1s ease-out 0.6s both;
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .savings-amount {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .free-trial-banner {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px auto;
+            max-width: 600px;
+            font-size: 1.3em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Problem Section - Make Agencies Look Bad */
+        .problem-section {
+            background: linear-gradient(135deg, #ff7675, #d63031);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .problem-card, .solution-card {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .problem-card {
+            border: 3px solid #ff4757;
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            border: 3px solid #00b894;
+        }
+
+        .cost-comparison {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .problem-list, .solution-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .problem-list li, .solution-list li {
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+
+        .problem-list li::before {
+            content: '❌ ';
+            margin-right: 10px;
+        }
+
+        .solution-list li::before {
+            content: '✅ ';
+            margin-right: 10px;
+        }
+
+        /* Solutions Showcase */
+        .solutions-section {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 50px auto;
+        }
+
+        .solution-pack {
+            background: rgba(255,255,255,0.15);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .solution-pack:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.25);
+        }
+
+        .pack-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .pack-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .pack-savings {
+            background: #ffd700;
+            color: #2d3436;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .pack-features {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .pack-features li {
+            margin: 8px 0;
+            padding: 5px 0;
+        }
+
+        /* Social Proof */
+        .social-proof {
+            background: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            transform: scale(1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Call to Action */
+        .cta-section {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 3em;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .cta-subtitle {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 250px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ee5a24, #e17055);
+        }
+
+        /* Business Type Selector */
+        .business-selector {
+            background: #f8f9fa;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .business-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 50px auto;
+        }
+
+        .business-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .business-card:hover {
+            transform: translateY(-10px);
+            border-color: #74b9ff;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .business-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .business-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2d3436;
+        }
+
+        .business-description {
+            color: #636e72;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.3em;
+            }
+            
+            .problem-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .savings-amount {
+                font-size: 2.5em;
+            }
+        }
+
+        /* Animation Classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>🚀 Stop Getting Ripped Off!</h1>
+            <p class="hero-subtitle">Complete SME Digital Transformation for 90% Less Than Agencies Charge</p>
+            
+            <div class="savings-highlight">
+                <div class="savings-amount">Save £10,000 to £20,000+</div>
+                <p>Get everything agencies charge for - Dynamic QR codes, complete performance tracking & analytics, plus full AI powered optimisations & insights (zero tech skills needed)</p>
+            </div>
+            
+            <div class="free-trial-banner">
+                🎉 FREE 15-Day Trial - No Credit Card Required!
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem/Solution Section -->
+    <section class="problem-section">
+        <div class="hero-content">
+            <h2 style="font-size: 3em; margin-bottom: 30px;">The Great SME Rip-Off</h2>
+            <p style="font-size: 1.4em; margin-bottom: 20px;">Small businesses are being charged OUTRAGEOUS prices for basic digital services<br><br> Our AI powered solutions help you in a fraction of the time, at a fraction of the cost </p>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <h3 style="font-size: 2em; margin-bottom: 20px;">😡 What Agencies Charge</h3>
+                    <div class="cost-comparison">Average £15,000++</div>
+                    <p style="margin-bottom: 20px;">Plus extra £ monthly fees</p>
+                    
+                    <ul class="problem-list">
+ <!--                       <li>Website: £10,000+</li>          -->
+                        <li>Basic QR Codes: £50/month each</li>
+                        <li>Integrated SEO: £1,000+/month</li>
+                        <li>AI Tracking Analytics: £1000+/month</li>
+<li>AI Auto-Optimisations: £1000+/month</li>
+                        <li>Social Media: £800/month</li>
+                        <li>Upfront Costs & Retainers</li>
+                        <li>Costs for all updates & changes</li>                        
+                        <li>Costs for re-design & re-printing </li>
+                        <li>Takes weeks or months</li>
+<li>Basic QR's are NOT Privacy Protected!</li>
+
+                    </ul>
+                </div>
+                
+                <div class="solution-card">
+                    <h3 style="font-size: 2em; margin-bottom: 20px;">🚀 Our AI Powered SME Suite</h3>
+                    <div class="cost-comparison">£9.95 to £99.95 /month</div>
+
+                                        
+                    <ul class="solution-list">
+  <!--                      <li>AI Professional Website</li>      -->
+                        <li>Unlimited Dynamic QR Codes</li>
+                        <li>Real-Time AI Analytics </li>
+                        <li>Multi-Design & Download Options</li>
+                        <li>Complete AI Tracking & Insights</li>
+                        <li>Track Individual QR Campaigns</li>
+                        <li>AI SEO & Social Optimization</li>
+                        <li>Zero Tech Skills Needed</li>
+                        <li>Ready to Use in Minutes</li>
+                        <li>You Control & Own Everything</li>
+                        <li>No Hidden Costs Ever!</li>
+<li>Security Compliant & Privacy Protected</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions Showcase -->
+    <section class="solutions-section" id="select">
+        <div class="hero-content">
+            <h2 style="font-size: 3em; margin-bottom: 30px;">🛠️ Complete SME Digital QR Marketing</h2>
+            <p style="font-size: 1.4em; margin-bottom: 20px;">Everything your business needs to compete with the big guys!</p>
+            
+            <div class="solutions-grid">
+     <!--            <div class="solution-pack" onclick="selectPack('qr-generator-pro')">
+                    <span class="pack-icon">📱</span>
+                    <h3 class="pack-title">Custom QR Codes</h3>
+                    <div class="pack-savings">❌ SAVE: an Average £3,200</div>
+                         <div class="pack-savings">✅ GAIN: +63% scan increase</div>
+                            <div class="pack-savings">✅ GAIN: +89% brand recognition</div>
+                                <p><b><i>"Forget overpriced "experts", GET superior results with AI"</i></b></p>
+
+                         <ul class="pack-features">
+                        <li>✅ Dynamic: update QR's, no re-printing</li>
+                        <li>✅ Custom colors for branding</li>
+                        <li>✅ Multiple download formats</li>
+                        <li>✅ Real-time analytics tracking</li>
+                        <li>✅ AI optimisations and insights</li>
+                    </ul>
+                </div>     -->
+                
+                <div class="solution-pack" onclick="selectPack('restaurant-pack')">
+                    <span class="pack-icon">🍽️</span>
+                    <h3 class="pack-title">Restaurant QR Pack</h3>
+                    <div class="pack-savings">❌ SAVE: an Industry Average £8,300</div>
+                       <div class="pack-savings">✅ GAIN: +35% revenue increase</div>
+                          <div class="pack-savings">✅ GAIN: +89% customer retention</div>
+                                <p><b><i>"SAVE More, MAKE more, KEEP customers longer!"</i></b></p>
+
+                    <ul class="pack-features">
+                        <li>✅ Digital menu QR codes</li>
+                        <li>✅ WiFi connection codes</li>
+                        <li>✅ Review & booking QRs</li>
+                        <li>✅ Table tent templates</li>
+                        <li>✅ Daily specials</li>
+                    </ul>
+                </div>
+
+<div class="solution-pack" onclick="selectPack('table-intelligence')">
+    <span class="pack-icon">📊</span>
+    <h3 class="pack-title">Table Intelligence Pack</h3>
+    <div class="pack-savings">❌ SAVE: an Industry Average £25,200</div>
+    <div class="pack-savings">✅ GAIN: +42% table turnover rate</div>
+    <div class="pack-savings">✅ GAIN: +28% average order value</div>
+    <div class="pack-savings">✅ GAIN: +67% staff efficiency</div>
+    <p><b><i>"Skip expensive consultants, OPTIMIZE every table!"</i></b></p>
+    
+    <ul class="pack-features">
+        <li>✅ Real-time table activity tracking</li>
+        <li>✅ AI predictive "ready to order" alerts</li>
+        <li>✅ Customer service request detection</li>
+        <li>✅ Table-specific performance analytics</li>
+        <li>✅ Staff mobile alert dashboard</li>
+        <li>✅ Peak time optimization insights</li>
+        <li>✅ Revenue per table tracking</li>
+    </ul>
+</div>
+
+ <div style="max-width: 800px; margin: 30px auto; background: #e8f5e8; padding: 40px; border-radius: 20px; border-left: 5px solid #00b894;">
+    <h3 style="color: #2d3436; margin-bottom: 20px; font-size: 1.8em;">📈 Table Intelligence Success Story</h3>
+    <blockquote style="font-style: italic; font-size: 1.2em; color: #636e72; margin-bottom: 20px;">
+        "The table intelligence system increased our revenue by £18,000 in the first month! We now know exactly when customers are ready to order and when they need assistance. Our staff love the mobile alerts - no more guessing!"
+    </blockquote>
+    <p style="font-weight: bold; color: #2d3436;">- Marco R., Italian Restaurant Owner (37 tables)</p>
+    
+    <div style="margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.7); border-radius: 10px;">
+        <p style="font-size: 14px; color: #2d3436;"><strong>Results:</strong> 42% faster table turnover • 28% higher order values • 67% reduction in customer wait times • 89% staff efficiency increase</p>
+    </div>
+</div> 
+
+
+
+              
+<!--                <div class="solution-pack" onclick="selectPack('retail-pack')">
+                    <span class="pack-icon">🛍️</span>
+                    <h3 class="pack-title">Retail QR Pack</h3>
+                    <div class="pack-savings">❌ SAVE: an Industry Average £8,900</div>
+                       <div class="pack-savings">✅ GAIN: +42% customer engagement</div>
+                          <div class="pack-savings">✅ GAIN: +56% repeat purchase rate</div>
+                               <p><b><i>"Cut costs, BOOST engagement, MULTIPLY sales!"</i></b></p>
+                    <ul class="pack-features">
+                        <li>✅ Product Info QR codes</li>
+                        <li>✅ Special offers</li>
+                        <li>✅ Review requests</li>
+                        <li>✅ Loyalty program</li>
+                        <li>✅ Find our store</li>
+                    </ul>
+ -->               </div>
+                
+<!--            <div class="solution-pack" onclick="selectPack('web-pack')">
+                    <span class="pack-icon">💻</span>
+                    <h3 class="pack-title">Website Builder</h3>
+                    <div class="pack-savings">❌ SAVE: an Industry Average £10,00</div>
+                          <div class="pack-savings">✅ GAIN: +67% online conversions</div>
+                               <div class="pack-savings">✅ GAIN: +73% mobile traffic increase</div> 
+                                    <p><b><i>"Skip agencies, CONVERT more, CAPTURE mobile!"</i></b></p>
+                    <ul class="pack-features">
+                        <li>✅ Mobile-optimized design</li>
+                        <li>✅ Built-in QR integration</li>
+                        <li>✅ Contact forms</li>
+                        <li>✅ AI SEO-optimization</li>
+                        <li>✅ Hosting, SSL, Updates</li>
+                    </ul>
+                </div>
+-->
+                
+         <div class="solution-pack" onclick="selectPack('seo-pack')">
+                    <span class="pack-icon">🔍</span>
+                    <h3 class="pack-title">SEO Pack</h3>
+                    <div class="pack-savings">❌ SAVE: an Industry Average £9,500</div>
+<div class="pack-savings">✅ GAIN: +78% Google visibility increase</div>
+<div class="pack-savings">✅ GAIN: +52% organic traffic boost</div> 
+ <p><b><i>"Skip expensive SEO consultants, Dominate Google!"</i></b></p>
+                     <ul class="pack-features">
+                        <li>✅ Keyword optimization</li>
+                        <li>✅ Local SEO setup</li>
+                        <li>✅ Google My Business</li>
+                        <li>✅ Performance tracking</li>
+                    </ul>
+                </div>   
+
+                
+                <div class="solution-pack" onclick="selectPack('dashboard')">
+                    <span class="pack-icon">📊</span>
+                    <h3 class="pack-title">Analytics Dashboard Demo</h3>
+                    <div class="pack-savings">Save: an Average £12,700</div>
+                    <p>Real-time AI business intelligence</p>
+                    <ul class="pack-features">
+                        <li>✅ Dynamic QR scan tracking</li>
+                        <li>✅ Full AI insights for each QR</li>
+                        <li>✅ Daily ROI increase results</li>
+                        <li>✅ AI Performance reports</li>
+                        <li>✅ Complete AI optimisation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="hero-content">
+            <h2 style="font-size: 3em; margin-bottom: 30px; color: #2d3436;">📈 Join Thousands of Successful SMEs</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">2,847</div>
+                    <div class="stat-label">Businesses Transformed</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">£12.4M</div>
+                    <div class="stat-label">Total Savings Generated</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">156,000+</div>
+                    <div class="stat-label">QR Codes Created</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Customer Satisfaction</div>
+                </div>
+            </div>
+            
+            <div style="max-width: 800px; margin: 50px auto; background: #f8f9fa; padding: 40px; border-radius: 20px;">
+                <h3 style="color: #2d3436; margin-bottom: 20px; font-size: 1.8em;">💬 What SMEs Are Saying</h3>
+                <blockquote style="font-style: italic; font-size: 1.2em; color: #636e72; margin-bottom: 20px;">
+                    "I was quoted £12,000 for a basic website. This saved me over £11,900 and gave me SO much more! My QR codes have increased customer engagement by 340%!"
+                </blockquote>
+                <p style="font-weight: bold; color: #2d3436;">- Sarah M., Boutique Owner</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">🚀 Ready to Stop Getting Ripped Off?</h2>
+            <p class="cta-subtitle">Join thousands of SMEs who've saved over £12M collectively by choosing our suite instead of expensive agencies!</p>
+            
+            <div class="cta-buttons">
+                <a href="#select" class="btn btn-primary">
+                    🎉 Select Option to Start FREE 15-Day Trial
+                </a>
+                
+            </div>
+            
+            <div style="margin-top: 40px; opacity: 0.9;">
+                <p>✅ No Credit Card Required</p>
+                <p>✅ Full Access to All Pro Tools</p>
+                <p>✅ Cancel Anytime</p>
+                
+            </div>
+        </div>
+    </section>
+
+
+<script>
+        // Pack selection        
+function selectPack(packName) {
+    console.log('selectPack called with:', packName);
+        
+    switch(packName) {
+        case 'qr-generator-pro':
+            console.log('Redirecting to QR Generator Pro');
+            window.location.href = 'qr-generator-pro.html';
+            break;
+        case 'restaurant-pack':
+            console.log('Redirecting to Restaurant Pack');
+            window.location.href = 'restaurant-pack.html';
+            break;
+case 'table-intelligence':
+    console.log('Redirecting to Table Intelligence Pack');
+    window.location.href = 'table-intelligence-pack.html';
+    break;
+        case 'retail-pack':
+            console.log('Redirecting to Retail Pack');
+            window.location.href = 'retail-pack.html';
+            break;
+        case 'web-pack':
+            console.log('Redirecting to Web Pack');
+            window.location.href = 'web-pack.html';
+            break;
+        case 'seo-pack':
+            console.log('Redirecting to SEO Pack');
+            window.location.href = 'seo-pack.html';
+            break;
+        case 'dashboard':
+            console.log('Redirecting to Dashboard');
+            window.location.href = 'dashboard.html';
+            break;
+        default:
+            console.log('Unknown pack:', packName);
+            alert('Unknown pack: ' + packName);
+    }
+}
+
+
+
+        // Business type selection
+        function selectBusinessType(businessType) {
+            let message = '';
+            let redirectUrl = '';
+            
+            switch(businessType) {
+                case 'restaurant':
+                    message = '🍽️ Perfect! Restaurant businesses save an average of £8,500 with our suite!\n\nStarting with Restaurant Pack...';
+                    redirectUrl = 'restaurant-pack.html';
+                    break;
+                case 'retail':
+                    message = '🛍️ Excellent! Retail businesses see 340% increase in customer engagement!\n\nStarting with Retail Pack...';
+                    redirectUrl = 'retail-pack.html';
+                    break;
+                case 'services':
+                    message = '💼 Great choice! Professional services save £12,000+ per year!\n\nStarting with Website Builder...';
+                    redirectUrl = 'website-builder.html';
+                    break;
+                case 'health':
+                    message = '🏥 Fantastic! Health businesses get 89% more bookings with QR codes!\n\nStarting with QR Generator...';
+                    redirectUrl = 'qr-generator.html';
+                    break;
+                case 'local':
+                    message = '🔧 Perfect! Local services get 156% more inquiries!\n\nStarting with Website Builder...';
+                    redirectUrl = 'web-pack.html';
+                    break;
+                case 'any':
+                    message = '🏪 Excellent! Let\'s show you the complete SME transformation!\n\nStarting with QR Generator...';
+                    redirectUrl = 'qr-generator.html';
+                    break;
+            }
+            
+            alert(message);
+            window.location.href = redirectUrl;
+        }
+
+        // Free trial
+        function startFreeTrial() {
+            alert('🎉 AMAZING! Starting your FREE 15-day trial!\n\n✅ Complete access to all tools\n✅ No credit card required\n✅ Save £15,000+ immediately\n\nChoose your first tool to get started!');
+            
+            // Scroll to business selector
+            document.querySelector('.business-selector').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Demo
+        function viewDemo() {
+            alert('🎬 Demo coming soon!\n\nFor now, start your FREE trial to see everything in action!\n\n💪 Join 2,847+ businesses already saving thousands!');
+            startFreeTrial();
+        }
+
+        // Scroll animations
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+               if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('animated');
+                }
+            });
+        }
+
+        // Initialize animations
+        window.addEventListener('scroll', animateOnScroll);
+        document.addEventListener('DOMContentLoaded', function() {
+            animateOnScroll();
+            
+            // Add animate-on-scroll class to elements
+            const elementsToAnimate = document.querySelectorAll('.solution-pack, .business-card, .stat-card');
+            elementsToAnimate.forEach(element => {
+                element.classList.add('animate-on-scroll');
+            });
+            
+            console.log('🚀 SME Empire Landing Page loaded!');
+            console.log('💰 Ready to save businesses £15,000+ each!');
+            console.log('🎯 The SME revolution starts here!');
+        });
+
+        // Track visitor interactions
+        function trackInteraction(action, element) {
+            console.log(`📊 User interaction: ${action} on ${element}`);
+            
+            // Store interaction data
+            const interactions = JSON.parse(localStorage.getItem('landingPageInteractions') || '[]');
+            interactions.push({
+                action: action,
+                element: element,
+                timestamp: new Date().toISOString(),
+                page: 'landing'
+            });
+            localStorage.setItem('landingPageInteractions', JSON.stringify(interactions));
+        }
+
+        // Add click tracking to solution packs
+        document.addEventListener('DOMContentLoaded', function() {
+            const solutionPacks = document.querySelectorAll('.solution-pack');
+            solutionPacks.forEach(pack => {
+                pack.addEventListener('click', function() {
+                    const packTitle = this.querySelector('.pack-title').textContent;
+                    trackInteraction('pack_selected', packTitle);
+                });
+            });
+            
+            const businessCards = document.querySelectorAll('.business-card');
+            businessCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const businessTitle = this.querySelector('.business-title').textContent;
+                    trackInteraction('business_type_selected', businessTitle);
+                });
+            });
+        });
+
+        
+
+        // Exit intent detection
+        document.addEventListener('mouseleave', function(e) {
+            if (e.clientY <= 0 && !localStorage.getItem('exitIntentShown')) {
+                setTimeout(() => {
+                    if (confirm('🚨 Wait! Don\'t let agencies rip you off!\n\n💰 Save £15,000+ with our FREE trial!\n\nClick OK to start your free trial now, or Cancel to leave.')) {
+                        startFreeTrial();
+                    }
+                    localStorage.setItem('exitIntentShown', 'true');
+                }, 500);
+            }
+        });
+
+        // Success tracking
+        function trackSuccess() {
+            const successData = {
+                totalSavingsOffered: '£15,000+',
+                businessesHelped: '2,847+',
+                totalSavingsGenerated: '£12.4M',
+                conversionElements: [
+                    'Free trial offer',
+                    'Massive savings display', 
+                    'Agency comparison',
+                    'Business type selector',
+                    'Social proof stats'
+                ]
+            };
+            
+            console.log('🎯 Landing page success metrics:', successData);
+            return successData;
+        }
+
+        // Initialize success tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            trackSuccess();
+            
+            console.log('🚀 SME Empire Landing Page fully loaded!');
+            console.log('💪 Ready to convert visitors into empowered SMEs!');
+            console.log('✨ The revolution against agency rip-offs starts here!');
+        });
+    </script>
+</body>
+</html>
+
+

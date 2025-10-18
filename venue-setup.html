@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control - Quick Setup</title>
+    <script src="config-client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 30px;
+        }
+
+        .logo {
+            font-size: 3em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #94a3b8;
+            font-size: 1.2em;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 15px;
+        }
+
+        .timer-icon {
+            font-size: 2em;
+        }
+
+        .timer-text {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        .setup-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: "";
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 0;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-number {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            border-color: #fbbf24;
+            color: #000;
+            transform: scale(1.2);
+        }
+
+        .progress-step.completed .progress-number {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .progress-label {
+            font-size: 0.9em;
+            color: #94a3b8;
+        }
+
+        .progress-step.active .progress-label {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+
+        .step-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 2em;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .step-subtitle {
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .tag-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            min-height: 60px;
+        }
+
+        .tag {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .tag-remove:hover {
+            transform: scale(1.2);
+        }
+
+        .quick-add-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-add-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-add-btn:hover {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: #fbbf24;
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .completion-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .completion-title {
+            font-size: 2.5em;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .completion-message {
+            font-size: 1.2em;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-link {
+            display: inline-block;
+            padding: 20px 50px;
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.4);
+        }
+
+        .setup-summary {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #94a3b8;
+        }
+
+        .summary-value {
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        @media (max-width: 768px) {
+            .setup-progress {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .progress-step::after {
+                display: none;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Mission Control</div>
+            <div class="tagline">Quick Setup - Just 3 Steps</div>
+        </div>
+
+        <div class="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-text">Estimated time: <span id="timeRemaining">3:00</span> minutes</div>
+        </div>
+
+        <div class="setup-progress">
+            <div class="progress-step active" data-step="1">
+                <div class="progress-number">1</div>
+                <div class="progress-label">Sections</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="progress-number">2</div>
+                <div class="progress-label">Boxes</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="progress-number">3</div>
+                <div class="progress-label">Staff</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Sections -->
+        <div class="step-container active" data-step="1">
+            <div class="step-title">Define your sections</div>
+            <div class="step-subtitle">Where are your premium areas? (e.g., West Stand, VIP Lounge)</div>
+
+            <div class="form-group">
+                <label class="form-label">Section Name</label>
+                <input type="text" class="form-input" id="sectionInput" placeholder="e.g., West Stand" onkeypress="handleEnter(event, 'addSection')">
+            </div>
+
+            <div class="quick-add-grid">
+                <button class="quick-add-btn" onclick="quickAddSection('West Stand')">West Stand</button>
+                <button class="quick-add-btn" onclick="quickAddSection('East Stand')">East Stand</button>
+                <button class="quick-add-btn" onclick="quickAddSection('Executive')">Executive</button>
+                <button class="quick-add-btn" onclick="quickAddSection('VIP Lounge')">VIP Lounge</button>
+            </div>
+
+            <div class="form-group" style="margin-top: 25px;">
+                <label class="form-label">Your Sections (<span id="sectionCount">0</span>)</label>
+                <div class="tag-input-container" id="sectionTags"></div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Boxes -->
+        <div class="step-container" data-step="2">
+            <div class="step-title">Add your boxes/tables</div>
+            <div class="step-subtitle">For each section, how many boxes or tables do you have?</div>
+
+            <div id="boxInputs"></div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                <button class="btn btn-primary" onclick="nextStep()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Staff -->
+        <div class="step-container" data-step="3">
+            <div class="step-title">Add your team</div>
+            <div class="step-subtitle">Who will be using Mission Control?</div>
+
+            <div class="form-group">
+                <label class="form-label">Staff Member Name</label>
+                <input type="text" class="form-input" id="staffInput" placeholder="e.g., Sarah Johnson" onkeypress="handleEnter(event, 'addStaff')">
+            </div>
+
+            <div class="form-group" style="margin-top: 25px;">
+                <label class="form-label">Your Team (<span id="staffCount">0</span>)</label>
+                <div class="tag-input-container" id="staffTags"></div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevStep()">← Back</button>
+                <button class="btn btn-primary" onclick="completeSetup()">Complete Setup 🚀</button>
+            </div>
+        </div>
+
+        <!-- Completion Screen -->
+        <div class="completion-screen">
+            <div class="success-icon">🎉</div>
+            <div class="completion-title">You're All Set!</div>
+            <div class="completion-message">Your Mission Control dashboard is ready to use</div>
+
+            <div class="setup-summary">
+                <div class="summary-item">
+                    <div class="summary-label">Venue:</div>
+                    <div class="summary-value" id="summaryVenue">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Sections:</div>
+                    <div class="summary-value" id="summarySections">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Total Boxes:</div>
+                    <div class="summary-value" id="summaryBoxes">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Team Members:</div>
+                    <div class="summary-value" id="summaryStaff">-</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Setup Time:</div>
+                    <div class="summary-value" id="summaryTime">-</div>
+                </div>
+            </div>
+
+            <a href="#" class="dashboard-link" onclick="goToDashboard()">
+                Launch Dashboard →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let startTime = Date.now();
+        let setupData = {
+            venue: '',
+            userName: '',
+            email: '',
+            sections: [],
+            boxes: {},
+            staff: []
+        };
+
+        // Auto-load user data from signup
+        function loadSignupData() {
+            try {
+                setupData.venue = localStorage.getItem('user_restaurant_name') || '';
+                setupData.userName = localStorage.getItem('user_name') || '';
+                setupData.email = localStorage.getItem('user_email') || '';
+                
+                console.log('Auto-loaded signup data:', setupData);
+            } catch (error) {
+                console.error('Failed to load signup data:', error);
+            }
+        }
+
+        // Initialize on page load
+        loadSignupData();
+
+        // Timer (3 minutes instead of 5)
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const remaining = Math.max(180 - elapsed, 0);
+            const mins = Math.floor(remaining / 60);
+            const secs = remaining % 60;
+            document.getElementById('timeRemaining').textContent = 
+                `${mins}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+
+        function handleEnter(event, action) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (action === 'addSection') addSection();
+                if (action === 'addStaff') addStaff();
+            }
+        }
+
+        function nextStep() {
+            // Validation
+            if (currentStep === 1 && setupData.sections.length === 0) {
+                alert('Please add at least one section');
+                return;
+            }
+            
+            if (currentStep === 2) {
+                let totalBoxes = 0;
+                for (let section of setupData.sections) {
+                    const boxes = document.getElementById(`boxes-${section}`).value;
+                    if (!boxes || boxes < 1) {
+                        alert(`Please enter number of boxes for ${section}`);
+                        return;
+                    }
+                    setupData.boxes[section] = parseInt(boxes);
+                    totalBoxes += parseInt(boxes);
+                }
+                if (totalBoxes === 0) {
+                    alert('Please add at least one box');
+                    return;
+                }
+            }
+
+            // Move to next step
+            document.querySelector(`.step-container[data-step="${currentStep}"]`).classList.remove('active');
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.add('completed');
+            
+            currentStep++;
+            
+            if (currentStep === 2) {
+                generateBoxInputs();
+            }
+            
+            document.querySelector(`.step-container[data-step="${currentStep}"]`).classList.add('active');
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+
+        function prevStep() {
+            document.querySelector(`.step-container[data-step="${currentStep}"]`).classList.remove('active');
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.remove('active');
+            
+            currentStep--;
+            
+            document.querySelector(`.step-container[data-step="${currentStep}"]`).classList.add('active');
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.remove('completed');
+            
+            window.scrollTo(0, 0);
+        }
+
+        function addSection() {
+            const input = document.getElementById('sectionInput');
+            const section = input.value.trim();
+            
+            if (section && !setupData.sections.includes(section)) {
+                setupData.sections.push(section);
+                updateSectionTags();
+                input.value = '';
+            }
+        }
+
+        function quickAddSection(section) {
+            if (!setupData.sections.includes(section)) {
+                setupData.sections.push(section);
+                updateSectionTags();
+            }
+        }
+
+        function updateSectionTags() {
+            const container = document.getElementById('sectionTags');
+            container.innerHTML = setupData.sections.map(section => `
+                <div class="tag">
+                    ${section}
+                    <span class="tag-remove" onclick="removeSection('${section}')">×</span>
+                </div>
+            `).join('');
+            document.getElementById('sectionCount').textContent = setupData.sections.length;
+        }
+
+        function removeSection(section) {
+            setupData.sections = setupData.sections.filter(s => s !== section);
+            updateSectionTags();
+        }
+
+        function generateBoxInputs() {
+            const container = document.getElementById('boxInputs');
+            container.innerHTML = setupData.sections.map(section => `
+                <div class="form-group">
+                    <label class="form-label">Number of boxes in ${section}</label>
+                    <input type="number" class="form-input" id="boxes-${section}" 
+                           placeholder="e.g., 8" min="1" value="${setupData.boxes[section] || ''}">
+                </div>
+            `).join('');
+        }
+
+        function addStaff() {
+            const input = document.getElementById('staffInput');
+            const staff = input.value.trim();
+            
+            if (staff && !setupData.staff.includes(staff)) {
+                setupData.staff.push(staff);
+                updateStaffTags();
+                input.value = '';
+            }
+        }
+
+        function updateStaffTags() {
+            const container = document.getElementById('staffTags');
+            container.innerHTML = setupData.staff.map(staff => `
+                <div class="tag">
+                    ${staff}
+                    <span class="tag-remove" onclick="removeStaff('${staff}')">×</span>
+                </div>
+            `).join('');
+            document.getElementById('staffCount').textContent = setupData.staff.length;
+        }
+
+        function removeStaff(staff) {
+            setupData.staff = setupData.staff.filter(s => s !== staff);
+            updateStaffTags();
+        }
+
+        function completeSetup() {
+            // Hide all steps
+            document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.progress-step').forEach(el => el.classList.add('completed'));
+            
+            // Calculate totals
+            const totalBoxes = Object.values(setupData.boxes).reduce((a, b) => a + b, 0);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            
+            // Update summary
+            document.getElementById('summaryVenue').textContent = setupData.venue;
+            document.getElementById('summarySections').textContent = setupData.sections.length;
+            document.getElementById('summaryBoxes').textContent = totalBoxes;
+            document.getElementById('summaryStaff').textContent = setupData.staff.length;
+            document.getElementById('summaryTime').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            
+            // Save to localStorage
+            localStorage.setItem('missionControlSetup', JSON.stringify(setupData));
+            
+            // Show completion
+            document.querySelector('.completion-screen').classList.add('active');
+            document.querySelector('.timer').style.display = 'none';
+            document.querySelector('.setup-progress').style.display = 'none';
+            
+            window.scrollTo(0, 0);
+        }
+
+     async function goToDashboard() {
+    // Mark setup as complete
+    localStorage.setItem('needs_venue_setup', 'false');
+    localStorage.setItem('venue_setup_complete', 'true');
+    
+    // Save setup data to database (optional - fail gracefully)
+    try {
+        const restaurantId = localStorage.getItem('user_restaurant_id');
+        const token = localStorage.getItem('qr_user_token');
+        
+        if (restaurantId && token) {
+            console.log('Saving setup data to server...');
+            
+            const response = await fetch(`${CONFIG.getApiBaseUrl()}/venue/setup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    restaurant_id: restaurantId,
+                    setup_data: setupData,
+                    completed_at: new Date().toISOString()
+                })
+            });
+            
+            if (response.ok) {
+                console.log('✅ Setup saved successfully');
+            } else {
+                console.warn('Setup not saved to server, but continuing...');
+            }
+        }
+    } catch (error) {
+        console.error('Failed to save setup data:', error);
+        // Continue anyway - data is in localStorage
+    }
+    
+    // Redirect to control center
+    window.location.href = 'welcome.html';
+}   
+    </script>
+</body>
+</html>

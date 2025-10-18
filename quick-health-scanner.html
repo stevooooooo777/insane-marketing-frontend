@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Business Health Scanner - insane.marketing</title>
+<script src="/config-client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .branding {
+            font-size: 1em;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .scanner-section {
+            padding: 50px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .input-group:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            background: white;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .help-text {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .scan-button {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 40px auto;
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .scan-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+        }
+
+        .scan-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            padding: 50px;
+            background: white;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+        }
+
+        .score-value {
+            font-size: 5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-label {
+            font-size: 1.4em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .score-interpretation {
+            font-size: 1.1em;
+            color: #6c757d;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 5px solid #ff6b35;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .benchmark-comparison {
+            font-size: 0.9em;
+            color: #495057;
+            margin-top: 5px;
+        }
+
+        .insights-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .insights-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .insight-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .insight-text {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .actions-section {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .actions-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .action-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-priority {
+            background: #ff6b35;
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .action-description {
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 2em;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .cta-text {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff6b35;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .score-value {
+                font-size: 3.5em;
+            }
+            
+            .scanner-section, .results-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Quick Business Health Scanner</h1>
+            <p>Get instant insights into your business performance in just 2 minutes</p>
+            <div class="branding">Powered by insane.marketing</div>
+        </div>
+
+        <div class="scanner-section">
+            <div class="form-container">
+                <form id="healthForm">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="monthlyRevenue">Monthly Revenue ($)</label>
+                            <input type="number" id="monthlyRevenue" placeholder="e.g., 50000" required>
+                            <div class="help-text">Your average monthly revenue</div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="growthRate">Monthly Growth Rate (%)</label>
+                            <input type="number" id="growthRate" placeholder="e.g., 10" step="0.1" required>
+                            <div class="help-text">Month-over-month growth percentage</div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="acquisitionCost">Customer Acquisition Cost ($)</label>
+                            <input type="number" id="acquisitionCost" placeholder="e.g., 150" required>
+                            <div class="help-text">Average cost to acquire one customer</div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="lifetimeValue">Customer Lifetime Value ($)</label>
+                            <input type="number" id="lifetimeValue" placeholder="e.g., 1200" required>
+                            <div class="help-text">Total revenue from an average customer</div>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label for="industry">Industry</label>
+                            <select id="industry" required>
+                                <option value="">Select your industry...</option>
+                                <option value="technology">Technology & Software</option>
+                                <option value="professional">Professional Services</option>
+                                <option value="retail">Retail & E-commerce</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="finance">Financial Services</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="hospitality">Hospitality & Tourism</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="error-message" id="errorMessage"></div>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Analyzing your business health...</p>
+                    </div>
+
+                    <button type="submit" class="scan-button" id="scanButton">
+                        🔍 Scan My Business Health
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="score-display">
+                <div class="score-value" id="healthScore">-</div>
+                <div class="score-label">Business Health Score</div>
+                <div class="score-interpretation" id="scoreInterpretation"></div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="ltvCacDisplay">-</div>
+                    <div class="metric-label">LTV:CAC Ratio</div>
+                    <div class="benchmark-comparison" id="ltvCacBenchmark"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="growthDisplay">-</div>
+                    <div class="metric-label">Growth Rate</div>
+                    <div class="benchmark-comparison" id="growthBenchmark"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="revenueDisplay">-</div>
+                    <div class="metric-label">Annual Revenue</div>
+                    <div class="benchmark-comparison" id="revenueBenchmark"></div>
+                </div>
+            </div>
+
+            <div class="insights-section">
+                <div class="insights-title">💡 Key Insights</div>
+                <div id="insightsContainer"></div>
+            </div>
+
+            <div class="actions-section">
+                <div class="actions-title">🎯 Priority Action Items</div>
+                <div id="actionsContainer"></div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <div class="cta-title">Ready to Improve Your Business Health?</div>
+            <div class="cta-text">Get a personalized growth strategy from marketing experts who understand your industry</div>
+            <a href="#contact" class="cta-button">Get Your Custom Strategy →</a>
+        </div>
+    </div>
+
+    <script>
+        // Industry benchmark data
+        const industryBenchmarks = {
+            technology: {
+                avgGrowthRate: 25,
+                avgLtvCac: 4.2,
+                avgMargin: 28,
+                name: "Technology & Software"
+            },
+            professional: {
+                avgGrowthRate: 15,
+                avgLtvCac: 6.8,
+                avgMargin: 35,
+                name: "Professional Services"
+            },
+            retail: {
+                avgGrowthRate: 12,
+                avgLtvCac: 2.8,
+                avgMargin: 18,
+                name: "Retail & E-commerce"
+            },
+            healthcare: {
+                avgGrowthRate: 10,
+                avgLtvCac: 8.5,
+                avgMargin: 42,
+                name: "Healthcare"
+            },
+            finance: {
+                avgGrowthRate: 8,
+                avgLtvCac: 7.2,
+                avgMargin: 38,
+                name: "Financial Services"
+            },
+            manufacturing: {
+                avgGrowthRate: 6,
+                avgLtvCac: 5.5,
+                avgMargin: 22,
+                name: "Manufacturing"
+            },
+            hospitality: {
+                avgGrowthRate: 14,
+                avgLtvCac: 3.2,
+                avgMargin: 25,
+                name: "Hospitality & Tourism"
+            },
+            other: {
+                avgGrowthRate: 12,
+                avgLtvCac: 4.0,
+                avgMargin: 25,
+                name: "Other"
+            }
+        };
+
+        document.getElementById('healthForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            runHealthScan();
+        });
+
+        function runHealthScan() {
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('scanButton').disabled = true;
+            document.getElementById('errorMessage').style.display = 'none';
+
+            // Get form data
+            const revenue = parseFloat(document.getElementById('monthlyRevenue').value);
+            const growth = parseFloat(document.getElementById('growthRate').value);
+            const cac = parseFloat(document.getElementById('acquisitionCost').value);
+            const ltv = parseFloat(document.getElementById('lifetimeValue').value);
+            const industry = document.getElementById('industry').value;
+
+            // Validation
+            if (!revenue || !growth || !cac || !ltv || !industry) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (cac <= 0 || ltv <= 0) {
+                showError('Customer Acquisition Cost and Lifetime Value must be greater than 0');
+                return;
+            }
+
+            // Simulate processing delay
+            setTimeout(() => {
+                calculateAndDisplayResults(revenue, growth, cac, ltv, industry);
+            }, 1500);
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('scanButton').disabled = false;
+        }
+
+        function calculateAndDisplayResults(revenue, growth, cac, ltv, industry) {
+            // Calculate metrics
+            const ltvCacRatio = ltv / cac;
+            const annualRevenue = revenue * 12;
+            
+            // Calculate health score
+            let healthScore = 0;
+            
+            // LTV:CAC scoring (40% weight)
+            if (ltvCacRatio >= 5) healthScore += 40;
+            else if (ltvCacRatio >= 4) healthScore += 35;
+            else if (ltvCacRatio >= 3) healthScore += 30;
+            else if (ltvCacRatio >= 2) healthScore += 20;
+            else healthScore += 10;
+            
+            // Growth scoring (30% weight)
+            if (growth >= 25) healthScore += 30;
+            else if (growth >= 20) healthScore += 27;
+            else if (growth >= 15) healthScore += 24;
+            else if (growth >= 10) healthScore += 20;
+            else if (growth >= 5) healthScore += 15;
+            else healthScore += 8;
+            
+            // Revenue scale scoring (30% weight)
+            if (annualRevenue >= 2000000) healthScore += 30;
+            else if (annualRevenue >= 1000000) healthScore += 27;
+            else if (annualRevenue >= 500000) healthScore += 24;
+            else if (annualRevenue >= 200000) healthScore += 20;
+            else if (annualRevenue >= 100000) healthScore += 16;
+            else if (annualRevenue >= 50000) healthScore += 12;
+            else healthScore += 8;
+
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('scanButton').disabled = false;
+
+            // Display results
+            displayResults(healthScore, ltvCacRatio, growth, annualRevenue, industry, revenue, cac, ltv);
+        }
+
+        function displayResults(score, ltvCac, growth, annualRevenue, industry, monthlyRevenue, cac, ltv) {
+            const benchmark = industryBenchmarks[industry];
+            
+            // Update score display
+            document.getElementById('healthScore').textContent = Math.round(score);
+            
+            // Score interpretation
+            const interpretation = getScoreInterpretation(score);
+            const interpretationEl = document.getElementById('scoreInterpretation');
+            interpretationEl.textContent = interpretation.text;
+            interpretationEl.style.background = interpretation.color;
+
+            // Update metrics
+            document.getElementById('ltvCacDisplay').textContent = ltvCac.toFixed(1) + ':1';
+            document.getElementById('growthDisplay').textContent = growth + '%';
+            document.getElementById('revenueDisplay').textContent = '$' + (annualRevenue/1000).toFixed(0) + 'K';
+
+            // Benchmark comparisons
+            document.getElementById('ltvCacBenchmark').textContent = 
+                `Industry avg: ${benchmark.avgLtvCac}:1 ${ltvCac > benchmark.avgLtvCac ? '✅' : '⚠️'}`;
+            document.getElementById('growthBenchmark').textContent = 
+                `Industry avg: ${benchmark.avgGrowthRate}% ${growth > benchmark.avgGrowthRate ? '✅' : '⚠️'}`;
+            document.getElementById('revenueBenchmark').textContent = 
+                `${annualRevenue >= 500000 ? 'Above' : 'Below'} $500K milestone`;
+
+            // Generate insights and actions
+            generateInsights(score, ltvCac, growth, monthlyRevenue, industry, benchmark);
+            generateActions(score, ltvCac, growth, monthlyRevenue, cac, ltv, industry);
+
+            // Show results
+            document.getElementById('resultsSection').classList.add('show');
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getScoreInterpretation(score) {
+            if (score >= 85) {
+                return { text: 'Excellent! Your business shows strong fundamentals across all key metrics.', color: '#d4edda' };
+            } else if (score >= 70) {
+                return { text: 'Good performance with opportunities for optimization in specific areas.', color: '#d1ecf1' };
+            } else if (score >= 55) {
+                return { text: 'Solid foundation but significant room for improvement.', color: '#fff3cd' };
+            } else if (score >= 40) {
+                return { text: 'Multiple areas need attention to ensure sustainable growth.', color: '#f8d7da' };
+            } else {
+                return { text: 'Critical issues require immediate action to improve business health.', color: '#f8d7da' };
+            }
+        }
+
+        function generateInsights(score, ltvCac, growth, revenue, industry, benchmark) {
+            const insights = [];
+
+            // Performance insights
+            if (score >= 80) {
+                insights.push({
+                    title: '🎉 Outstanding Performance',
+                    text: `Your business is in the top 15% of ${benchmark.name} companies. You're well-positioned for sustainable growth and scaling.`
+                });
+            } else if (score < 50) {
+                insights.push({
+                    title: '⚠️ Critical Areas Identified',
+                    text: 'Your business faces some challenges that need immediate attention. The good news is that targeted improvements can quickly boost your performance.'
+                });
+            }
+
+            // LTV:CAC insights
+            if (ltvCac >= 5) {
+                insights.push({
+                    title: '💰 Excellent Unit Economics',
+                    text: `Your ${ltvCac.toFixed(1)}:1 LTV:CAC ratio is exceptional. You have room to increase marketing spend for faster growth.`
+                });
+            } else if (ltvCac < 2) {
+                insights.push({
+                    title: '🚨 Unsustainable Customer Economics',
+                    text: `Your ${ltvCac.toFixed(1)}:1 ratio means you're spending too much to acquire customers. This needs immediate attention.`
+                });
+            } else if (ltvCac < 3) {
+                insights.push({
+                    title: '⚠️ Customer Economics Need Work',
+                    text: `Your ${ltvCac.toFixed(1)}:1 ratio is below the healthy 3:1 minimum. Focus on increasing customer value or reducing acquisition costs.`
+                });
+            }
+
+            // Growth insights
+            if (growth > benchmark.avgGrowthRate * 1.5) {
+                insights.push({
+                    title: '🚀 Exceptional Growth',
+                    text: `Your ${growth}% growth rate is well above the ${benchmark.name} average of ${benchmark.avgGrowthRate}%. Make sure your operations can scale with this growth.`
+                });
+            } else if (growth < benchmark.avgGrowthRate * 0.5) {
+                insights.push({
+                    title: '📈 Growth Opportunity',
+                    text: `Your ${growth}% growth is below industry standards. There's significant opportunity to accelerate with the right marketing strategy.`
+                });
+            }
+
+            // Revenue insights
+            if (revenue < 10000) {
+                insights.push({
+                    title: '🌱 Early Stage Focus',
+                    text: 'At your revenue level, focus on product-market fit and customer validation before scaling marketing spend.'
+                });
+            } else if (revenue > 100000) {
+                insights.push({
+                    title: '📊 Scale-Ready Business',
+                    text: 'Your revenue scale indicates readiness for systematic marketing and growth strategies.'
+                });
+            }
+
+            displayInsights(insights);
+        }
+
+        function generateActions(score, ltvCac, growth, revenue, cac, ltv, industry) {
+            const actions = [];
+            let priority = 1;
+
+            // Critical LTV:CAC issues
+            if (ltvCac < 2) {
+                actions.push({
+                    priority: priority++,
+                    title: 'URGENT: Fix Customer Economics',
+                    description: 'Your acquisition costs are too high relative to customer value. Either reduce marketing spend or focus on higher-value customers immediately.'
+                });
+            }
+
+            // Growth acceleration
+            if (growth < 5) {
+                actions.push({
+                    priority: priority++,
+                    title: 'Accelerate Growth Rate',
+                    description: 'Launch targeted digital marketing campaigns, optimize your sales funnel, or expand to new customer segments.'
+                });
+            } else if (growth > 30) {
+                actions.push({
+                    priority: priority++,
+                    title: 'Scale Operations',
+                    description: 'Your rapid growth requires operational scaling. Invest in systems, processes, and team expansion.'
+                });
+            }
+
+            // Revenue-based actions
+            if (revenue < 20000) {
+                actions.push({
+                    priority: priority++,
+                    title: 'Focus on Product-Market Fit',
+                    description: 'Before scaling marketing, ensure you have strong product-market fit and customer satisfaction.'
+                });
+            }
+
+            // LTV improvement
+            if (ltvCac >= 2 && ltvCac < 4) {
+                actions.push({
+                    priority: priority++,
+                    title: 'Increase Customer Lifetime Value',
+                    description: 'Implement upselling, cross-selling, or loyalty programs to increase revenue per customer.'
+                });
+            }
+
+            // CAC optimization
+            if (cac > 200 && industry !== 'healthcare' && industry !== 'finance') {
+                actions.push({
+                    priority: priority++,
+                    title: 'Optimize Acquisition Costs',
+                    description: 'Review your marketing channels and focus budget on the most cost-effective customer acquisition methods.'
+                });
+            }
+
+            // General improvements
+            if (score < 70) {
+                actions.push({
+                    priority: priority++,
+                    title: 'Implement Marketing Analytics',
+                    description: 'Set up proper tracking and analytics to identify which marketing efforts drive the best ROI.'
+                });
+            }
+
+            if (actions.length < 3) {
+                actions.push({
+                    priority: priority++,
+                    title: 'Build Email Marketing System',
+                    description: 'Create automated email sequences to nurture leads and reduce overall customer acquisition costs.'
+                });
+
+                actions.push({
+                    priority: priority++,
+                    title: 'Develop Referral Program',
+                    description: 'Leverage satisfied customers to reduce acquisition costs and improve customer quality.'
+                });
+            }
+
+            displayActions(actions.slice(0, 5)); // Show top 5 actions
+        }
+
+        function displayInsights(insights) {
+            const container = document.getElementById('insightsContainer');
+            container.innerHTML = '';
+            
+            insights.forEach(insight => {
+                const div = document.createElement('div');
+                div.className = 'insight-item';
+                div.innerHTML = `
+                    <div class="insight-title">${insight.title}</div>
+                    <div class="insight-text">${insight.text}</div 
+`;
+                container.appendChild(div);
+            });
+        }
+
+        function displayActions(actions) {
+            const container = document.getElementById('actionsContainer');
+            container.innerHTML = '';
+            
+            actions.forEach(action => {
+                const div = document.createElement('div');
+                div.className = 'action-item';
+                div.innerHTML = `
+                    <div class="action-priority">${action.priority}</div>
+                    <div class="action-content">
+                        <div class="action-title">${action.title}</div>
+                        <div class="action-description">${action.description}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Load demo data on page load for testing
+        window.addEventListener('load', function() {
+            document.getElementById('monthlyRevenue').value = '45000';
+            document.getElementById('growthRate').value = '12';
+            document.getElementById('acquisitionCost').value = '180';
+            document.getElementById('lifetimeValue').value = '850';
+            document.getElementById('industry').value = 'professional';
+        });
+    </script>
+</body>
+</html>

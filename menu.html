@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Menu - Restaurant Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .restaurant-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .restaurant-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .restaurant-details h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .restaurant-details p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .table-info {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .menu-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .menu-hero h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48cae4);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .menu-hero p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .category-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 1rem 2rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: fit-content;
+            font-weight: 500;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .menu-category {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .menu-category:nth-child(1) { animation-delay: 0.7s; }
+        .menu-category:nth-child(2) { animation-delay: 0.9s; }
+        .menu-category:nth-child(3) { animation-delay: 1.1s; }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-item {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="rgba(255,255,255,0.1)"/><circle cx="25" cy="25" r="10" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="15" fill="rgba(255,255,255,0.05)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .item-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .item-content {
+            padding: 1.5rem;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .item-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1f2937;
+            flex: 1;
+        }
+
+        .item-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #059669;
+            margin-left: 1rem;
+        }
+
+        .item-description {
+            color: #6b7280;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .item-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .item-tag {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .special-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite linear;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 7s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
+
+        .back-to-table {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 200;
+        }
+
+        .back-to-table:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .menu-hero h2 {
+                font-size: 2rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-nav {
+                justify-content: flex-start;
+            }
+
+            .main-content {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="restaurant-info">
+                <div class="restaurant-logo" id="restaurantLogo">🍽️</div>
+                <div class="restaurant-details">
+                    <h1 id="restaurantName">Loading...</h1>
+                    <p>Artisanal dining experience</p>
+                </div>
+            </div>
+            <div class="table-info">
+                <span id="tableInfo">🪑 Table 1</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="menu-hero">
+            <h2>Culinary Artistry</h2>
+            <p>Each dish is crafted with passion, using the finest ingredients to create an unforgettable dining experience.</p>
+        </div>
+
+        <div class="category-nav">
+            <button class="category-btn active" onclick="showCategory('appetizers')">🥗 Appetizers</button>
+            <button class="category-btn" onclick="showCategory('mains')">🍖 Main Courses</button>
+            <button class="category-btn" onclick="showCategory('desserts')">🍰 Desserts</button>
+            <button class="category-btn" onclick="showCategory('beverages')">🍷 Beverages</button>
+        </div>
+
+        <div class="menu-categories">
+            <!-- Appetizers -->
+            <div class="menu-category" id="appetizers">
+                <div class="category-header">
+                    <h3 class="category-title">Artisanal Appetizers</h3>
+                    <p class="category-description">Perfect beginnings to your culinary journey</p>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🥗</div>
+                            <div class="special-badge">Chef's Special</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Mediterranean Mezze Platter</h4>
+                                <span class="item-price">$18</span>
+                            </div>
+                            <p class="item-description">Artisanal hummus, fresh tabbouleh, marinated olives, and warm pita bread with herb-infused olive oil</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Vegetarian</span>
+                                <span class="item-tag">Popular</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🦐</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Crispy Coconut Shrimp</h4>
+                                <span class="item-price">$16</span>
+                            </div>
+                            <p class="item-description">Jumbo shrimp in coconut tempura batter, served with spicy mango chutney and microgreens</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Seafood</span>
+                                <span class="item-tag">Gluten-Free</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🧀</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Truffle Mac & Cheese Bites</h4>
+                                <span class="item-price">$14</span>
+                            </div>
+                            <p class="item-description">Creamy mac and cheese infused with truffle oil, breaded and fried, served with garlic aioli</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Comfort Food</span>
+                                <span class="item-tag">Indulgent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Courses -->
+            <div class="menu-category" id="mains" style="display: none;">
+                <div class="category-header">
+                    <h3 class="category-title">Signature Main Courses</h3>
+                    <p class="category-description">Masterfully prepared dishes that define our culinary excellence</p>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🥩</div>
+                            <div class="special-badge">Signature</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Dry-Aged Ribeye Steak</h4>
+                                <span class="item-price">$48</span>
+                            </div>
+                            <p class="item-description">28-day dry-aged ribeye, herb butter, roasted vegetables, and truffle mashed potatoes</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Premium</span>
+                                <span class="item-tag">Gluten-Free</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🐟</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Pan-Seared Salmon</h4>
+                                <span class="item-price">$32</span>
+                            </div>
+                            <p class="item-description">Atlantic salmon with lemon herb crust, quinoa pilaf, and seasonal vegetables</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Healthy</span>
+                                <span class="item-tag">Omega-3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🍝</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Lobster Ravioli</h4>
+                                <span class="item-price">$36</span>
+                            </div>
+                            <p class="item-description">House-made pasta filled with Maine lobster, brown butter sage sauce, and parmesan</p>
+                            <div class="item-tags">
+                                <span class="item-tag">House-Made</span>
+                                <span class="item-tag">Luxury</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desserts -->
+            <div class="menu-category" id="desserts" style="display: none;">
+                <div class="category-header">
+                    <h3 class="category-title">Sweet Endings</h3>
+                    <p class="category-description">Decadent desserts to complete your dining experience</p>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🍰</div>
+                            <div class="special-badge">Award Winner</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Chocolate Lava Cake</h4>
+                                <span class="item-price">$12</span>
+                            </div>
+                            <p class="item-description">Warm chocolate cake with molten center, vanilla ice cream, and fresh berries</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Warm</span>
+                                <span class="item-tag">Classic</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🍮</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Crème Brûlée Trio</h4>
+                                <span class="item-price">$14</span>
+                            </div>
+                            <p class="item-description">Vanilla, lavender, and espresso crème brûlée with caramelized sugar crust</p>
+                            <div class="item-tags">
+                                <span class="item-tag">French</span>
+                                <span class="item-tag">Elegant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Beverages -->
+            <div class="menu-category" id="beverages" style="display: none;">
+                <div class="category-header">
+                    <h3 class="category-title">Curated Beverages</h3>
+                    <p class="category-description">Expertly selected wines, craft cocktails, and specialty drinks</p>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🍷</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Sommelier's Selection</h4>
+                                <span class="item-price">$18</span>
+                            </div>
+                            <p class="item-description">Daily selection of premium wines perfectly paired with your meal</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Wine</span>
+                                <span class="item-tag">Curated</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="menu-item">
+                        <div class="item-image">
+                            <div class="item-icon">🍸</div>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-header">
+                                <h4 class="item-name">Craft Cocktails</h4>
+                                <span class="item-price">$16</span>
+                            </div>
+                            <p class="item-description">Artisanal cocktails made with premium spirits and fresh ingredients</p>
+                            <div class="item-tags">
+                                <span class="item-tag">Handcrafted</span>
+                                <span class="item-tag">Premium</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-table" onclick="backToTable()">
+        🎠 Back to Table Experience
+    </button>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get('restaurant') || 'demo-restaurant';
+        const tableNumber = urlParams.get('table') || '1';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRestaurantData();
+            updateTableInfo();
+            
+            // Track menu view
+            trackMenuView();
+        });
+
+        async function loadRestaurantData() {
+            try {
+                // For now, use demo data - can be connected to real API later
+                const restaurantName = 'Demo Restaurant';
+                document.getElementById('restaurantName').textContent = restaurantName;
+                
+            } catch (error) {
+                console.error('Error loading restaurant data:', error);
+                document.getElementById('restaurantName').textContent = 'Demo Restaurant';
+            }
+        }
+
+        function updateTableInfo() {
+            document.getElementById('tableInfo').textContent = `🪑 Table ${tableNumber}`;
+        }
+
+        function showCategory(categoryId) {
+            // Hide all categories
+            const categories = document.querySelectorAll('.menu-category');
+            categories.forEach(cat => cat.style.display = 'none');
+            
+            // Show selected category
+            document.getElementById(categoryId).style.display = 'block';
+            
+            // Update active button
+            const buttons = document.querySelectorAll('.category-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Track category view
+            trackCategoryView(categoryId);
+        }
+
+        function backToTable() {
+            // Return to 3D table experience
+            const currentUrl = window.location.origin;
+            const tableUrl = `${currentUrl}/table-experience.html?restaurant=${restaurantId}&table=${tableNumber}`;
+            window.location.href = tableUrl;
+        }
+
+        async function trackMenuView() {
+            try {
+                // Track that someone viewed the menu
+                await fetch('https://qr-tracking-backend-production.up.railway.app/api/analytics/interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'menu_view',
+                        qr_type: 'menu',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking menu view:', error);
+            }
+        }
+
+        async function trackCategoryView(category) {
+            try {
+                await fetch('https://qr-tracking-backend-production.up.railway.app/api/analytics/interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'category_view',
+                        qr_type: 'menu',
+                        category: category,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking category view:', error);
+            }
+        }
+
+        // Add smooth scrolling for mobile
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                setTimeout(() => {
+                    document.querySelector('.menu-categories').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

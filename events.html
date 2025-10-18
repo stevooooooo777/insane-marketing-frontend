@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Events & Activities</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(251, 191, 36, 0.3);
+            border: 2px solid #fbbf24;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .category-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #20bf6b;
+        }
+
+        .distance-filter {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .distance-label {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .distance-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .distance-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .distance-btn.active {
+            background: rgba(251, 191, 36, 0.9);
+            border-color: #fbbf24;
+            color: #000;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .event-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            gap: 15px;
+        }
+
+        .event-item:hover {
+            transform: translateY(-3px);
+            border-color: rgba(251, 191, 36, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .event-content {
+            flex: 1;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: 900;
+            line-height: 1.3;
+        }
+
+        .distance-badge {
+            background: rgba(251, 191, 36, 0.3);
+            border: 1px solid #fbbf24;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .event-category {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .event-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .event-details {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .map-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 12px 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .map-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 12px 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .event-item {
+                flex-direction: column;
+            }
+
+            .event-icon {
+                width: 100%;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-icon">🗺️</div>
+        <h1>Explore the Local Area</h1>
+        <p class="subtitle">Discover amazing things to do near the venue</p>
+        <div class="location-badge">
+            📍 Downtown District
+        </div>
+    </div>
+
+    <div class="category-filter">
+        <button class="category-btn active" onclick="filterCategory('all')">All</button>
+        <button class="category-btn" onclick="filterCategory('food')">🍽️ Food</button>
+        <button class="category-btn" onclick="filterCategory('attractions')">🎭 Attractions</button>
+        <button class="category-btn" onclick="filterCategory('nightlife')">🎵 Nightlife</button>
+        <button class="category-btn" onclick="filterCategory('shopping')">🛍️ Shopping</button>
+        <button class="category-btn" onclick="filterCategory('hotels')">🏨 Hotels</button>
+    </div>
+
+    <div class="distance-filter">
+        <div class="distance-label">Show places within:</div>
+        <div class="distance-options">
+            <button class="distance-btn" onclick="filterDistance(0.5)">Walking (0.5 mi)</button>
+            <button class="distance-btn active" onclick="filterDistance(2)">Nearby (2 mi)</button>
+            <button class="distance-btn" onclick="filterDistance(5)">Local (5 mi)</button>
+        </div>
+    </div>
+
+    <div class="events-list" id="eventsList"></div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="#" class="map-link" onclick="openMap(); return false;">🗺️ Open in Maps</a>
+        <br><br>
+        <a href="javascript:history.back()" class="back-btn">← Back to Experience</a>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get('restaurant') || 'demo-restaurant';
+        const tableNumber = urlParams.get('table') || null;
+
+        let currentCategory = 'all';
+        let currentDistance = 2;
+
+        // Sample local events/places data
+        const localPlaces = [
+            {
+                id: 1,
+                name: "The Riverside Bistro",
+                category: "food",
+                icon: "🍽️",
+                description: "Award-winning waterfront dining with seasonal menu and craft cocktails.",
+                distance: 0.3,
+                price: "££-£££",
+                rating: "4.8",
+                hours: "Open until 11 PM"
+            },
+            {
+                id: 2,
+                name: "City Museum & Gallery",
+                category: "attractions",
+                icon: "🎨",
+                description: "Explore local history and contemporary art exhibitions. Free entry.",
+                distance: 0.5,
+                price: "Free",
+                rating: "4.7",
+                hours: "Open until 6 PM"
+            },
+            {
+                id: 3,
+                name: "The Jazz Lounge",
+                category: "nightlife",
+                icon: "🎷",
+                description: "Live jazz performances every night. Intimate atmosphere and craft cocktails.",
+                distance: 0.6,
+                price: "£15 cover",
+                rating: "4.9",
+                hours: "Opens 7 PM"
+            },
+            {
+                id: 4,
+                name: "Downtown Shopping District",
+                category: "shopping",
+                icon: "🛍️",
+                description: "100+ retail stores, boutiques, and designer outlets all in one area.",
+                distance: 0.8,
+                price: "Varies",
+                rating: "4.5",
+                hours: "Open until 9 PM"
+            },
+            {
+                id: 5,
+                name: "Luxury Hotel & Spa",
+                category: "hotels",
+                icon: "🏨",
+                description: "5-star accommodation with spa, pool, and rooftop restaurant.",
+                distance: 0.4,
+                price: "From £180/night",
+                rating: "4.8",
+                hours: "24/7"
+            },
+            {
+                id: 6,
+                name: "Street Food Market",
+                category: "food",
+                icon: "🌮",
+                description: "30+ vendors serving global cuisine. Open-air dining and live music.",
+                distance: 1.2,
+                price: "£8-15",
+                rating: "4.6",
+                hours: "11 AM - 10 PM"
+            },
+            {
+                id: 7,
+                name: "Historic Theatre",
+                category: "attractions",
+                icon: "🎭",
+                description: "Victorian theatre hosting plays, musicals, and comedy shows.",
+                distance: 0.7,
+                price: "From £25",
+                rating: "4.7",
+                hours: "Check schedule"
+            },
+            {
+                id: 8,
+                name: "Rooftop Bar District",
+                category: "nightlife",
+                icon: "🍸",
+                description: "Three rooftop bars with stunning city views and DJ sets.",
+                distance: 0.9,
+                price: "££",
+                rating: "4.4",
+                hours: "5 PM - 2 AM"
+            },
+            {
+                id: 9,
+                name: "Craft Beer Brewery",
+                category: "food",
+                icon: "🍺",
+                description: "Microbrewery with tasting room and gastropub menu.",
+                distance: 1.5,
+                price: "££",
+                rating: "4.7",
+                hours: "Noon - 11 PM"
+            },
+            {
+                id: 10,
+                name: "Spa & Wellness Center",
+                category: "attractions",
+                icon: "💆",
+                description: "Full service spa with massage, sauna, and relaxation treatments.",
+                distance: 0.6,
+                price: "From £45",
+                rating: "4.8",
+                hours: "9 AM - 8 PM"
+            },
+            {
+                id: 11,
+                name: "Night Market",
+                category: "shopping",
+                icon: "🌙",
+                description: "Weekend night market with artisans, food stalls, and live entertainment.",
+                distance: 1.0,
+                price: "Free entry",
+                rating: "4.6",
+                hours: "Fri-Sun 6 PM-11 PM"
+            },
+            {
+                id: 12,
+                name: "Budget Hotel Chain",
+                category: "hotels",
+                icon: "🏩",
+                description: "Clean, comfortable rooms at affordable prices near major attractions.",
+                distance: 1.8,
+                price: "From £65/night",
+                rating: "4.2",
+                hours: "24/7"
+            }
+        ];
+
+        function renderPlaces() {
+            const list = document.getElementById('eventsList');
+            
+            // Filter by category and distance
+            let filtered = localPlaces.filter(place => 
+                (currentCategory === 'all' || place.category === currentCategory) &&
+                place.distance <= currentDistance
+            );
+
+            // Sort by distance
+            filtered.sort((a, b) => a.distance - b.distance);
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h2 style="margin-bottom: 10px;">No Places Found</h2>
+                        <p style="opacity: 0.8;">Try adjusting your filters to see more options</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(place => `
+                <div class="event-item" onclick="viewPlace(${place.id})">
+                    <div class="event-icon">${place.icon}</div>
+                    <div class="event-content">
+                        <div class="event-header">
+                            <div>
+                                <div class="event-category">${getCategoryName(place.category)}</div>
+                                <div class="event-title">${place.name}</div>
+                            </div>
+                            <div class="distance-badge">${place.distance} mi</div>
+                        </div>
+                        <div class="event-description">${place.description}</div>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <span>💰</span>
+                                <span>${place.price}</span>
+                            </div>
+                            <div class="event-detail">
+                                <span>⭐</span>
+                                <span>${place.rating}</span>
+                            </div>
+                            <div class="event-detail">
+                                <span>🕐</span>
+                                <span>${place.hours}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            trackPageView();
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                food: 'Food & Drink',
+                attractions: 'Attractions',
+                nightlife: 'Nightlife',
+                shopping: 'Shopping',
+                hotels: 'Hotels'
+            };
+            return names[category] || category;
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderPlaces();
+            trackCategoryFilter(category);
+        }
+
+        function filterDistance(distance) {
+            currentDistance = distance;
+            
+            document.querySelectorAll('.distance-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderPlaces();
+            trackDistanceFilter(distance);
+        }
+
+        function viewPlace(placeId) {
+            const place = localPlaces.find(p => p.id === placeId);
+            if (!place) return;
+
+            const message = `${place.name}\n\n${place.description}\n\n📍 ${place.distance} miles away\n💰 ${place.price}\n⭐ ${place.rating} rating\n🕐 ${place.hours}\n\nWould open maps/booking in production.`;
+            alert(message);
+            
+            trackPlaceView(placeId, place.name);
+        }
+
+        function openMap() {
+            alert('Would open Google Maps/Apple Maps with all nearby locations marked.\n\nIn production, this would show an interactive map with all filtered places.');
+            trackMapOpen();
+        }
+
+        // Analytics
+        async function trackPageView() {
+            try {
+                await fetch('/api/analytics/interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'local_events_view',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking:', error);
+            }
+        }
+
+        async function trackCategoryFilter(category) {
+            try {
+                await fetch('/api/analytics/interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'local_category_filter',
+                        category: category,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking:', error);
+            }
+        }
+
+        async function trackDistanceFilter(distance) {
+            try {
+                await fetch('/api/analytics/interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'distance_filter',
+                        distance: distance,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking:', error);
+            }
+        }
+
+        async function trackPlaceView(placeId, placeName) {
+            try {
+                await fetch('/api/analytics/interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'local_place_viewed',
+                        place_id: placeId,
+                        place_name: placeName,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking:', error);
+            }
+        }
+
+        async function trackMapOpen() {
+            try {
+                await fetch('/api/analytics/interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'map_opened',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking:', error);
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', renderPlaces);
+    </script>
+</body>
+</html>

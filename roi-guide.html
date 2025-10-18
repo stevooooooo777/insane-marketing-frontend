@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industry Marketing Guide - What Actually Works - insane.marketing</title>
+<script src="/config-client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            padding: 60px 50px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .waste-warning {
+            background: rgba(220, 53, 69, 0.2);
+            border: 2px solid #dc3545;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px auto;
+            max-width: 600px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .savings-highlight {
+            background: rgba(40, 167, 69, 0.2);
+            border: 2px solid #28a745;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+            font-size: 1.1em;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .branding {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .industry-selector {
+            padding: 50px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            text-align: center;
+        }
+
+        .selector-title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .industry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .industry-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .industry-card:hover {
+            transform: translateY(-10px);
+            border-color: #ff6b35;
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        .industry-card.selected {
+            border-color: #ff6b35;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        }
+
+        .industry-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .industry-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .industry-desc {
+            color: #6c757d;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .results-section {
+            padding: 50px;
+            background: white;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .results-title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .waste-calculator {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border-left: 5px solid #dc3545;
+        }
+
+        .waste-title {
+            font-size: 1.8em;
+            color: #721c24;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .waste-amount {
+            font-size: 3em;
+            color: #dc3545;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .waste-explanation {
+            color: #721c24;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .strategy-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 40px;
+            border-radius: 20px;
+        }
+
+        .works-section {
+            border-left: 5px solid #28a745;
+        }
+
+        .avoid-section {
+            border-left: 5px solid #dc3545;
+        }
+
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .works-title {
+            color: #28a745;
+        }
+
+        .avoid-title {
+            color: #dc3545;
+        }
+
+        .strategy-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .strategy-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .strategy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .strategy-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .roi-badge {
+            padding: 8px 15px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .high-roi {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .medium-roi {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        .low-roi {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .strategy-description {
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .strategy-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .why-it-works {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid #2196f3;
+        }
+
+        .why-title {
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .why-text {
+            color: #495057;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .action-plan {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .action-title {
+            font-size: 2em;
+            color: #155724;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .action-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .action-step {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #ff6b35;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .step-description {
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .budget-guide {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .budget-title {
+            font-size: 2em;
+            color: #856404;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .budget-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .budget-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .budget-channel {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .budget-percentage {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 5px;
+        }
+
+        .budget-amount {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .cta-text {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            text-decoration: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .industry-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .strategies-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .strategy-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .action-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 What Marketing Actually Works for YOUR Industry</h1>
+            <p>Stop wasting money on strategies that don't work for your business type. Get industry-specific guidance based on real performance data.</p>
+            
+            <div class="waste-warning">
+                <strong>⚠️ The Average SME Wastes 67% of Their Marketing Budget</strong><br>
+                On strategies that don't work for their industry, audience, or business model.
+            </div>
+            
+            <div class="savings-highlight">
+                💰 SMEs using industry-specific strategies see 340% better ROI
+            </div>
+            
+            <div class="branding">Powered by insane.marketing</div>
+        </div>
+
+        <div class="industry-selector">
+            <div class="selector-title">Select Your Industry</div>
+            <p style="color: #6c757d; margin-bottom: 30px;">Get proven marketing strategies that actually work for businesses like yours</p>
+            
+            <div class="industry-grid">
+                <div class="industry-card" onclick="selectIndustry('restaurant')">
+                    <div class="industry-icon">🍽️</div>
+                    <div class="industry-name">Restaurant & Food</div>
+                    <div class="industry-desc">Cafes, restaurants, food trucks, catering</div>
+                </div>
+                
+                <div class="industry-card" onclick="selectIndustry('retail')">
+                    <div class="industry-icon">🛍️</div>
+                    <div class="industry-name">Retail & E-commerce</div>
+                    <div class="industry-desc">Online stores, boutiques, specialty retail</div>
+                </div>
+
+<div class="industry-card" onclick="selectIndustry('fitness')">
+                    <div class="industry-icon">🏋️</div>
+                    <div class="industry-name">Sport & Fitness</div>
+                    <div class="industry-desc">Gyms, clubs, trainers, teams</div>
+                </div>
+
+<div class="industry-card" onclick="selectIndustry('community')">
+                    <div class="industry-icon">🤝</div>
+                    <div class="industry-name">Community & Fundraising</div>
+                    <div class="industry-desc">Events, awareness</div>
+                </div>
+
+
+                
+                <div class="industry-card" onclick="selectIndustry('professional')">
+                    <div class="industry-icon">💼</div>
+                    <div class="industry-name">Professional Services</div>
+                    <div class="industry-desc">Law, accounting, consulting, agencies</div>
+                </div>
+                
+                <div class="industry-card" onclick="selectIndustry('healthcare')">
+                    <div class="industry-icon">🏥</div>
+                    <div class="industry-name">Healthcare & Wellness</div>
+                    <div class="industry-desc">Clinics, dentists, fitness, therapy</div>
+                </div>
+                
+                <div class="industry-card" onclick="selectIndustry('home')">
+                    <div class="industry-icon">🏠</div>
+                    <div class="industry-name">Home Services</div>
+                    <div class="industry-desc">Contractors, cleaners, landscaping</div>
+                </div>
+                
+                <div class="industry-card" onclick="selectIndustry('beauty')">
+                    <div class="industry-icon">💄</div>
+                    <div class="industry-name">Beauty & Personal Care</div>
+                    <div class="industry-desc">Salons, spas, barbershops, aesthetics</div>
+                </div>
+                
+                <div class="industry-card" onclick="selectIndustry('automotive')">
+                    <div class="industry-icon">🚗</div>
+                    <div class="industry-name">Automotive</div>
+                    <div class="industry-desc">Auto repair, car sales, detailing</div>
+                </div>
+                
+                <div class="industry-card" onclick="selectIndustry('technology')">
+                    <div class="industry-icon">💻</div>
+                    <div class="industry-name">Technology & Software</div>
+                    <div class="industry-desc">SaaS, apps, IT services, tech startups</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <!-- Results will be populated here -->
+        </div>
+
+        <div class="cta-section">
+            <div class="cta-title">Ready to Stop Wasting Money?</div>
+            <div class="cta-text">Get a custom marketing strategy built specifically for your industry and business goals</div>
+            <a href="#contact" class="cta-button">Get My Industry-Specific Strategy →</a>
+        </div>
+    </div>
+
+    <script>
+        const industryData = {
+            restaurant: {
+                name: "Restaurant & Food Service",
+                icon: "🍽️",
+                wasteAmount: "£2,847",
+                wasteExplanation: "Most restaurants waste money on LinkedIn ads and Facebook campaigns targeting the wrong demographics, instead of focusing on local discovery and visual appeal.",
+                works: [
+                    {
+                        name: "QR Code Menus & Ordering",
+                        roi: "340%",
+                        roiLevel: "high",
+                        description: "Digital menus and contactless ordering systems that enhance customer experience while collecting valuable data.",
+                        stats: [
+                            { value: "73%", label: "Adoption Rate" },
+                            { value: "43%", label: "Faster Service" },
+                            { value: "28%", label: "Larger Orders" }
+                        ],
+                        whyWorks: "Customers prefer convenience and safety. QR codes provide both while reducing staff workload and increasing average order size."
+                    },
+                    {
+                        name: "Instagram Food Photography",
+                        roi: "180%",
+                        roiLevel: "medium",
+                        description: "High-quality visual content showcasing dishes, behind-the-scenes content, and customer experiences.",
+                        stats: [
+                            { value: "67%", label: "Engagement Rate" },
+                            { value: "45%", label: "New Customers" },
+                            { value: "89%", label: "Visual Recall" }
+                        ],
+                        whyWorks: "Food is inherently visual. Instagram's visual nature perfectly matches how people discover and choose restaurants."
+                    },
+                    {
+                        name: "Local Google Ads & SEO",
+                        roi: "220%",
+                        roiLevel: "high",
+                        description: "Targeting 'near me' searches and local food-related keywords to capture high-intent customers.",
+                        stats: [
+                            { value: "89%", label: "Local Intent" },
+                            { value: "34%", label: "Click-Through" },
+                            { value: "12%", label: "Conversion Rate" }
+                        ],
+                        whyWorks: "Most restaurant customers search locally. Being visible when someone searches 'pizza near me' is incredibly valuable."
+                    },
+                    {
+                        name: "Temp Tattoo Events",
+                        roi: "156%",
+                        roiLevel: "medium",
+                        description: "Custom temporary tattoos at festivals, events, and grand openings for viral social media content.",
+                        stats: [
+                            { value: "290%", label: "Social Sharing" },
+                            { value: "67%", label: "Brand Recall" },
+                            { value: "23%", label: "New Visits" }
+                        ],
+                        whyWorks: "Creates memorable experiences and user-generated content. Perfect for food festivals and local events."
+                    }
+                ],
+                avoid: [
+                    {
+                        name: "LinkedIn Advertising",
+                        roi: "12%",
+                        roiLevel: "low",
+                        description: "Professional network advertising that rarely converts for restaurant businesses.",
+                        stats: [
+                            { value: "1.2%", label: "CTR" },
+                            { value: "0.3%", label: "Conversion" },
+                            { value: "£47", label: "Cost per Customer" }
+                        ],
+                        whyWorks: "People don't look for restaurants on LinkedIn. Wrong audience, wrong mindset, wrong platform for food businesses."
+                    },
+                    {
+                        name: "Radio Advertising",
+                        roi: "15%",
+                        roiLevel: "low",
+                        description: "Traditional radio ads that are expensive and hard to track for local restaurants.",
+                        stats: [
+                            { value: "3%", label: "Recall Rate" },
+                            { value: "0.8%", label: "Action Rate" },
+                            { value: "£890", label: "Monthly Cost" }
+                        ],
+                        whyWorks: "Radio audience can't see your food. Visual appeal is crucial for restaurants, making radio ineffective."
+                    },
+                    {
+                        name: "Generic Facebook Ads",
+                        roi: "34%",
+                        roiLevel: "low",
+                        description: "Broad Facebook advertising without local targeting or food-specific creative.",
+                        stats: [
+                            { value: "2.1%", label: "CTR" },
+                            { value: "1.2%", label: "Conversion" },
+                            { value: "£23", label: "Cost per Click" }
+                        ],
+                        whyWorks: "Without local targeting and food-focused creative, Facebook ads for restaurants often reach people too far away to visit."
+                    }
+                ],
+                actionPlan: [
+                    {
+                        step: 1,
+                        title: "Implement QR Menu System",
+                        description: "Start with digital menus and contactless ordering. This pays for itself within 2 months through increased order sizes and efficiency."
+                    },
+                    {
+                        step: 2,
+                        title: "Optimize Google My Business",
+                        description: "Claim and optimize your Google listing with photos, hours, menu, and customer reviews. This drives 67% of local discovery."
+                    },
+                    {
+                        step: 3,
+                        title: "Launch Instagram Strategy",
+                        description: "Post high-quality food photos daily, behind-the-scenes content, and customer features. Use local hashtags for discovery."
+                    },
+                    {
+                        step: 4,
+                        title: "Plan Event Marketing",
+                        description: "Participate in local events with branded temp tattoos, samples, and social media contests to build community presence."
+                    }
+                ],
+                budget: [
+                    { channel: "QR Menu System", percentage: "35%", amount: "£525/month" },
+                    { channel: "Google Ads (Local)", percentage: "30%", amount: "£450/month" },
+                    { channel: "Instagram Content", percentage: "20%", amount: "£300/month" },
+                    { channel: "Event Marketing", percentage: "15%", amount: "£225/month" }
+                ]
+            },
+
+
+
+
+            retail: {
+                name: "Retail & E-commerce",
+                icon: "🛍️",
+                wasteAmount: "£3,240",
+                wasteExplanation: "Retail businesses often waste money on expensive Google Ads for generic terms and ineffective radio advertising, instead of focusing on visual platforms and retargeting.",
+                works: [
+                    {
+                        name: "Facebook & Instagram Ads",
+                        roi: "245%",
+                        roiLevel: "high",
+                        description: "Visual advertising on platforms where people discover and shop for products, with advanced targeting and retargeting capabilities.",
+                        stats: [
+                            { value: "3.2%", label: "CTR" },
+                            { value: "4.8%", label: "Conversion Rate" },
+                            { value: "£12", label: "Cost per Sale" }
+                        ],
+                        whyWorks: "Retail is visual. Instagram and Facebook allow you to showcase products where people are already browsing and shopping."
+                    },
+                    {
+                        name: "Email Marketing & Automation",
+                        roi: "350%",
+                        roiLevel: "high",
+                        description: "Automated email sequences for abandoned carts, product recommendations, and customer retention campaigns.",
+                        stats: [
+                            { value: "22%", label: "Open Rate" },
+                            { value: "18%", label: "Recovery Rate" },
+                            { value: "£89", label: "Revenue per Email" }
+                        ],
+                        whyWorks: "Email marketing provides direct access to customers and allows for personalized product recommendations based on purchase history."
+                    },
+                    {
+                        name: "Influencer Partnerships",
+                        roi: "190%",
+                        roiLevel: "medium",
+                        description: "Collaborations with micro-influencers who align with your brand values and target demographic.",
+                        stats: [
+                            { value: "8.7%", label: "Engagement Rate" },
+                            { value: "67%", label: "Trust Factor" },
+                            { value: "23%", label: "Purchase Intent" }
+                        ],
+                        whyWorks: "People trust recommendations from influencers they follow. Micro-influencers have higher engagement and more authentic connections."
+                    },
+                    {
+                        name: "Google Shopping Ads",
+                        roi: "167%",
+                        roiLevel: "medium",
+                        description: "Product-focused ads that appear in Google Shopping results with images, prices, and store information.",
+                        stats: [
+                            { value: "5.4%", label: "CTR" },
+                            { value: "7.2%", label: "Conversion Rate" },
+                            { value: "£8", label: "Cost per Click" }
+                        ],
+                        whyWorks: "Shows products directly in search results when people are actively shopping, with high purchase intent."
+                    }
+                ],
+                avoid: [
+                    {
+                        name: "Radio Advertising",
+                        roi: "18%",
+                        roiLevel: "low",
+                        description: "Audio-only advertising that can't showcase products visually.",
+                        stats: [
+                            { value: "2.1%", label: "Recall Rate" },
+                            { value: "0.4%", label: "Action Rate" },
+                            { value: "£1,200", label: "Monthly Cost" }
+                        ],
+                        whyWorks: "Retail needs visual appeal. Radio can't show your products, making it ineffective for driving retail sales."
+                    },
+                    {
+                        name: "Generic Google Ads",
+                        roi: "45%",
+                        roiLevel: "low",
+                        description: "Broad keyword targeting without product specificity or proper landing pages.",
+                        stats: [
+                            { value: "1.8%", label: "CTR" },
+                            { value: "2.1%", label: "Conversion Rate" },
+                            { value: "£34", label: "Cost per Click" }
+                        ],
+                        whyWorks: "Generic ads compete with major retailers on expensive keywords without the visual appeal needed for retail success."
+                    },
+                    {
+                        name: "Print Advertising",
+                        roi: "23%",
+                        roiLevel: "low",
+                        description: "Traditional print ads in newspapers and magazines with declining readership.",
+                        stats: [
+                            { value: "0.8%", label: "Response Rate" },
+                            { value: "12%", label: "Readership Decline" },
+                            { value: "£890", label: "Average Cost" }
+                        ],
+                        whyWorks: "Print readership is declining rapidly, especially among younger demographics who drive retail purchases."
+                    }
+                ],
+                actionPlan: [
+                    {
+                        step: 1,
+                        title: "Set Up Facebook Business Manager",
+                        description: "Create professional Facebook and Instagram business accounts with proper pixel tracking for retargeting campaigns."
+                    },
+                    {
+                        step: 2,
+                        title: "Build Email List",
+                        description: "Implement email capture with incentives (discounts, early access) and set up automated welcome sequences."
+                    },
+                    {
+                        step: 3,
+                        title: "Launch Retargeting Campaigns",
+                        description: "Target website visitors and cart abandoners with personalized product ads to recover lost sales."
+                    },
+                    {
+                        step: 4,
+                        title: "Partner with Micro-Influencers",
+                        description: "Identify 3-5 micro-influencers in your niche for authentic product partnerships and reviews."
+                    }
+                ],
+                budget: [
+                    { channel: "Facebook/Instagram Ads", percentage: "40%", amount: "£600/month" },
+                    { channel: "Email Marketing", percentage: "25%", amount: "£375/month" },
+                    { channel: "Influencer Partnerships", percentage: "20%", amount: "£300/month" },
+                    { channel: "Google Shopping", percentage: "15%", amount: "£225/month" }
+                ]
+            },
+
+
+
+fitness: {
+    name: "Sport & Fitness",
+    icon: "🏋️",
+    wasteAmount: "£2,670",
+    wasteExplanation: "Fitness businesses often waste money on broad Google Ads and LinkedIn campaigns, instead of focusing on visual platforms and community building where their ideal clients actually engage.",
+    works: [
+        {
+            name: "Instagram Transformation Content",
+            roi: "420%",
+            roiLevel: "high",
+            description: "Before/after client transformations, workout videos, and motivational content that showcases real results.",
+            stats: [
+                { value: "12.4%", label: "Engagement Rate" },
+                { value: "78%", label: "Visual Impact" },
+                { value: "£890", label: "Avg Member Value" }
+            ],
+            whyWorks: "Fitness is visual and aspirational. People need to see real transformations to believe in your program's effectiveness."
+        },
+        {
+            name: "Local Facebook Community Groups",
+            roi: "380%",
+            roiLevel: "high",
+            description: "Creating and managing local fitness groups where members support each other and share their journey.",
+            stats: [
+                { value: "89%", label: "Community Engagement" },
+                { value: "67%", label: "Member Retention" },
+                { value: "45%", label: "Referral Rate" }
+            ],
+            whyWorks: "Fitness is about community and support. Local Facebook groups create accountability and belonging that drives retention."
+        },
+        {
+            name: "TikTok Workout Content",
+            roi: "290%",
+            roiLevel: "medium",
+            description: "Quick workout tips, form corrections, and motivational content that goes viral and attracts younger demographics.",
+            stats: [
+                { value: "18.7%", label: "Engagement Rate" },
+                { value: "234%", label: "Reach Potential" },
+                { value: "25-35", label: "Target Demo" }
+            ],
+            whyWorks: "TikTok's younger audience is highly engaged with fitness content and willing to try new workout programs."
+        },
+        {
+            name: "Challenge-Based Marketing",
+            roi: "245%",
+            roiLevel: "medium",
+            description: "30-day challenges, transformation contests, and group fitness goals that create excitement and commitment.",
+            stats: [
+                { value: "56%", label: "Participation Rate" },
+                { value: "89%", label: "Completion Boost" },
+                { value: "£456", label: "Challenge Revenue" }
+            ],
+            whyWorks: "Challenges create urgency, community, and clear goals - exactly what fitness clients need for motivation and results."
+        }
+    ],
+    avoid: [
+        {
+            name: "LinkedIn Advertising",
+            roi: "12%",
+            roiLevel: "low",
+            description: "Professional network advertising that doesn't align with personal fitness and wellness goals.",
+            stats: [
+                { value: "0.4%", label: "CTR" },
+                { value: "Professional", label: "Mindset" },
+                { value: "£89", label: "Cost per Click" }
+            ],
+            whyWorks: "People don't browse LinkedIn thinking about fitness goals. Wrong platform for personal health and wellness marketing."
+        },
+        {
+            name: "Generic Google Ads",
+            roi: "18%",
+            roiLevel: "low",
+            description: "Broad keyword advertising competing against major fitness chains and equipment companies.",
+            stats: [
+                { value: "£34", label: "Cost per Click" },
+                { value: "High", label: "Competition" },
+                { value: "1.8%", label: "Conversion Rate" }
+            ],
+            whyWorks: "Fitness keywords are expensive and dominated by large chains. Local gyms can't compete on generic terms."
+        },
+        {
+            name: "Radio Advertising",
+            roi: "15%",
+            roiLevel: "low",
+            description: "Audio-only advertising that can't showcase fitness transformations or workout quality.",
+            stats: [
+                { value: "1.2%", label: "Action Rate" },
+                { value: "£670", label: "Monthly Cost" },
+                { value: "No Visual", label: "Proof" }
+            ],
+            whyWorks: "Fitness marketing needs visual proof of results. Radio can't show transformations that drive fitness purchases."
+        }
+    ],
+    actionPlan: [
+        {
+            step: 1,
+            title: "Document Client Transformations",
+            description: "Get permission from clients to share their before/after photos and success stories across all platforms."
+        },
+        {
+            step: 2,
+            title: "Create Local Facebook Group",
+            description: "Start a community group for your area focused on fitness motivation, tips, and member support."
+        },
+        {
+            step: 3,
+            title: "Launch 30-Day Challenge",
+            description: "Create a month-long fitness challenge with daily check-ins, prizes, and community support to drive engagement."
+        },
+        {
+            step: 4,
+            title: "Develop TikTok Content",
+            description: "Post quick workout tips, form demonstrations, and motivational content to reach younger fitness enthusiasts."
+        }
+    ],
+    budget: [
+        { channel: "Instagram Content", percentage: "35%", amount: "£525/month" },
+        { channel: "Facebook Community", percentage: "25%", amount: "£375/month" },
+        { channel: "TikTok Marketing", percentage: "25%", amount: "£375/month" },
+        { channel: "Challenge Prizes/Incentives", percentage: "15%", amount: "£225/month" }
+    ]
+},
+
+
+
+community: {
+    name: "Community & Fundraising",
+    icon: "🤝",
+    wasteAmount: "£1,840",
+    wasteExplanation: "Community organizations often waste money on expensive Facebook ads and LinkedIn campaigns, instead of focusing on storytelling and local partnerships where their supporters actually engage.",
+    works: [
+        {
+            name: "Storytelling Content Marketing",
+            roi: "490%",
+            roiLevel: "high",
+            description: "Emotional stories showcasing impact, beneficiary testimonials, and behind-the-scenes content that drives donations.",
+            stats: [
+                { value: "89%", label: "Emotional Connection" },
+                { value: "67%", label: "Share Rate" },
+                { value: "£234", label: "Avg Donation" }
+            ],
+            whyWorks: "People donate to causes they feel connected to. Real stories create emotional investment that drives giving."
+        },
+        {
+            name: "Local Partnership Marketing",
+            roi: "450%",
+            roiLevel: "high",
+            description: "Collaborations with local businesses, schools, and organizations for mutual promotion and community events.",
+            stats: [
+                { value: "78%", label: "Community Reach" },
+                { value: "45%", label: "Event Attendance" },
+                { value: "£1,890", label: "Partnership Value" }
+            ],
+            whyWorks: "Local partnerships amplify reach without cost and build community trust through established relationships."
+        },
+        {
+            name: "Email Newsletter + Updates",
+            roi: "380%",
+            roiLevel: "high",
+            description: "Regular updates showing impact, upcoming events, and donation appeals with clear calls-to-action.",
+            stats: [
+                { value: "34%", label: "Open Rate" },
+                { value: "23%", label: "Donation Rate" },
+                { value: "£89", label: "Revenue per Email" }
+            ],
+            whyWorks: "Supporters want to know their impact. Regular updates maintain engagement and encourage continued giving."
+        },
+        {
+            name: "Volunteer Advocacy Programs",
+            roi: "340%",
+            roiLevel: "medium",
+            description: "Empowering volunteers and supporters to share your mission with their personal networks.",
+            stats: [
+                { value: "67%", label: "Volunteer Sharing" },
+                { value: "89%", label: "Trust Factor" },
+                { value: "£456", label: "Network Value" }
+            ],
+            whyWorks: "Personal recommendations from volunteers carry more weight than organizational marketing messages."
+        }
+    ],
+    avoid: [
+        {
+            name: "Expensive Facebook Ads",
+            roi: "15%",
+            roiLevel: "low",
+            description: "Costly paid advertising that drains limited budgets without building lasting community connections.",
+            stats: [
+                { value: "1.2%", label: "Donation Rate" },
+                { value: "£23", label: "Cost per Click" },
+                { value: "Limited", label: "Budget Impact" }
+            ],
+            whyWorks: "Nonprofits need sustainable, low-cost marketing. Expensive ads consume budgets that should go to the cause."
+        },
+        {
+            name: "LinkedIn Advertising",
+            roi: "8%",
+            roiLevel: "low",
+            description: "Professional network advertising that doesn't align with charitable giving and community involvement.",
+            stats: [
+                { value: "0.3%", label: "Donation CTR" },
+                { value: "Professional", label: "Context" },
+                { value: "£89", label: "Cost per Click" }
+            ],
+            whyWorks: "People don't browse LinkedIn in a charitable giving mindset. Wrong platform for community organization marketing."
+        },
+        {
+            name: "Generic Direct Mail",
+            roi: "12%",
+            roiLevel: "low",
+            description: "Mass-produced mail pieces without personalization or local community connection.",
+            stats: [
+                { value: "0.8%", label: "Response Rate" },
+                { value: "£1,240", label: "Campaign Cost" },
+                { value: "Impersonal", label: "Message" }
+            ],
+            whyWorks: "Generic appeals lack the personal connection that drives charitable giving. People ignore mass-produced solicitations."
+        }
+    ],
+    actionPlan: [
+        {
+            step: 1,
+            title: "Document Impact Stories",
+            description: "Collect and share real stories from beneficiaries showing how donations and support create tangible change."
+        },
+        {
+            step: 2,
+            title: "Build Local Partnerships",
+            description: "Reach out to local businesses, schools, and community groups for cross-promotion and joint events."
+        },
+        {
+            step: 3,
+            title: "Launch Email Newsletter",
+            description: "Create monthly updates showing impact, upcoming events, and clear ways supporters can help."
+        },
+        {
+            step: 4,
+            title: "Activate Volunteer Network",
+            description: "Train volunteers to be advocates who share your mission with their personal and professional networks."
+        }
+    ],
+    budget: [
+        { channel: "Content Creation/Stories", percentage: "40%", amount: "£400/month" },
+        { channel: "Email Marketing Platform", percentage: "20%", amount: "£200/month" },
+        { channel: "Event/Partnership Materials", percentage: "25%", amount: "£250/month" },
+        { channel: "Volunteer Training/Support", percentage: "15%", amount: "£150/month" }
+    ]
+},
+
+
+
+            professional: {
+                name: "Professional Services",
+                icon: "💼",
+                wasteAmount: "£4,120",
+                wasteExplanation: "Professional services often waste money on TikTok ads and Instagram campaigns targeting the wrong demographics, instead of focusing on LinkedIn and content marketing where decision-makers actually are.",
+                works: [
+                    {
+                        name: "LinkedIn Content & Ads",
+                        roi: "420%",
+                        roiLevel: "high",
+                        description: "Professional content and targeted advertising on the platform where B2B decision-makers spend their time.",
+                        stats: [
+                            { value: "6.8%", label: "CTR" },
+                            { value: "12%", label: "Lead Conversion" },
+                            { value: "£890", label: "Avg Client Value" }
+                        ],
+                        whyWorks: "B2B buyers research and make decisions on LinkedIn. Your ideal clients are already there looking for solutions."
+                    },
+                    {
+                        name: "Content Marketing & SEO",
+                        roi: "380%",
+                        roiLevel: "high",
+                        description: "Educational blog posts, guides, and resources that establish expertise and drive organic search traffic.",
+                        stats: [
+                            { value: "67%", label: "Organic Traffic" },
+                            { value: "89%", label: "Trust Building" },
+                            { value: "45%", label: "Lead Quality" }
+                        ],
+                        whyWorks: "Professional services are trust-based. Quality content demonstrates expertise and builds credibility with prospects."
+                    },
+                    {
+                        name: "Email Nurture Sequences",
+                        roi: "290%",
+                        roiLevel: "medium",
+                        description: "Automated email campaigns that educate prospects and guide them through your sales process.",
+                        stats: [
+                            { value: "34%", label: "Open Rate" },
+                            { value: "23%", label: "Conversion Rate" },
+                            { value: "£234", label: "Revenue per Lead" }
+                        ],
+                        whyWorks: "Professional services have longer sales cycles. Email nurturing keeps you top-of-mind until they're ready to buy."
+                    },
+                    {
+                        name: "Webinars & Speaking",
+                        roi: "234%",
+                        roiLevel: "medium",
+                        description: "Educational webinars and industry speaking engagements that showcase expertise to target audiences.",
+                        stats: [
+                            { value: "78%", label: "Authority Building" },
+                            { value: "45%", label: "Lead Quality" },
+                            { value: "£1,240", label: "Avg Deal Size" }
+                        ],
+                        whyWorks: "Demonstrates expertise in real-time and allows prospects to experience your knowledge before hiring."
+                    }
+                ],
+                avoid: [
+                    {
+                        name: "TikTok Advertising",
+                        roi: "8%",
+                        roiLevel: "low",
+                        description: "Short-form video advertising on a platform primarily used by younger consumers.",
+                        stats: [
+                            { value: "0.3%", label: "B2B CTR" },
+                            { value: "0.1%", label: "Conversion Rate" },
+                            { value: "£67", label: "Cost per Lead" }
+                        ],
+                        whyWorks: "B2B decision-makers aren't on TikTok looking for professional services. Wrong audience, wrong platform."
+                    },
+                    {
+                        name: "Instagram Shopping Ads",
+                        roi: "15%",
+                        roiLevel: "low",
+                        description: "Product-focused advertising designed for physical goods, not professional services.",
+                        stats: [
+                            { value: "1.1%", label: "CTR" },
+                            { value: "0.4%", label: "Lead Rate" },
+                            { value: "£89", label: "Cost per Click" }
+                        ],
+                        whyWorks: "Instagram users aren't in a business mindset. They're browsing for entertainment, not professional solutions."
+                    },
+                    {
+                        name: "Yellow Pages Advertising",
+                        roi: "12%",
+                        roiLevel: "low",
+                        description: "Traditional directory advertising with declining usage and effectiveness.",
+                        stats: [
+                            { value: "2%", label: "Usage Rate" },
+                            { value: "0.2%", label: "Response Rate" },
+                            { value: "£340", label: "Monthly Cost" }
+                        ],
+                        whyWorks: "Nobody uses phone books anymore. B2B buyers research online, not in printed directories."
+                    }
+                ],
+                actionPlan: [
+                    {
+                        step: 1,
+                        title: "Optimize LinkedIn Profile",
+                        description: "Create a professional company page and optimize personal profiles of key team members for thought leadership."
+                    },
+                    {
+                        step: 2,
+                        title: "Start Content Publishing",
+                        description: "Publish weekly educational content addressing common client problems and industry insights."
+                    },
+                    {
+                        step: 3,
+                        title: "Build Email List",
+                        description: "Create valuable lead magnets (guides, templates, checklists) to capture prospect contact information."
+                    },
+                    {
+                        step: 4,
+                        title: "Launch LinkedIn Ads",
+                        description: "Target specific job titles and industries with educational content and consultation offers."
+                    }
+                ],
+                budget: [
+                    { channel: "LinkedIn Ads", percentage: "35%", amount: "£875/month" },
+                    { channel: "Content Creation", percentage: "30%", amount: "£750/month" },
+                    { channel: "Email Marketing", percentage: "20%", amount: "£500/month" },
+                    { channel: "Webinar Platform", percentage: "15%", amount: "£375/month" }
+                ]
+            },
+
+
+
+
+            healthcare: {
+                name: "Healthcare & Wellness",
+                icon: "🏥",
+                wasteAmount: "£2,980",
+                wasteExplanation: "Healthcare businesses often waste money on TikTok and broad social media campaigns, instead of focusing on local SEO and reputation management where patients actually search.",
+                works: [
+                    {
+                        name: "Local SEO & Google My Business",
+                        roi: "380%",
+                        roiLevel: "high",
+                        description: "Optimization for local health-related searches and management of online reviews and ratings.",
+                        stats: [
+                            { value: "78%", label: "Local Searches" },
+                            { value: "67%", label: "Review Influence" },
+                            { value: "£340", label: "Patient Value" }
+                        ],
+                        whyWorks: "Patients search locally for healthcare providers. Strong local presence and positive reviews are crucial for trust."
+                    },
+                    {
+                        name: "Educational Content Marketing",
+                        roi: "290%",
+                        roiLevel: "medium",
+                        description: "Blog posts and resources that answer common health questions and establish medical expertise.",
+                        stats: [
+                            { value: "89%", label: "Trust Building" },
+                            { value: "45%", label: "Patient Education" },
+                            { value: "34%", label: "Appointment Rate" }
+                        ],
+                        whyWorks: "Patients research symptoms and treatments online. Educational content builds trust and positions you as an expert."
+                    },
+                    {
+                        name: "Patient Review Management",
+                        roi: "245%",
+                        roiLevel: "medium",
+                        description: "Systematic approach to encouraging positive reviews and responding to feedback professionally.",
+                        stats: [
+                            { value: "92%", label: "Review Importance" },
+                            { value: "56%", label: "Booking Increase" },
+                            { value: "4.8", label: "Avg Star Rating" }
+                        ],
+                        whyWorks: "Healthcare is trust-based. Positive reviews from real patients are the strongest marketing tool available."
+                    },
+                    {
+                        name: "Facebook Community Building",
+                        roi: "167%",
+                        roiLevel: "medium",
+                        description: "Health education posts and community engagement on Facebook where patients share and discuss health topics.",
+                        stats: [
+                            { value: "67%", label: "Health Discussions" },
+                            { value: "23%", label: "Referral Rate" },
+                            { value: "£890", label: "Community Value" }
+                        ],
+                        whyWorks: "Patients discuss health concerns on Facebook and seek recommendations from their community."
+                    }
+                ],
+                avoid: [
+                    {
+                        name: "TikTok Health Content",
+                        roi: "6%",
+                        roiLevel: "low",
+                        description: "Short-form health content on a platform with questionable medical credibility standards.",
+                        stats: [
+                            { value: "12%", label: "Professional Trust" },
+                            { value: "0.2%", label: "Appointment Rate" },
+                            { value: "High", label: "Compliance Risk" }
+                        ],
+                        whyWorks: "Healthcare requires trust and credibility. TikTok's entertainment focus undermines professional medical authority."
+                    },
+                    {
+                        name: "Broad Google Ads",
+                        roi: "34%",
+                        roiLevel: "low",
+                        description: "Generic health-related keyword advertising without local targeting or specific services.",
+                        stats: [
+                            { value: "£45", label: "Cost per Click" },
+                            { value: "1.2%", label: "Conversion Rate" },
+                            { value: "High", label: "Competition" }
+                        ],
+                        whyWorks: "Health keywords are extremely expensive and competitive. Without local focus, you compete with WebMD and major hospitals."
+                    },
+                    {
+                        name: "Cold Email Campaigns",
+                        roi: "18%",
+                        roiLevel: "low",
+                        description: "Unsolicited email marketing for healthcare services and treatments.",
+                        stats: [
+                            { value: "0.8%", label: "Open Rate" },
+                            { value: "High", label: "Spam Risk" },
+                            { value: "Legal", label: "Compliance Issues" }
+                        ],
+                        whyWorks: "Healthcare marketing has strict regulations. Cold emails can violate HIPAA and create compliance issues."
+                    }
+                ],
+                actionPlan: [
+                    {
+                        step: 1,
+                        title: "Optimize Google My Business",
+                        description: "Complete your listing with photos, hours, services, and encourage patient reviews through follow-up communications."
+                    },
+                    {
+                        step: 2,
+                        title: "Create Educational Blog",
+                        description: "Publish weekly health education posts addressing common patient questions and concerns in your specialty."
+                    },
+                    {
+                        step: 3,
+                        title: "Implement Review System",
+                        description: "Set up automated review requests after appointments and develop responses for both positive and negative feedback."
+                    },
+                    {
+                        step: 4,
+                        title: "Build Facebook Presence",
+                        description: "Share health tips, patient success stories (with permission), and community health information."
+                    }
+                ],
+                budget: [
+                    { channel: "Local SEO", percentage: "40%", amount: "£600/month" },
+                    { channel: "Content Creation", percentage: "30%", amount: "£450/month" },
+                    { channel: "Review Management", percentage: "20%", amount: "£300/month" },
+                    { channel: "Facebook Marketing", percentage: "10%", amount: "£150/month" }
+                ]
+            },
+
+
+home: {
+    name: "Home Services",
+    icon: "🏠",
+    wasteAmount: "£2,340",
+    wasteExplanation: "Home service businesses often waste money on Instagram ads and TikTok campaigns targeting the wrong demographics, instead of focusing on local SEO and Google Ads where homeowners actually search.",
+    works: [
+        {
+            name: "Google Local Service Ads",
+            roi: "390%",
+            roiLevel: "high",
+            description: "Pay-per-lead advertising that appears at the top of local service searches with Google Guarantee badge.",
+            stats: [
+                { value: "78%", label: "Lead Quality" },
+                { value: "67%", label: "Booking Rate" },
+                { value: "£45", label: "Avg Cost per Lead" }
+            ],
+            whyWorks: "Homeowners search Google first when they need repairs. Local Service Ads put you at the very top with trust badges."
+        },
+        {
+            name: "Nextdoor Neighborhood Marketing",
+            roi: "280%",
+            roiLevel: "high",
+            description: "Hyper-local social platform where neighbors recommend trusted service providers to each other.",
+            stats: [
+                { value: "89%", label: "Trust Factor" },
+                { value: "56%", label: "Referral Rate" },
+                { value: "£890", label: "Avg Job Value" }
+            ],
+            whyWorks: "Neighbors trust neighbor recommendations above all else. Nextdoor is where homeowners ask for service provider referrals."
+        },
+        {
+            name: "Before/After Photo Marketing",
+            roi: "245%",
+            roiLevel: "medium",
+            description: "Visual documentation of your work shared across social media and Google My Business to showcase quality.",
+            stats: [
+                { value: "340%", label: "Engagement Rate" },
+                { value: "67%", label: "Visual Impact" },
+                { value: "45%", label: "Booking Increase" }
+            ],
+            whyWorks: "Home services are visual. Seeing dramatic before/after transformations builds trust and demonstrates capability."
+        },
+        {
+            name: "Door Hanger Marketing",
+            roi: "167%",
+            roiLevel: "medium",
+            description: "Targeted door hangers in neighborhoods where you're already working to leverage social proof.",
+            stats: [
+                { value: "12%", label: "Response Rate" },
+                { value: "£234", label: "Avg Job Value" },
+                { value: "Geographic", label: "Targeting" }
+            ],
+            whyWorks: "When neighbors see you working in the area, they trust you're legitimate and wonder if they need similar work."
+        }
+    ],
+    avoid: [
+        {
+            name: "Instagram Influencer Ads",
+            roi: "18%",
+            roiLevel: "low",
+            description: "Lifestyle influencer partnerships that don't align with home service customer demographics.",
+            stats: [
+                { value: "0.8%", label: "Conversion Rate" },
+                { value: "£1,240", label: "Campaign Cost" },
+                { value: "Wrong", label: "Audience" }
+            ],
+            whyWorks: "Instagram influencers' followers aren't homeowners looking for contractors. Different audience, different mindset."
+        },
+        {
+            name: "TikTok Marketing",
+            roi: "12%",
+            roiLevel: "low",
+            description: "Short-form video content on a platform primarily used by younger demographics.",
+            stats: [
+                { value: "0.4%", label: "Lead Rate" },
+                { value: "£89", label: "Cost per Click" },
+                { value: "18-24", label: "Primary Age Group" }
+            ],
+            whyWorks: "Homeowners needing contractors are typically 35+ and not browsing TikTok for service providers."
+        },
+        {
+            name: "Generic Radio Ads",
+            roi: "23%",
+            roiLevel: "low",
+            description: "Broad radio advertising without specific service or location targeting.",
+            stats: [
+                { value: "1.2%", label: "Recall Rate" },
+                { value: "£890", label: "Monthly Cost" },
+                { value: "0.3%", label: "Action Rate" }
+            ],
+            whyWorks: "Radio listeners can't see your work quality. Home services need visual proof and local targeting."
+        }
+    ],
+    actionPlan: [
+        {
+            step: 1,
+            title: "Set Up Google Local Services",
+            description: "Complete background checks, insurance verification, and optimize your Local Service Ads profile for maximum visibility."
+        },
+        {
+            step: 2,
+            title: "Join Nextdoor Business",
+            description: "Create a business profile on Nextdoor and start engaging with neighborhood discussions about home improvement."
+        },
+        {
+            step: 3,
+            title: "Document Every Job",
+            description: "Take professional before/after photos of every project and share them across all your marketing channels."
+        },
+        {
+            step: 4,
+            title: "Target Working Neighborhoods",
+            description: "When working in a neighborhood, canvas the area with door hangers offering free estimates for similar services."
+        }
+    ],
+    budget: [
+        { channel: "Google Local Services", percentage: "45%", amount: "£675/month" },
+        { channel: "Nextdoor Marketing", percentage: "25%", amount: "£375/month" },
+        { channel: "Photo/Content Creation", percentage: "20%", amount: "£300/month" },
+        { channel: "Door Hanger Campaigns", percentage: "10%", amount: "£150/month" }
+    ]
+},
+
+
+
+beauty: {
+    name: "Beauty & Personal Care",
+    icon: "💄",
+    wasteAmount: "£1,890",
+    wasteExplanation: "Beauty businesses often waste money on LinkedIn ads and generic Google Ads, instead of focusing on Instagram and local discovery where beauty customers actually browse and book.",
+    works: [
+        {
+            name: "Instagram Beauty Content",
+            roi: "420%",
+            roiLevel: "high",
+            description: "High-quality before/after photos, tutorials, and behind-the-scenes content showcasing your work and personality.",
+            stats: [
+                { value: "8.9%", label: "Engagement Rate" },
+                { value: "67%", label: "Booking Rate" },
+                { value: "89%", label: "Visual Discovery" }
+            ],
+            whyWorks: "Beauty is inherently visual and Instagram is where people discover beauty inspiration and providers."
+        },
+        {
+            name: "Google My Business + Reviews",
+            roi: "340%",
+            roiLevel: "high",
+            description: "Optimized local listing with professional photos and systematic review collection from satisfied clients.",
+            stats: [
+                { value: "92%", label: "Local Search" },
+                { value: "78%", label: "Review Influence" },
+                { value: "£456", label: "Avg Client Value" }
+            ],
+            whyWorks: "People search locally for beauty services and heavily rely on reviews and photos when choosing providers."
+        },
+        {
+            name: "TikTok Beauty Tutorials",
+            roi: "290%",
+            roiLevel: "medium",
+            description: "Short-form educational content showing techniques, tips, and transformations to build following.",
+            stats: [
+                { value: "12.4%", label: "Engagement Rate" },
+                { value: "45%", label: "Younger Demographic" },
+                { value: "234%", label: "Viral Potential" }
+            ],
+            whyWorks: "TikTok is where younger customers discover beauty trends and find local providers through viral content."
+        },
+        {
+            name: "Client Referral Programs",
+            roi: "234%",
+            roiLevel: "medium",
+            description: "Incentivized referral system offering discounts or free services for client referrals.",
+            stats: [
+                { value: "67%", label: "Referral Rate" },
+                { value: "£789", label: "Referred Client Value" },
+                { value: "89%", label: "Retention Rate" }
+            ],
+            whyWorks: "Beauty is personal and trust-based. People trust friends' recommendations more than any advertising."
+        }
+    ],
+    avoid: [
+        {
+            name: "LinkedIn Advertising",
+            roi: "8%",
+            roiLevel: "low",
+            description: "Professional network advertising that doesn't align with beauty service customer behavior.",
+            stats: [
+                { value: "0.2%", label: "CTR" },
+                { value: "£67", label: "Cost per Click" },
+                { value: "Wrong", label: "Mindset" }
+            ],
+            whyWorks: "People don't browse LinkedIn looking for hair stylists or nail salons. Wrong platform for beauty discovery."
+        },
+        {
+            name: "Radio Advertising",
+            roi: "15%",
+            roiLevel: "low",
+            description: "Audio-only advertising that can't showcase visual beauty work and transformations.",
+            stats: [
+                { value: "1.8%", label: "Response Rate" },
+                { value: "£340", label: "Monthly Cost" },
+                { value: "No Visual", label: "Impact" }
+            ],
+            whyWorks: "Beauty services need to be seen to be believed. Radio can't show the quality and style of your work."
+        },
+        {
+            name: "Generic Facebook Ads",
+            roi: "28%",
+            roiLevel: "low",
+            description: "Broad Facebook advertising without beauty-specific targeting or creative content.",
+            stats: [
+                { value: "1.4%", label: "CTR" },
+                { value: "2.1%", label: "Conversion Rate" },
+                { value: "£23", label: "Cost per Click" }
+            ],
+            whyWorks: "Without beauty-focused creative and proper targeting, Facebook ads get lost in the feed without engagement."
+        }
+    ],
+    actionPlan: [
+        {
+            step: 1,
+            title: "Optimize Instagram Business",
+            description: "Set up Instagram Business profile with booking links, highlight reels of your best work, and consistent posting schedule."
+        },
+        {
+            step: 2,
+            title: "Perfect Google My Business",
+            description: "Upload high-quality photos of your work, salon, and team. Systematically request reviews from happy clients."
+        },
+        {
+            step: 3,
+            title: "Create TikTok Content",
+            description: "Post quick tutorials, transformation videos, and behind-the-scenes content to reach younger demographics."
+        },
+        {
+            step: 4,
+            title: "Launch Referral Program",
+            description: "Offer meaningful incentives for client referrals and make it easy for clients to share your information."
+        }
+    ],
+    budget: [
+        { channel: "Instagram Marketing", percentage: "40%", amount: "£600/month" },
+        { channel: "Google My Business", percentage: "25%", amount: "£375/month" },
+        { channel: "TikTok Content", percentage: "20%", amount: "£300/month" },
+        { channel: "Referral Incentives", percentage: "15%", amount: "£225/month" }
+    ]
+},
+
+
+
+
+automotive: {
+    name: "Automotive Services",
+    icon: "🚗",
+    wasteAmount: "£3,120",
+    wasteExplanation: "Automotive businesses often waste money on Instagram lifestyle ads and TikTok campaigns, instead of focusing on Google search and local targeting where car owners actually look for services.",
+    works: [
+        {
+            name: "Google Ads for Auto Services",
+            roi: "380%",
+            roiLevel: "high",
+            description: "Targeted search advertising for specific auto services like 'brake repair near me' and 'oil change [city]'.",
+            stats: [
+                { value: "89%", label: "Search Intent" },
+                { value: "12%", label: "Conversion Rate" },
+                { value: "£67", label: "Avg Cost per Lead" }
+            ],
+            whyWorks: "When cars break down, people search Google immediately. High intent searches convert extremely well for auto services."
+        },
+        {
+            name: "Local SEO & Google My Business",
+            roi: "340%",
+            roiLevel: "high",
+            description: "Optimization for local automotive searches with reviews, photos, and service-specific information.",
+            stats: [
+                { value: "78%", label: "Local Searches" },
+                { value: "67%", label: "Review Importance" },
+                { value: "£890", label: "Avg Repair Value" }
+            ],
+            whyWorks: "Car owners need local, trusted mechanics. Strong local presence and positive reviews are crucial for automotive services."
+        },
+        {
+            name: "Facebook Retargeting Campaigns",
+            roi: "245%",
+            roiLevel: "medium",
+            description: "Retargeting website visitors and past customers with seasonal reminders and maintenance offers.",
+            stats: [
+                { value: "23%", label: "Return Rate" },
+                { value: "45%", label: "Maintenance Uptake" },
+                { value: "£234", label: "Service Value" }
+            ],
+            whyWorks: "Car maintenance is seasonal and predictable. Reminding past customers about upcoming needs drives repeat business."
+        },
+        {
+            name: "Direct Mail to Local Area",
+            roi: "189%",
+            roiLevel: "medium",
+            description: "Targeted postcards to neighborhoods offering seasonal services like winter prep or spring maintenance.",
+            stats: [
+                { value: "4.2%", label: "Response Rate" },
+                { value: "£1,240", label: "Avg Job Value" },
+                { value: "Geographic", label: "Targeting" }
+            ],
+            whyWorks: "Automotive services are local and direct mail reaches homeowners who may not be actively searching online."
+        }
+    ],
+    avoid: [
+        {
+            name: "Instagram Lifestyle Ads",
+            roi: "12%",
+            roiLevel: "low",
+            description: "Lifestyle-focused advertising that doesn't connect with practical automotive service needs.",
+            stats: [
+                { value: "0.8%", label: "CTR" },
+                { value: "0.2%", label: "Conversion Rate" },
+                { value: "Wrong", label: "Audience" }
+            ],
+            whyWorks: "People browsing Instagram aren't thinking about car repairs. Wrong mindset and platform for automotive services."
+        },
+        {
+            name: "TikTok Advertising",
+            roi: "15%",
+            roiLevel: "low",
+            description: "Short-form video advertising on a platform primarily used for entertainment, not automotive services.",
+            stats: [
+                { value: "0.4%", label: "Service CTR" },
+                { value: "18-24", label: "Primary Age" },
+                { value: "£89", label: "Cost per Click" }
+            ],
+            whyWorks: "TikTok users are typically younger and don't own cars requiring regular maintenance services."
+        },
+        {
+            name: "LinkedIn Advertising",
+            roi: "18%",
+            roiLevel: "low",
+            description: "Professional network advertising that doesn't align with personal automotive service needs.",
+            stats: [
+                { value: "0.6%", label: "CTR" },
+                { value: "Professional", label: "Context" },
+                { value: "£67", label: "Cost per Click" }
+            ],
+            whyWorks: "People don't search for auto repair services while in professional networking mode on LinkedIn."
+        }
+    ],
+    actionPlan: [
+        {
+            step: 1,
+            title: "Set Up Google Ads Campaign",
+            description: "Target high-intent keywords like 'brake repair near me', 'oil change [city]', and specific car problem searches."
+        },
+        {
+            step: 2,
+            title: "Optimize Local Presence",
+            description: "Perfect your Google My Business listing with service photos, customer reviews, and detailed service descriptions."
+        },
+        {
+            step: 3,
+            title: "Build Customer Database",
+            description: "Collect customer information for retargeting campaigns and maintenance reminders based on service history."
+        },
+        {
+            step: 4,
+            title: "Launch Direct Mail",
+            description: "Send seasonal maintenance reminders to local neighborhoods offering timely services like winter prep."
+        }
+    ],
+    budget: [
+        { channel: "Google Ads", percentage: "45%", amount: "£675/month" },
+        { channel: "Local SEO", percentage: "25%", amount: "£375/month" },
+        { channel: "Facebook Retargeting", percentage: "20%", amount: "£300/month" },
+        { channel: "Direct Mail", percentage: "10%", amount: "£150/month" }
+    ]
+},
+
+
+
+
+technology: {
+    name: "Technology & Software",
+    icon: "💻",
+    wasteAmount: "£4,890",
+    wasteExplanation: "Tech companies often waste money on broad Facebook ads and traditional media, instead of focusing on content marketing and LinkedIn where decision-makers actually research B2B solutions.",
+    works: [
+        {
+            name: "Content Marketing + SEO",
+            roi: "450%",
+            roiLevel: "high",
+            description: "Educational blog posts, whitepapers, and technical guides that establish expertise and drive organic search traffic.",
+            stats: [
+                { value: "67%", label: "B2B Research" },
+                { value: "89%", label: "Trust Building" },
+                { value: "234%", label: "Lead Quality" }
+            ],
+            whyWorks: "B2B tech buyers research extensively online. Quality content positions you as the expert they want to work with."
+        },
+        {
+            name: "LinkedIn Ads + Content",
+            roi: "390%",
+            roiLevel: "high",
+            description: "Targeted advertising and thought leadership content on the platform where B2B decision-makers spend time.",
+            stats: [
+                { value: "6.2%", label: "CTR" },
+                { value: "78%", label: "B2B Audience" },
+                { value: "£1,890", label: "Avg Deal Size" }
+            ],
+            whyWorks: "LinkedIn is where B2B decision-makers research solutions and connect with vendors. Perfect platform for tech sales."
+        },
+        {
+            name: "Product-Led Growth (Free Trial)",
+            roi: "340%",
+            roiLevel: "high",
+            description: "Freemium models or free trials that let prospects experience your software before purchasing.",
+            stats: [
+                { value: "34%", label: "Trial to Paid" },
+                { value: "89%", label: "Product Adoption" },
+                { value: "£2,340", label: "Avg LTV" }
+            ],
+            whyWorks: "Tech buyers want to test before they buy. Free trials remove risk and let your product sell itself."
+        },
+        {
+            name: "Webinar Marketing",
+            roi: "280%",
+            roiLevel: "medium",
+            description: "Educational webinars that demonstrate expertise and showcase your software's capabilities to prospects.",
+            stats: [
+                { value: "45%", label: "Attendance Rate" },
+                { value: "23%", label: "Demo Requests" },
+                { value: "£890", label: "Pipeline Value" }
+            ],
+            whyWorks: "Webinars let you demonstrate expertise and software capabilities while building relationships with qualified prospects."
+        }
+    ],
+    avoid: [
+        {
+            name: "Broad Facebook Ads",
+            roi: "23%",
+            roiLevel: "low",
+            description: "Generic Facebook advertising without B2B targeting or technical content focus.",
+            stats: [
+                { value: "1.2%", label: "B2B CTR" },
+                { value: "Consumer", label: "Audience" },
+                { value: "£45", label: "Cost per Click" }
+            ],
+            whyWorks: "Facebook users are in consumer mode, not business problem-solving mode. Wrong audience and mindset for B2B tech."
+        },
+        {
+            name: "Radio Advertising",
+            roi: "8%",
+            roiLevel: "low",
+            description: "Traditional radio advertising that can't demonstrate software capabilities or reach decision-makers.",
+            stats: [
+                { value: "0.4%", label: "B2B Response" },
+                { value: "£1,240", label: "Monthly Cost" },
+                { value: "No Demo", label: "Capability" }
+            ],
+            whyWorks: "Tech products need to be seen and experienced. Radio can't demonstrate software functionality or benefits."
+        },
+        {
+            name: "Print Advertising",
+            roi: "12%",
+            roiLevel: "low",
+            description: "Traditional print media with declining B2B readership and no interactive capabilities.",
+            stats: [
+                { value: "0.8%", label: "Response Rate" },
+                { value: "Static", label: "Format" },
+                { value: "£890", label: "Ad Cost" }
+            ],
+            whyWorks: "Tech buyers research online, not in print. Print can't provide interactive demos or immediate response capabilities."
+        }
+    ],
+    actionPlan: [
+        {
+            step: 1,
+            title: "Launch Content Hub",
+            description: "Create a comprehensive resource center with technical guides, case studies, and industry insights to attract organic traffic."
+        },
+        {
+            step: 2,
+            title: "Optimize LinkedIn Presence",
+            description: "Develop thought leadership content and targeted advertising campaigns focused on your ideal customer profiles."
+        },
+        {
+            step: 3,
+            title: "Implement Free Trial",
+            description: "Create a friction-free trial experience that showcases your software's core value proposition quickly."
+        },
+        {
+            step: 4,
+            title: "Start Webinar Series",
+            description: "Host monthly educational webinars that provide value while demonstrating your expertise and software capabilities."
+        }
+    ],
+    budget: [
+        { channel: "Content Marketing", percentage: "35%", amount: "£875/month" },
+        { channel: "LinkedIn Ads", percentage: "30%", amount: "£750/month" },
+        { channel: "Product Demo/Trial", percentage: "20%", amount: "£500/month" },
+        { channel: "Webinar Platform", percentage: "15%", amount: "£375/month" }
+    ]
+}
+
+};
+
+        let selectedIndustry = '';
+
+        function selectIndustry(industry) {
+            // Remove previous selection
+            document.querySelectorAll('.industry-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select new industry
+            event.target.closest('.industry-card').classList.add('selected');
+            
+            selectedIndustry = industry;
+            
+            // Show results
+            setTimeout(() => {
+                loadIndustryResults(industry);
+                document.getElementById('resultsSection').classList.add('show');
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function loadIndustryResults(industry) {
+            const data = industryData[industry];
+            if (!data) return;
+
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.innerHTML = `
+                <div class="results-header">
+                    <div class="results-title">${data.icon} ${data.name} Marketing Guide</div>
+                </div>
+
+                <div class="waste-calculator">
+                    <div class="waste-title">💸 Stop Wasting Money!</div>
+                    <div class="waste-amount">${data.wasteAmount}/month</div>
+                    <div class="waste-explanation">${data.wasteExplanation}</div>
+                </div>
+
+                <div class="strategies-grid">
+                    <div class="strategy-section works-section">
+                        <div class="section-title works-title">
+                            ✅ What Actually Works
+                        </div>
+                        ${data.works.map(strategy => `
+                            <div class="strategy-item">
+                                <div class="strategy-header">
+                                    <div class="strategy-name">${strategy.name}</div>
+                                    <div class="roi-badge ${strategy.roiLevel}-roi">${strategy.roi} ROI</div>
+                                </div>
+                                <div class="strategy-description">${strategy.description}</div>
+                                <div class="strategy-stats">
+                                    ${strategy.stats.map(stat => `
+                                        <div class="stat-item">
+                                            <div class="stat-value">${stat.value}</div>
+                                            <div class="stat-label">${stat.label}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="why-it-works">
+                                    <div class="why-title">💡 Why This Works</div>
+                                    <div class="why-text">${strategy.whyWorks}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="strategy-section avoid-section">
+                        <div class="section-title avoid-title">
+                            ❌ What to Avoid
+                        </div>
+                        ${data.avoid.map(strategy => `
+                            <div class="strategy-item">
+                                <div class="strategy-header">
+                                    <div class="strategy-name">${strategy.name}</div>
+                                    <div class="roi-badge low-roi">${strategy.roi} ROI</div>
+                                </div>
+                                <div class="strategy-description">${strategy.description}</div>
+                                <div class="strategy-stats">
+                                    ${strategy.stats.map(stat => `
+                                        <div class="stat-item">
+                                            <div class="stat-value">${stat.value}</div>
+                                            <div class="stat-label">${stat.label}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="why-it-works">
+                                    <div class="why-title">⚠️ Why This Fails</div>
+                                    <div class="why-text">${strategy.whyWorks}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="action-plan">
+                    <div class="action-title">🎯 Your 90-Day Action Plan</div>
+                    <div class="action-steps">
+                        ${data.actionPlan.map(step => `
+                            <div class="action-step">
+                                <div class="step-number">${step.step}</div>
+                                <div class="step-title">${step.title}</div>
+                                <div class="step-description">${step.description}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="budget-guide">
+                    <div class="budget-title">💰 Recommended Budget Allocation</div>
+                    <div class="budget-breakdown">
+                        ${data.budget.map(item => `
+                            <div class="budget-item">
+                                <div class="budget-channel">${item.channel}</div>
+                                <div class="budget-percentage">${item.percentage}</div>
+                                <div class="budget-amount">${item.amount}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add some demo data loading
+        window.addEventListener('load', function() {
+            // Auto-select restaurant for demo after a delay
+            setTimeout(() => {
+                selectIndustry('restaurant');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

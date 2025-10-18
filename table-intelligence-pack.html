@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Table Intelligence Pack - Real-Time Customer Activity</title>
+<script src="config-client.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+<script>
+  window.addEventListener('load', async () => {
+    const user = CONFIG.getAuthenticatedUser();
+    const analytics = await CONFIG.makeApiCall(`/analytics/${user.restaurantId}`);
+    document.getElementById('total-scans').textContent = analytics.totalScans || 0;
+  });
+</script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin-top: 60px !important;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .premium-badge {
+            background: rgba(255,215,0,0.9);
+            color: #1a1a1a;
+            padding: 15px 30px;
+            border-radius: 25px;
+            margin-top: 20px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .mode-btn {
+            padding: 15px 30px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            background: #ff6b6b;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .mode-btn.inactive {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+        
+        .mode-section {
+            display: none;
+        }
+        
+        .mode-section.active {
+            display: block;
+        }
+        
+        .setup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .setup-form {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .table-layout {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .table-slot {
+            aspect-ratio: 1;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .table-slot:hover {
+            border-color: #ff6b6b;
+            background: #fef2f2;
+        }
+        
+        .table-slot.selected {
+            border-color: #10b981;
+            background: #d1fae5;
+            border-style: solid;
+        }
+
+        /* Branded QR Card Styles */
+        .qr-card {
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            border: 3px solid;
+        }
+.cards-preview {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+        .qr-card.menu { border-color: #1f2937; }
+        .qr-card.service { border-color: #dc2626; }
+        .qr-card.wifi { border-color: #2563eb; }
+        .qr-card.review { border-color: #16a34a; }
+        .qr-card.booking { border-color: #7c3aed; }
+        .qr-card.specials { border-color: #f59e0b; }
+
+        .restaurant-header {
+            margin-bottom: 15px;
+        }
+
+        .restaurant-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .table-number {
+            font-size: 1.1em;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .qr-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .qr-code-canvas {
+            border-radius: 8px;
+        }
+
+        .qr-type-header {
+            margin: 15px 0 10px 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+        }
+
+        .qr-type-header.menu { background: #1f2937; }
+        .qr-type-header.service { background: #dc2626; }
+        .qr-type-header.wifi { background: #2563eb; }
+        .qr-type-header.review { background: #16a34a; }
+        .qr-type-header.booking { background: #7c3aed; }
+        .qr-type-header.specials { background: #f59e0b; }
+
+        .call-to-action {
+            font-size: 1em;
+            font-weight: 600;
+            color: #374151;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .sub-text {
+            font-size: 0.8em;
+            color: #6b7280;
+            line-height: 1.2;
+        }
+        
+        /* QR Type Selection Styles */
+        .qr-type-selection {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+        
+        .qr-type-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+        
+        .qr-type-item:hover {
+            border-color: #ff6b6b;
+            background: #fef2f2;
+        }
+        
+        .qr-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .qr-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #ff6b6b;
+            cursor: pointer;
+        }
+        
+        .qr-info {
+            flex: 1;
+        }
+        
+        .qr-info strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .qr-info small {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.3;
+        }
+        
+        .qr-type-item input:checked + .checkmark + .qr-info strong {
+            color: #ff6b6b;
+        }
+        
+        .qr-type-item:has(input:checked) {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .dashboard-section {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .live-indicator {
+            background: #10b981;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+        
+        .table-status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .table-status-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #6b7280;
+            transition: all 0.3s;
+        }
+        
+        .table-status-card.active {
+            border-left-color: #10b981;
+            background: rgba(16,185,129,0.1);
+        }
+        
+        .table-status-card.attention {
+            border-left-color: #f59e0b;
+            background: rgba(245,158,11,0.1);
+            animation: glow 2s infinite;
+        }
+        
+        .table-status-card.urgent {
+            border-left-color: #ef4444;
+            background: rgba(239,68,68,0.1);
+            animation: urgent-glow 1s infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(245,158,11,0.5); }
+            50% { box-shadow: 0 0 20px rgba(245,158,11,0.8); }
+        }
+        
+        @keyframes urgent-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(239,68,68,0.7); }
+            50% { box-shadow: 0 0 30px rgba(239,68,68,1); }
+        }
+        
+        .table-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .table-activity {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .activity-feed {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #10b981;
+        }
+        
+        .activity-time {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+        
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 1.3em;
+            border-radius: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .setup-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-status-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        /* Navigation Styles */
+        .system-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-center-btn {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid #dc2626;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .current-page {
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .restaurant-info {
+            color: #fbbf24;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .account-dropdown {
+            position: relative;
+        }
+
+        .account-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .account-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1001;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .restaurant-info {
+                display: none !important;
+            }
+            
+            .current-page {
+                font-size: 14px !important;
+            }
+            
+            .control-center-btn {
+                padding: 6px 12px !important;
+                font-size: 12px !important;
+            }
+            
+            .account-btn {
+                padding: 6px 10px !important;
+                font-size: 12px !important;
+            }
+            
+            .account-menu {
+                min-width: 180px !important;
+                right: -10px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="system-nav">
+        <div class="nav-left">
+            <a href="onboarding.html" class="control-center-btn">
+                <i data-lucide="grid-3x3" style="width: 16px; height: 16px;"></i>
+                Control Center
+            </a>
+        </div>
+
+        <div class="current-page">
+            <i data-lucide="activity" style="width: 18px; height: 18px; color: #dc2626;" id="pageIcon"></i>
+            <span id="pageName">Table Intelligence</span>
+        </div>
+
+        <div class="nav-right" style="display: flex; align-items: center; gap: 15px;">
+            <div class="restaurant-info">
+                <i data-lucide="store" style="width: 16px; height: 16px;"></i>
+                <span id="navRestaurantName">Loading...</span>
+            </div>
+
+            <div class="account-dropdown">
+                <button class="account-btn" onclick="toggleAccountMenu()">
+                    <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                    <span id="navUserName">Account</span>
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px;" id="accountChevron"></i>
+                </button>
+
+                <div class="account-menu" id="accountMenu">
+                    <div style="padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 8px;">
+                        <div style="color: #f1f5f9; font-weight: 600; font-size: 14px;" id="menuUserName">Loading...</div>
+                        <div style="color: #94a3b8; font-size: 12px;" id="menuUserEmail">Loading...</div>
+                        <div style="color: #fbbf24; font-size: 12px; margin-top: 4px;">
+                            <i data-lucide="crown" style="width: 12px; height: 12px;"></i>
+                            <span id="menuUserPlan">Professional Plan</span>
+                        </div>
+                    </div>
+
+                    <a href="#" onclick="openAccountSettings()" class="menu-item">
+                        <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+                        Account Settings
+                    </a>
+
+                    <a href="#" onclick="openBilling()" class="menu-item">
+                        <i data-lucide="credit-card" style="width: 16px; height: 16px;"></i>
+                        Billing & Plans
+                    </a>
+
+                    <a href="#" onclick="openHelp()" class="menu-item">
+                        <i data-lucide="help-circle" style="width: 16px; height: 16px;"></i>
+                        Help & Support
+                    </a>
+
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 8px 0;"></div>
+
+                    <a href="#" onclick="confirmLogout()" class="menu-item logout" style="color: #ef4444; font-weight: 600;">
+                        <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="container">
+            <div class="header">
+                <h1>📊 Table Intelligence Pack</h1>
+                <p>Real-Time Customer Activity Tracking For Every Table</p>
+                <div class="premium-badge">
+                    ⭐ PREMIUM TIER - Professional Branded QR Cards
+                </div>
+            </div>
+            
+            <div class="content">
+                <!-- Mode Toggle -->
+                <div class="mode-toggle">
+                    <button class="mode-btn active" onclick="switchMode('setup')" id="setup-btn">
+                        🛠️ Setup Tables
+                    </button>
+                    <button class="mode-btn inactive" onclick="switchMode('dashboard')" id="dashboard-btn">
+                        📊 Live Dashboard
+                    </button>
+                </div>
+                
+                <!-- Setup Mode -->
+                <div class="mode-section active" id="setup-section">
+                    <div class="setup-grid">
+                        <div class="setup-form">
+                            <h3 style="margin-bottom: 20px; color: #ff6b6b;">🍽️ Restaurant Configuration</h3>
+                            
+                            <div class="form-group">
+                                <label>Restaurant Name</label>
+                                <input type="text" id="restaurant-name" 
+       placeholder="Loading from your account..." 
+       readonly 
+       style="background-color: #f3f4f6; cursor: not-allowed; border: 2px solid #10b981;">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Number of Tables</label>
+                                <select id="table-count" onchange="generateTableLayout()">
+                                    <option value="8">8 tables</option>
+                                    <option value="10">10 tables</option>
+                                    <option value="12" selected>12 tables</option>
+                                    <option value="15">15 tables</option>
+                                    <option value="18">18 tables</option>
+                                    <option value="20">20 tables</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Menu URL</label>
+                                <input type="url" id="menu-url" placeholder="https://yourmenu.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>WiFi Network</label>
+                                <input type="text" id="wifi-name" placeholder="Restaurant_WiFi">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>WiFi Password</label>
+                                <input type="text" id="wifi-password" placeholder="welcome123">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Review URL</label>
+                                <input type="url" id="review-url" placeholder="https://g.page/yourrestaurant/review">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Select QR Code Types</label>
+                                <div class="qr-type-selection">
+                                    <div class="qr-type-item">
+                                        <label class="qr-checkbox">
+                                            <input type="checkbox" checked value="menu" onchange="updateQRCount()">
+                                            <span class="checkmark"></span>
+                                            <div class="qr-info">
+                                                <strong>Menu QR</strong>
+                                                <small>Essential - tracks customer readiness to order</small>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="qr-type-item">
+                                        <label class="qr-checkbox">
+                                            <input type="checkbox" checked value="service" onchange="updateQRCount()">
+                                            <span class="checkmark"></span>
+                                            <div class="qr-info">
+                                                <strong>Service Call QR</strong>
+                                                <small>Customer-to-staff direct alerts</small>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="qr-type-item">
+                                        <label class="qr-checkbox">
+                                            <input type="checkbox" checked value="wifi" onchange="updateQRCount()">
+                                            <span class="checkmark"></span>
+                                            <div class="qr-info">
+                                                <strong>WiFi QR</strong>
+                                                <small>Popular - automatic network connection</small>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="qr-type-item">
+                                        <label class="qr-checkbox">
+                                            <input type="checkbox" value="review" onchange="updateQRCount()">
+                                            <span class="checkmark"></span>
+                                            <div class="qr-info">
+                                                <strong>Review QR</strong>
+                                                <small>Optional - directs to review platforms</small>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="qr-type-item">
+                                        <label class="qr-checkbox">
+                                            <input type="checkbox" value="booking" onchange="updateQRCount()">
+                                            <span class="checkmark"></span>
+                                            <div class="qr-info">
+                                                <strong>Booking QR</strong>
+                                                <small>Optional - future reservations</small>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="qr-type-item">
+                                        <label class="qr-checkbox">
+                                            <input type="checkbox" value="specials" onchange="updateQRCount()">
+                                            <span class="checkmark"></span>
+                                            <div class="qr-info">
+                                                <strong>Specials QR</strong>
+                                                <small>Optional - promotions and offers</small>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-success btn-large" onclick="generateAllTableQRs()" style="width: 100%; margin-top: 20px;">
+                                🚀 Generate Branded Table Intelligence System
+                            </button>
+                       </div>
+
+                        
+                        <div class="table-layout">
+                            <h3 style="margin-bottom: 20px; color: #ff6b6b;">📋 Select Tables for QR Codes</h3>
+                            <p style="color: #6b7280; margin-bottom: 15px;">Click tables to enable tracking (recommended: all tables)</p>
+                            
+                            <div class="table-grid" id="table-grid">
+                                <!-- Tables will be generated here -->
+                            </div>
+                            
+                            <div style="margin-top: 20px; text-align: center;">
+                                <button class="btn btn-primary" onclick="selectAllTables()">Select All Tables</button>
+                                <button class="btn" onclick="clearSelection()" style="background: #6c757d; color: white; margin-left: 10px;">Clear Selection</button>
+                            </div>
+                            
+                            <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+                                <strong>Selected: <span id="selected-count">0</span> tables × <span id="qr-type-count">3</span> QR types = <span id="total-qr-count">0</span> branded cards</strong><br>
+                                <span style="font-size: 0.9em; color: #666;">Professional branded cards organized in table folders</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+<!-- Cards Preview Section (initially hidden) -->
+<div id="cards-preview" class="cards-preview" style="display: none;">
+    <h3 style="margin-bottom: 20px; text-align: center; color: #ff6b6b;">Sample Preview - Table 1 QR Cards</h3>
+    
+    <!-- Move buttons to top -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        <button class="btn btn-primary" onclick="printBrandedCards()">🖨️ Print All Cards</button>
+        <button class="btn btn-success" onclick="downloadBrandedCards()" style="margin-left: 10px;">📱 Download Cards</button>
+        <button class="btn" onclick="hideBrandedCards()" style="background: #6c757d; color: white; margin-left: 10px;">Hide Preview</button>
+    </div>
+    
+    <div class="cards-container" id="cards-container">
+        <!-- Generated branded cards will appear here -->
+    </div>
+    
+    <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 15px;">
+        This shows a sample of your branded cards. Print/Download includes all selected tables and QR types.
+    </p>
+</div>
+
+
+                <!-- Dashboard Mode -->
+                <div class="mode-section" id="dashboard-section">
+                    <div class="dashboard-section">
+                        <div class="<!-- Dashboard Mode --> ?dashboard-header">
+                            <h2>Live Table Intelligence Dashboard</h2>
+
+
+
+<div class="live-indicator" id="live-status">
+                                🔴 STARTING...
+                            </div>
+                        </div>
+                        
+                        <!-- Real-time Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="active-tables">0</div>
+                                <div class="stat-label">Active Tables</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-scans">0</div>
+                                <div class="stat-label">Total Scans Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="pending-alerts">0</div>
+                                <div class="stat-label">Service Alerts</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="avg-session">0m</div>
+                                <div class="stat-label">Avg Session Time</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Live Table Status Grid -->
+                        <h3 style="margin-bottom: 20px;">Real-Time Table Status</h3>
+                        <div class="table-status-grid" id="table-status-grid">
+                            <!-- Table status cards will be generated here -->
+                        </div>
+                        
+                        <!-- Live Activity Feed -->
+                        <h3 style="margin-bottom: 20px;">Live Activity Feed</h3>
+                        <div class="activity-feed" id="activity-feed">
+                            <div style="text-align: center; opacity: 0.7; padding: 20px;">
+                                Waiting for customer activity...
+                            </div>
+                        </div>
+                        
+                        <!-- Controls -->
+                        <div style="margin-top: 30px; text-align: center;">
+                            <button class="btn btn-primary" onclick="simulateCustomerActivity()">
+                                🧪 Simulate Customer Activity
+                            </button>
+                            <button class="btn btn-success" onclick="downloadTableQRs()" style="margin-left: 10px;">
+                                📱 Download Branded QR Cards
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================
+        // CORE DATA STRUCTURES
+        // =====================================
+        
+        let restaurantData = {
+            name: '',
+            tableCount: 12,
+            selectedTables: [],
+            menuUrl: '',
+            wifiName: '',
+            wifiPassword: '',
+            reviewUrl: ''
+        };
+        
+        let tableIntelligence = {
+            activeSessions: {},
+            scanHistory: [],
+            serviceAlerts: [],
+            totalScans: 0
+        };
+        
+        let generatedQRs = {};
+        let realTimeInterval;
+        
+        // =====================================
+        // BRANDED QR CARD GENERATION
+        // =====================================
+        
+        // QR type configurations for branded cards
+        const qrTypeConfigs = {
+            menu: {
+                icon: '🍽️',
+                label: 'MENU',
+                callToAction: 'Scan to View Menu',
+                subText: 'Order Faster • See Prices • Check Ingredients',
+                sampleUrl: 'https://example.com/menu'
+            },
+            service: {
+                icon: '🔔',
+                label: 'SERVICE CALL',
+                callToAction: 'Scan for Instant Service',
+                subText: 'No Waiting • Direct Staff Alerts • Quick Response',
+                sampleUrl: '/service-request'
+            },
+            wifi: {
+                icon: '📶',
+                label: 'FREE WIFI',
+                callToAction: 'Scan for Free Secure WiFi',
+                subText: 'Instant Connection • No Password Needed • Fast Speed',
+                sampleUrl: '/wifi-connect'
+            },
+            review: {
+                icon: '⭐',
+                label: 'REVIEWS',
+                callToAction: 'Scan to Share Your Experience',
+                subText: 'Help Others • Quick & Easy • Make a Difference',
+                sampleUrl: 'https://google.com/reviews'
+            },
+            booking: {
+                icon: '📅',
+                label: 'RESERVATIONS',
+                callToAction: 'Scan to Book Your Next Visit',
+                subText: 'Easy Booking • Choose Your Time • Guarantee Your Table',
+                sampleUrl: 'https://opentable.com/book'
+            },
+            specials: {
+                icon: '🎉',
+                label: 'TODAY\'S SPECIALS',
+                callToAction: 'Scan for Today\'s Deals',
+                subText: 'Limited Time • Special Prices • Exclusive Offers',
+                sampleUrl: '/specials'
+            }
+        };
+        
+function generateAllTableQRs() {
+    // Validate inputs
+    restaurantData.name = document.getElementById('restaurant-name').value;
+    restaurantData.menuUrl = document.getElementById('menu-url').value;
+    restaurantData.wifiName = document.getElementById('wifi-name').value;
+    restaurantData.wifiPassword = document.getElementById('wifi-password').value;
+    restaurantData.reviewUrl = document.getElementById('review-url').value;
+    
+    if (!restaurantData.name.trim()) {
+        alert('Please enter restaurant name!');
+        return;
+    }
+    
+    if (restaurantData.selectedTables.length === 0) {
+        alert('Please select at least one table!');
+        return;
+    }
+    
+    const selectedQRTypes = getSelectedQRTypes();
+    if (selectedQRTypes.length === 0) {
+        alert('Please select at least one QR code type!');
+        return;
+    }
+    
+    const restaurantId = restaurantData.name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    generatedQRs = {};
+    
+    // Generate branded QR cards for each selected table and selected QR types
+    restaurantData.selectedTables.forEach(tableNumber => {
+        selectedQRTypes.forEach(qrType => {
+            const qrData = generateBrandedTableQR(restaurantId, tableNumber, qrType);
+            generatedQRs[`table${tableNumber}_${qrType}`] = qrData;
+        });
+    });
+    
+    // Show the branded cards preview AFTER generation
+    setTimeout(() => {
+        displayBrandedCardsPreview();
+    }, 200);
+    
+    // Initialize table intelligence tracking
+    initializeTableTracking();
+    
+    const totalQRs = restaurantData.selectedTables.length * selectedQRTypes.length;
+    
+    alert(`Success! Generated ${totalQRs} professional branded QR cards!\n\nYour branded cards are now displayed below!`);
+    
+    
+}
+        
+        function generateBrandedTableQR(restaurantId, tableNumber, qrType) {
+            // Create table-specific tracking URL
+            const baseUrl = CONFIG.getApiBaseUrl();
+const trackingUrl = `${baseUrl}/qr/${restaurantId}/table/${tableNumber}/${qrType}`;
+            
+            // Add query parameters based on QR type
+            let fullUrl = trackingUrl;
+            switch(qrType) {
+                case 'menu':
+                    if (restaurantData.menuUrl) {
+                        fullUrl += `?dest=${encodeURIComponent(restaurantData.menuUrl)}`;
+                    }
+                    break;
+                case 'wifi':
+                    fullUrl += `?ssid=${encodeURIComponent(restaurantData.wifiName)}&pass=${encodeURIComponent(restaurantData.wifiPassword)}`;
+                    break;
+                case 'service':
+                    fullUrl = trackingUrl;
+                    break;
+                case 'review':
+                    if (restaurantData.reviewUrl) {
+                        fullUrl += `?dest=${encodeURIComponent(restaurantData.reviewUrl)}`;
+                    }
+                    break;
+                case 'booking':
+                    fullUrl += `?dest=https://opentable.com/${restaurantId}`;
+                    break;
+                case 'specials':
+                    fullUrl += `?dest=https://${restaurantId}.com/specials`;
+                    break;
+            }
+            
+            // Create branded QR card
+            const brandedCard = createBrandedQRCard(restaurantData.name, tableNumber, qrType, fullUrl);
+            
+            console.log(`Generated Branded Table ${tableNumber} ${qrType} QR: ${fullUrl}`);
+            
+            return {
+                brandedCard: brandedCard,
+                trackingUrl: fullUrl,
+                tableNumber: tableNumber,
+                qrType: qrType,
+                generatedAt: new Date().toISOString(),
+                branded: true
+            };
+        }
+        
+    function createBrandedQRCard(restaurantName, tableNumber, qrType, qrUrl) {
+    const config = qrTypeConfigs[qrType];
+    if (!config) return null;
+
+    // Create card container
+    const card = document.createElement('div');
+    card.className = `qr-card ${qrType}`;
+
+    // Build card HTML structure first
+    card.innerHTML = `
+        <div class="restaurant-header">
+            <div class="restaurant-name">${restaurantName}</div>
+            <div class="table-number">Table ${tableNumber}</div>
+        </div>
+        
+        <div class="qr-container">
+            <!-- QR code will be inserted here -->
+        </div>
+        
+        <div class="qr-type-header ${qrType}">
+            <div style="font-size: 1.2em; margin-bottom: 5px;">${config.icon}</div>
+            ${config.label}
+        </div>
+        
+        <div class="call-to-action">
+            ${config.callToAction}
+        </div>
+        
+        <div class="sub-text">
+            ${config.subText}
+        </div>
+    `;
+
+    // Now generate QR code and append it to the container
+    try {
+        if (typeof QRious !== 'undefined') {
+            const canvas = document.createElement('canvas');
+            canvas.className = 'qr-code-canvas';
+            
+            const qr = new QRious({
+                element: canvas,
+                value: qrUrl,
+                size: 180,
+                background: '#ffffff',
+                foreground: '#000000',
+                level: 'M'
+            });
+            
+            // Append the actual canvas with the QR code to the container
+            const qrContainer = card.querySelector('.qr-container');
+            qrContainer.appendChild(canvas);
+        } else {
+            console.error('QRious library not loaded');
+            const qrContainer = card.querySelector('.qr-container');
+            qrContainer.innerHTML = '<div style="width: 180px; height: 180px; background: #f0f0f0; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">QR Loading...</div>';
+        }
+    } catch (error) {
+        console.error('QR generation error:', error);
+        const qrContainer = card.querySelector('.qr-container');
+        qrContainer.innerHTML = '<div style="width: 180px; height: 180px; background: #f0f0f0; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">Error</div>';
+    }
+
+    return card;
+}
+        
+        // =====================================
+        // MODE SWITCHING
+        // =====================================
+        
+        function switchMode(mode) {
+            // Update buttons
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('inactive');
+            });
+            document.getElementById(`${mode}-btn`).classList.remove('inactive');
+            document.getElementById(`${mode}-btn`).classList.add('active');
+            
+            // Update sections
+            document.querySelectorAll('.mode-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${mode}-section`).classList.add('active');
+            
+            if (mode === 'dashboard') {
+                startRealTimeTracking();
+            } else {
+                stopRealTimeTracking();
+            }
+        }
+        
+        // =====================================
+        // QR TYPE SELECTION MANAGEMENT
+        // =====================================
+        
+        function updateQRCount() {
+            const selectedTableCount = restaurantData.selectedTables.length;
+            const selectedQRTypes = getSelectedQRTypes();
+            const totalQRs = selectedTableCount * selectedQRTypes.length;
+            
+            document.getElementById('selected-count').textContent = selectedTableCount;
+            document.getElementById('qr-type-count').textContent = selectedQRTypes.length;
+            document.getElementById('total-qr-count').textContent = totalQRs;
+        }
+        
+        function getSelectedQRTypes() {
+            const checkboxes = document.querySelectorAll('.qr-type-selection input[type="checkbox"]:checked');
+            return Array.from(checkboxes).map(checkbox => checkbox.value);
+        }
+        
+        // =====================================
+        // TABLE LAYOUT MANAGEMENT
+        // =====================================
+        
+        function generateTableLayout() {
+            const tableCount = parseInt(document.getElementById('table-count').value);
+            const tableGrid = document.getElementById('table-grid');
+            
+            restaurantData.tableCount = tableCount;
+            restaurantData.selectedTables = [];
+            
+            tableGrid.innerHTML = '';
+            
+            for (let i = 1; i <= tableCount; i++) {
+                const tableSlot = document.createElement('div');
+                tableSlot.className = 'table-slot';
+                tableSlot.onclick = () => toggleTable(i, tableSlot);
+                
+                tableSlot.innerHTML = `
+                    <div style="font-weight: bold;">T${i}</div>
+                    <div style="font-size: 10px; margin-top: 5px;">Click</div>
+                `;
+                
+                tableGrid.appendChild(tableSlot);
+            }
+            
+            updateQRCount();
+        }
+        
+        function toggleTable(tableNumber, element) {
+            if (restaurantData.selectedTables.includes(tableNumber)) {
+                restaurantData.selectedTables = restaurantData.selectedTables.filter(t => t !== tableNumber);
+                element.classList.remove('selected');
+            } else {
+                restaurantData.selectedTables.push(tableNumber);
+                element.classList.add('selected');
+            }
+            updateQRCount();
+        }
+        
+        function selectAllTables() {
+            restaurantData.selectedTables = [];
+            for (let i = 1; i <= restaurantData.tableCount; i++) {
+                restaurantData.selectedTables.push(i);
+            }
+            
+            document.querySelectorAll('.table-slot').forEach((slot, index) => {
+                slot.classList.add('selected');
+            });
+            
+            updateQRCount();
+        }
+        
+        function clearSelection() {
+            restaurantData.selectedTables = [];
+            document.querySelectorAll('.table-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            updateQRCount();
+        }
+        
+        // =====================================
+        // TABLE INTELLIGENCE TRACKING
+        // =====================================
+        
+        function initializeTableTracking() {
+            tableIntelligence = {
+                activeSessions: {},
+                scanHistory: [],
+                serviceAlerts: [],
+                totalScans: 0,
+                lastUpdate: new Date()
+            };
+            
+            // Initialize sessions for selected tables
+            restaurantData.selectedTables.forEach(tableNumber => {
+                tableIntelligence.activeSessions[tableNumber] = {
+                    tableNumber: tableNumber,
+                    status: 'available',
+                    currentActivity: null,
+                    sessionStart: null,
+                    lastActivity: null,
+                    customerCount: 0,
+                    totalScans: 0,
+                    activities: []
+                };
+            });
+        }
+        
+        function startRealTimeTracking() {
+            updateDashboardDisplay();
+            
+            realTimeInterval = setInterval(() => {
+                simulateRealTableActivity();
+                updateDashboardDisplay();
+            }, 5000);
+            
+            document.getElementById('live-status').innerHTML = '🟢 LIVE TRACKING';
+            console.log('Real-time table tracking started');
+        }
+        
+        function stopRealTimeTracking() {
+            if (realTimeInterval) {
+                clearInterval(realTimeInterval);
+                realTimeInterval = null;
+            }
+            document.getElementById('live-status').innerHTML = '🔴 STOPPED';
+        }
+        
+        function simulateRealTableActivity() {
+            const activeTables = Object.keys(tableIntelligence.activeSessions);
+            
+            activeTables.forEach(tableNumber => {
+                const table = tableIntelligence.activeSessions[tableNumber];
+                
+                if (Math.random() > 0.7) {
+                    if (table.status === 'available' && Math.random() > 0.6) {
+                        startTableSession(tableNumber);
+                    } else if (table.status === 'active') {
+                        if (Math.random() > 0.8) {
+                            changeTableActivity(tableNumber);
+                        } else if (Math.random() > 0.95) {
+                            endTableSession(tableNumber);
+                        }
+                    }
+                }
+            });
+        }
+        
+        function startTableSession(tableNumber) {
+            const table = tableIntelligence.activeSessions[tableNumber];
+            const activity = getRandomActivity();
+            
+            table.status = 'active';
+            table.sessionStart = new Date();
+            table.lastActivity = new Date();
+            table.currentActivity = activity;
+            table.customerCount = Math.floor(Math.random() * 4) + 1;
+            
+            addActivity(tableNumber, activity, 'session_start');
+        }
+        
+        function changeTableActivity(tableNumber) {
+            const table = tableIntelligence.activeSessions[tableNumber];
+            const newActivity = getRandomActivity();
+            
+            table.currentActivity = newActivity;
+            table.lastActivity = new Date();
+            table.totalScans++;
+            tableIntelligence.totalScans++;
+            
+            addActivity(tableNumber, newActivity, 'activity_change');
+        }
+        
+        function endTableSession(tableNumber) {
+            const table = tableIntelligence.activeSessions[tableNumber];
+            
+            table.status = 'available';
+            table.currentActivity = null;
+            table.sessionStart = null;
+            table.customerCount = 0;
+            
+            addActivity(tableNumber, { text: 'Session ended', type: 'end' }, 'session_end');
+        }
+        
+        function addActivity(tableNumber, activity, eventType) {
+            tableIntelligence.scanHistory.unshift({
+                tableNumber: tableNumber,
+                activity: activity,
+                timestamp: new Date(),
+                eventType: eventType
+            });
+            
+            if (tableIntelligence.scanHistory.length > 50) {
+                tableIntelligence.scanHistory = tableIntelligence.scanHistory.slice(0, 50);
+            }
+        }
+        
+        function getRandomActivity() {
+            const activities = [
+                { type: 'menu', text: 'Viewing menu', icon: '🍽️', priority: 'normal' },
+                { type: 'service', text: 'Requesting service', icon: '🔔', priority: 'urgent' },
+                { type: 'wifi', text: 'Connecting to WiFi', icon: '📶', priority: 'low' },
+                { type: 'review', text: 'Leaving review', icon: '⭐', priority: 'high' },
+                { type: 'booking', text: 'Making reservation', icon: '📅', priority: 'high' },
+                { type: 'specials', text: 'Viewing specials', icon: '🎉', priority: 'normal' }
+            ];
+            
+            return activities[Math.floor(Math.random() * activities.length)];
+        }
+        
+        // =====================================
+        // DASHBOARD DISPLAY UPDATES
+        // =====================================
+        
+        function updateDashboardDisplay() {
+            updateStatCards();
+            updateTableStatusGrid();
+            updateActivityFeed();
+        }
+        
+        function updateStatCards() {
+            const activeTables = Object.values(tableIntelligence.activeSessions)
+                .filter(table => table.status === 'active').length;
+            const avgSessionTime = calculateAverageSessionTime();
+            
+            document.getElementById('active-tables').textContent = activeTables;
+            document.getElementById('total-scans').textContent = tableIntelligence.totalScans;
+            document.getElementById('pending-alerts').textContent = tableIntelligence.serviceAlerts.length;
+            document.getElementById('avg-session').textContent = `${avgSessionTime}m`;
+        }
+        
+        function updateTableStatusGrid() {
+            const grid = document.getElementById('table-status-grid');
+            grid.innerHTML = '';
+            
+            restaurantData.selectedTables.forEach(tableNumber => {
+                const table = tableIntelligence.activeSessions[tableNumber];
+                const statusCard = createTableStatusCard(table);
+                grid.appendChild(statusCard);
+            });
+        }
+        
+        function createTableStatusCard(table) {
+            const div = document.createElement('div');
+            let statusClass = 'table-status-card';
+            
+            if (table.status === 'active') {
+                statusClass += ' active';
+            }
+            
+            div.className = statusClass;
+            
+            const sessionDuration = table.sessionStart ? 
+                Math.floor((new Date() - table.sessionStart) / 1000 / 60) : 0;
+            
+            div.innerHTML = `
+                <div class="table-number">Table ${table.tableNumber}</div>
+                <div class="table-activity">
+                    ${table.status === 'active' ? 
+                        `<div>${table.currentActivity ? table.currentActivity.icon + ' ' + table.currentActivity.text : 'Active'}</div>
+                         <div style="font-size: 0.8em; margin-top: 5px;">${sessionDuration}m • ${table.customerCount} guests</div>` :
+                        '<div style="color: rgba(255,255,255,0.6);">Available</div>'
+                    }
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        function updateActivityFeed() {
+            const feed = document.getElementById('activity-feed');
+            
+            if (tableIntelligence.scanHistory.length === 0) {
+                feed.innerHTML = '<div style="text-align: center; opacity: 0.7; padding: 20px;">No customer activity yet...</div>';
+                return;
+            }
+            
+            const recentActivities = tableIntelligence.scanHistory.slice(0, 8);
+            feed.innerHTML = recentActivities.map(activity => `
+                <div class="activity-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>Table ${activity.tableNumber}</strong> - ${activity.activity.text}
+                        </div>
+                        <div class="activity-time">${getTimeAgo(activity.timestamp)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function calculateAverageSessionTime() {
+            const activeSessions = Object.values(tableIntelligence.activeSessions)
+                .filter(table => table.status === 'active' && table.sessionStart);
+            
+            if (activeSessions.length === 0) return 0;
+            
+            const totalDuration = activeSessions.reduce((sum, table) => {
+                return sum + ((new Date() - table.sessionStart) / 1000 / 60);
+            }, 0);
+            
+            return Math.floor(totalDuration / activeSessions.length);
+        }
+        
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((new Date() - timestamp) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            return `${Math.floor(seconds / 86400)}d ago`;
+        }
+        
+        // =====================================
+        // CUSTOMER SIMULATION & TESTING
+        // =====================================
+        
+        function simulateCustomerActivity() {
+            if (restaurantData.selectedTables.length === 0) {
+                alert('Please generate table QRs first!');
+                return;
+            }
+            
+            const interactions = Math.floor(Math.random() * 3) + 3;
+            
+            for (let i = 0; i < interactions; i++) {
+                setTimeout(() => {
+                    const tableNumber = restaurantData.selectedTables[
+                        Math.floor(Math.random() * restaurantData.selectedTables.length)
+                    ];
+                    
+                    if (tableIntelligence.activeSessions[tableNumber]) {
+                        if (tableIntelligence.activeSessions[tableNumber].status === 'available') {
+                            startTableSession(tableNumber);
+                        } else {
+                            changeTableActivity(tableNumber);
+                        }
+                    }
+                }, i * 2000);
+            }
+            
+            alert(`🧪 Simulating ${interactions} customer interactions across your tables!\n\nWatch the dashboard update in real-time:\n• Table sessions starting\n• Activities changing\n• Service alerts generating\n\nThis shows exactly what you'll see with real customers!`);
+        }
+        
+        // =====================================
+        // DOWNLOAD & EXPORT FUNCTIONS
+        // =====================================
+        
+        function downloadBrandedCards() {
+    if (Object.keys(generatedQRs).length === 0) {
+        alert('Please generate branded cards first!');
+        return;
+    }
+    
+    const selectedQRTypes = getSelectedQRTypes();
+    const totalQRs = restaurantData.selectedTables.length * selectedQRTypes.length;
+    
+    let downloadCount = 0;
+    
+    // Generate and download individual QR code images
+    restaurantData.selectedTables.forEach(tableNumber => {
+        selectedQRTypes.forEach(qrType => {
+            const qrKey = `table${tableNumber}_${qrType}`;
+            if (generatedQRs[qrKey]) {
+                setTimeout(() => {
+                    // Create just the QR code for download
+                    const canvas = document.createElement('canvas');
+                    const qr = new QRious({
+                        element: canvas,
+                        value: generatedQRs[qrKey].trackingUrl,
+                        size: 400, // Higher resolution for print
+                        background: '#ffffff',
+                        foreground: '#000000'
+                    });
+                    
+                    // Download the QR code image
+                    const link = document.createElement('a');
+                    link.download = `${restaurantData.name.replace(/[^a-zA-Z0-9]/g, '_')}_Table_${tableNumber.toString().padStart(2, '0')}_${qrType.charAt(0).toUpperCase() + qrType.slice(1)}_QR.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    downloadCount++;
+                }, downloadCount * 300); // Stagger downloads
+            }
+        });
+    });
+    
+    alert(`Downloading ${totalQRs} high-resolution QR code images!\n\nEach QR code is 400x400px, perfect for printing.\n\nFiles are named by table and QR type for easy organization.\n\nUse the Print function for complete branded cards.`);
+}
+
+function displayBrandedCardsPreview() {
+    const previewSection = document.getElementById('cards-preview');
+    const container = document.getElementById('cards-container');
+    
+    container.innerHTML = '';
+    
+    // Show only the first table as a preview
+    const firstTable = restaurantData.selectedTables[0];
+    if (firstTable) {
+        getSelectedQRTypes().forEach(qrType => {
+            const qrKey = `table${firstTable}_${qrType}`;
+            if (generatedQRs[qrKey]) {
+                const freshCard = createBrandedQRCard(
+                    restaurantData.name, 
+                    firstTable, 
+                    qrType, 
+                    generatedQRs[qrKey].trackingUrl
+                );
+                if (freshCard) {
+                    container.appendChild(freshCard);
+                }
+            }
+        });
+    }
+    
+    // Show the preview section
+    previewSection.style.display = 'block';
+    
+    // Scroll to preview
+    previewSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function hideBrandedCards() {
+    document.getElementById('cards-preview').style.display = 'none';
+}
+
+  function printBrandedCards() {
+    if (Object.keys(generatedQRs).length === 0) {
+        alert('Please generate branded cards first!');
+        return;
+    }
+    
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    
+    // Generate fresh cards and convert canvas to images
+    let cardsHTML = '';
+    let cardCount = 0;
+    const totalCards = restaurantData.selectedTables.length * getSelectedQRTypes().length;
+    
+    restaurantData.selectedTables.forEach(tableNumber => {
+        getSelectedQRTypes().forEach(qrType => {
+            const qrKey = `table${tableNumber}_${qrType}`;
+            if (generatedQRs[qrKey]) {
+                const freshCard = createBrandedQRCard(
+                    restaurantData.name, 
+                    tableNumber, 
+                    qrType, 
+                    generatedQRs[qrKey].trackingUrl
+                );
+                
+                if (freshCard) {
+                    // Convert canvas to image
+                    const canvas = freshCard.querySelector('canvas');
+                    if (canvas) {
+                        const img = document.createElement('img');
+                        img.src = canvas.toDataURL();
+                        img.style.width = '180px';
+                        img.style.height = '180px';
+                        img.style.borderRadius = '8px';
+                        canvas.parentNode.replaceChild(img, canvas);
+                    }
+                    cardsHTML += freshCard.outerHTML;
+                }
+            }
+        });
+    });
+    
+    const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Branded QR Cards - ${restaurantData.name}</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+                .cards-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+                .qr-card { width: 300px; height: 400px; border: 3px solid; margin: 10px; padding: 20px; background: white; border-radius: 15px; text-align: center; }
+                .qr-card.menu { border-color: #1f2937; }
+                .qr-card.service { border-color: #dc2626; }
+                .qr-card.wifi { border-color: #2563eb; }
+                .qr-card.review { border-color: #16a34a; }
+                .qr-card.booking { border-color: #7c3aed; }
+                .qr-card.specials { border-color: #f59e0b; }
+                .restaurant-header { margin-bottom: 15px; }
+                .restaurant-name { font-size: 1.3em; font-weight: bold; color: #1f2937; margin-bottom: 5px; }
+                .table-number { font-size: 1.1em; color: #6b7280; font-weight: 600; }
+                .qr-container { margin: 20px 0; display: flex; justify-content: center; }
+                .qr-type-header { margin: 15px 0 10px 0; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; color: white; }
+                .qr-type-header.menu { background: #1f2937; }
+                .qr-type-header.service { background: #dc2626; }
+                .qr-type-header.wifi { background: #2563eb; }
+                .qr-type-header.review { background: #16a34a; }
+                .qr-type-header.booking { background: #7c3aed; }
+                .qr-type-header.specials { background: #f59e0b; }
+                .call-to-action { font-size: 1em; font-weight: 600; color: #374151; line-height: 1.3; margin-bottom: 10px; }
+                .sub-text { font-size: 0.8em; color: #6b7280; line-height: 1.2; }
+                @media print { .qr-card { margin: 5px; break-inside: avoid; } }
+            </style>
+        </head>
+        <body>
+            <h1>${restaurantData.name} - Branded QR Cards</h1>
+            <div class="cards-container">
+                ${cardsHTML}
+            </div>
+        </body>
+        </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 1000);
+}
+        // =====================================
+        // NAVIGATION FUNCTIONS
+        // =====================================
+        
+        let accountMenuOpen = false;
+
+        function initializeNavigation() {
+            loadUserData();
+            
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.account-dropdown')) {
+                    closeAccountMenu();
+                }
+            });
+        }
+
+        function loadUserData() {
+            try {
+                const userData = JSON.parse(localStorage.getItem('qr_user_data') || '{}');
+                const restaurantName = localStorage.getItem('user_restaurant_name') || userData.companyName || 'Your Restaurant';
+                const userName = userData.name || 'Restaurant Owner';
+                const userEmail = userData.email || 'owner@restaurant.com';
+                const userPlan = userData.plan || 'Professional';
+                
+                document.getElementById('navRestaurantName').textContent = restaurantName;
+                document.getElementById('navUserName').textContent = userName.split(' ')[0];
+                document.getElementById('menuUserName').textContent = userName;
+                document.getElementById('menuUserEmail').textContent = userEmail;
+                document.getElementById('menuUserPlan').textContent = userPlan + ' Plan';
+                
+            } catch (error) {
+                console.error('Failed to load user data:', error);
+                document.getElementById('navRestaurantName').textContent = 'Demo Restaurant';
+                document.getElementById('navUserName').textContent = 'Demo';
+                document.getElementById('menuUserName').textContent = 'Demo User';
+                document.getElementById('menuUserEmail').textContent = 'demo@example.com';
+            }
+        }
+
+        function toggleAccountMenu() {
+            if (accountMenuOpen) {
+                closeAccountMenu();
+            } else {
+                openAccountMenu();
+            }
+        }
+
+        function openAccountMenu() {
+            document.getElementById('accountMenu').style.display = 'block';
+            document.getElementById('accountChevron').style.transform = 'rotate(180deg)';
+            accountMenuOpen = true;
+        }
+
+        function closeAccountMenu() {
+            document.getElementById('accountMenu').style.display = 'none';
+            document.getElementById('accountChevron').style.transform = 'rotate(0deg)';
+            accountMenuOpen = false;
+        }
+
+        function openAccountSettings() {
+            closeAccountMenu();
+            alert('Account Settings\n\nFeatures coming soon:\n• Update restaurant information\n• Change password\n• Notification preferences\n• User permissions');
+        }
+
+        function openBilling() {
+            closeAccountMenu();
+            alert('Billing & Plans\n\nCurrent Plan: Professional\n\nFeatures:\n• View billing history\n• Update payment method\n• Upgrade/downgrade plans\n• Usage analytics');
+        }
+
+        function openHelp() {
+            closeAccountMenu();
+            alert('Help & Support\n\nGet help with:\n• System setup and configuration\n• Staff training resources\n• Technical support\n• Best practices guide\n\nContact: support@restaurantintelligence.com');
+        }
+
+        function confirmLogout() {
+            closeAccountMenu();
+            
+            if (confirm('Are you sure you want to sign out?\n\nYou will need to log in again to access the system.')) {
+                performLogout();
+            }
+        }
+
+        function performLogout() {
+            try {
+                localStorage.removeItem('qr_user_data');
+                localStorage.removeItem('user_restaurant_name');
+                localStorage.removeItem('user_restaurant_id');
+                localStorage.removeItem('auth_token');
+                
+                sessionStorage.clear();
+                
+                alert('You have been signed out successfully.\n\nRedirecting to login page...');
+                
+                window.location.href = 'login.html';
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout completed. Please close your browser for security.');
+            }
+        }
+        
+        // =====================================
+        // INITIALIZATION
+        // =====================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            generateTableLayout();
+            updateQRCount();
+            
+const authData = CONFIG.getAuthenticatedUser();
+    if (authData.isAuthenticated) {
+        const restaurantNameField = document.getElementById('restaurant-name');
+        restaurantNameField.value = authData.restaurantName;
+        restaurantNameField.setAttribute('readonly', true);
+        restaurantNameField.style.backgroundColor = '#f3f4f6';
+        restaurantNameField.style.cursor = 'not-allowed';
+        restaurantNameField.style.border = '2px solid #10b981';
+        
+        console.log('Restaurant name auto-populated:', authData.restaurantName);
+    }
+            // Auto-populate WiFi name
+            document.getElementById('restaurant-name').addEventListener('input', function() {
+                const name = this.value.trim();
+                if (name && !document.getElementById('wifi-name').value) {
+                    document.getElementById('wifi-name').value = `${name.replace(/[^a-zA-Z0-9]/g, '_')}_WiFi`;
+                }
+            });
+            
+           
+// Initialize navigation and icons
+            setTimeout(initializeNavigation, 100);
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            
+            console.log('Table Intelligence Pack with Branded QR Cards initialized');
+            console.log('Features:');
+            console.log('• Professional branded QR cards with restaurant identity');
+            console.log('• Color-coded borders for easy QR type identification');
+            console.log('• Clear call-to-action text for customer guidance');
+            console.log('• Print-ready format for immediate deployment');
+            console.log('• Full table-level activity tracking integration');
+            console.log('• Organized download bundles by table');
+            console.log('• Real-time intelligence dashboard');
+        });
+        
+        // Export functions for integration
+        window.generateEnhancedTableQR = function(restaurantId, restaurantName, tableNumber, qrType) {
+            const baseUrl = CONFIG.getApiBaseUrl();
+const trackingUrl = `${baseUrl}/qr/${restaurantId}/table/${tableNumber}/${qrType}`;
+            
+            return {
+                trackingUrl: trackingUrl,
+                brandedCard: createBrandedQRCard(restaurantName, tableNumber, qrType, trackingUrl),
+                printReady: true,
+                branded: true,
+                professional: true,
+                qrType: qrType,
+                tableNumber: tableNumber
+            };
+        };
+        
+        window.qrTypeConfigs = qrTypeConfigs;
+        window.createBrandedQRCard = createBrandedQRCard;
+    </script>
+
+<script src="config-client.js"></script>
+<script>
+  const CONFIG = window.CONFIG;
+
+  window.addEventListener('load', async () => {
+    if (!localStorage.getItem('auth_token')) {
+      window.location.href = '/login.html';
+      return;
+    }
+
+    const { restaurantId } = CONFIG.getAuthenticatedUser();
+    const form = document.getElementById('restaurant-config-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const qrTypes = Array.from(document.querySelectorAll('input[name="qr-type"]:checked')).map(input => input.value);
+      const menuUrl = document.getElementById('menu-url').value;
+
+      for (const qrType of qrTypes) {
+        const data = await CONFIG.generateQRCode(restaurantId, qrType, menuUrl, 1); // Example table_number
+        if (data.success) {
+          console.log(`Generated QR: ${data.tracking_url}`);
+        }
+      }
+      alert('QR codes generated!');
+    });
+  });
+</script>
+
+</body>
+</html>

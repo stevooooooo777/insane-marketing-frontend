@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Evolution - From Basic to AI-Powered Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(30, 144, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            min-height: 80vh;
+        }
+        
+        .hero-text {
+            color: white;
+        }
+        
+        .overline {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #64ffda;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: fadeInDown 1s ease;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: 4em;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-description {
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #b0b8c1;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            animation: fadeInUp 1s ease 0.6s backwards;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .hero-visual {
+            perspective: 1500px;
+            position: relative;
+            animation: fadeIn 1s ease 0.8s backwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .transformation-container {
+            position: relative;
+            height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .old-qr {
+            position: absolute;
+            left: -50px;
+            top: 50%;
+            transform: translateY(-50%) scale(0.8);
+            opacity: 0.3;
+            animation: floatLeft 3s ease-in-out infinite;
+            filter: blur(1px);
+        }
+        
+        @keyframes floatLeft {
+            0%, 100% { transform: translateY(-50%) scale(0.8); }
+            50% { transform: translateY(-55%) scale(0.8); }
+        }
+        
+        .qr-old {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border: 3px solid #333;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            gap: 2px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .qr-pixel {
+            background: #333;
+        }
+        
+        .old-label {
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stage-description {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 200px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+        
+        .arrow-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+        
+        .evolution-arrow {
+            font-size: 4em;
+            color: #64ffda;
+            animation: arrowPulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(100, 255, 218, 0.5));
+        }
+        
+        @keyframes arrowPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        .hub-3d {
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: float3d 4s ease-in-out infinite;
+        }
+        
+        @keyframes float3d {
+            0%, 100% { 
+                transform: translateY(-50%) rotateY(-15deg);
+            }
+            50% { 
+                transform: translateY(-55%) rotateY(-15deg);
+            }
+        }
+        
+        .hub-container {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        
+        .hub-center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            animation: glow 3s ease-in-out infinite;
+            z-index: 10;
+        }
+        
+        @keyframes glow {
+            0%, 100% { 
+                box-shadow: 0 30px 60px rgba(102, 126, 234, 0.4),
+                           0 0 60px rgba(102, 126, 234, 0.3);
+            }
+            50% { 
+                box-shadow: 0 30px 80px rgba(102, 126, 234, 0.6),
+                           0 0 100px rgba(102, 126, 234, 0.5);
+            }
+        }
+        
+        .hub-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+        
+        .hub-label {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        
+        .orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: rotate 20s linear infinite;
+            transform-style: preserve-3d;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+        
+        .service-card {
+            position: absolute;
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.85em;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            left: 50%;
+            top: 50%;
+            transform-origin: 0 0;
+        }
+        
+        .card-icon {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .service-card:nth-child(1) {
+            transform: translate(-50%, -50%) rotateY(0deg) translateZ(250px);
+        }
+        
+        .service-card:nth-child(2) {
+            transform: translate(-50%, -50%) rotateY(72deg) translateZ(250px);
+        }
+        
+        .service-card:nth-child(3) {
+            transform: translate(-50%, -50%) rotateY(144deg) translateZ(250px);
+        }
+        
+        .service-card:nth-child(4) {
+            transform: translate(-50%, -50%) rotateY(216deg) translateZ(250px);
+        }
+        
+        .service-card:nth-child(5) {
+            transform: translate(-50%, -50%) rotateY(288deg) translateZ(250px);
+        }
+        
+        .hub-3d .stage-description {
+            width: 300px;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.95em;
+            line-height: 1.6;
+            bottom: -120px;
+        }
+        
+        .stage-description strong {
+            color: #64ffda;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 60px;
+            animation: fadeInUp 1s ease 0.8s backwards;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #64ffda;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #8892b0;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+            
+            h1 {
+                font-size: 3em;
+            }
+            
+            .transformation-container {
+                height: 500px;
+            }
+            
+            .hub-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .hub-center {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+            }
+            
+            .hero-description {
+                font-size: 1.1em;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="overline">The Evolution of Customer Connection</span>
+                    <h1>
+                        From Basic Black & White<br>
+                        to <span class="gradient-text">AI-Powered 3D<br>Customer Service Hub</span>
+                    </h1>
+                    <p class="hero-description">
+                        Say goodbye to static QR codes. Welcome to the future of customer engagement—a fully interactive, AI-driven 3D central hub that transforms every interaction into an immersive experience. Privacy-first. GDPR compliant. Zero app downloads.
+                    </p>
+                    <button class="cta-button" onclick="alert('Connect to your booking/demo system')">Experience the Hub →</button>
+                    
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number">10x</div>
+                            <div class="stat-label">Engagement Rate</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Privacy Protected</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">App Required</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="transformation-container">
+                        <div class="old-qr">
+                            <div class="qr-old">
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                                <div class="qr-pixel"></div>
+                                <div></div>
+                                <div class="qr-pixel"></div>
+                            </div>
+                            <div class="old-label">Basic QR</div>
+                            <div class="stage-description">Static. One function.</div>
+                        </div>
+                        
+                        <div class="arrow-container">
+                            <div class="evolution-arrow">→</div>
+                            <div class="stage-description" style="top: 100px; color: #64ffda; font-weight: 600;">Digital Enhancement<br>Basic Interactivity</div>
+                        </div>
+                        
+                        <div class="hub-3d">
+                            <div class="hub-container">
+                                <div class="hub-center">
+                                    <div class="hub-icon">🎯</div>
+                                    <div class="hub-label">Customer Hub</div>
+                                </div>
+                                
+                                <div class="orbit">
+                                    <div class="service-card">
+                                        <div class="card-icon">🤖</div>
+                                        <div>AI Support</div>
+                                    </div>
+                                    <div class="service-card">
+                                        <div class="card-icon">📊</div>
+                                        <div>Analytics</div>
+                                    </div>
+                                    <div class="service-card">
+                                        <div class="card-icon">🎨</div>
+                                        <div>Branding</div>
+                                    </div>
+                                    <div class="service-card">
+                                        <div class="card-icon">🔒</div>
+                                        <div>Privacy</div>
+                                    </div>
+                                    <div class="service-card">
+                                        <div class="card-icon">⚡</div>
+                                        <div>Instant</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stage-description">
+                                <strong>Fully Interactive 3D Hub</strong><br>
+                                AI-powered personalization<br>
+                                Real-time customer insights<br>
+                                Privacy-first architecture<br>
+                                Zero app downloads required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

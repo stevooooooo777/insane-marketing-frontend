@@ -1,0 +1,8 @@
+
+
+# API proxy to Railway backend
+/api/*  https://qr-tracking-backend-production.up.railway.app/api/:splat  200
+# QR scan redirects to Railway backend (FIXED - no more loop)  
+/qr/*   https://qr-tracking-backend-production.up.railway.app/qr/:splat  200
+# Single Page App routing - keep this last
+/*      /index.html  200

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Command Center</title>
+<script src="config-client.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .welcome-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+
+        .welcome-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .control-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .control-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .operations .section-icon {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .analytics .section-icon {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .tools .section-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .growth .section-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .section-description {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #374151;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            transform: translateX(5px);
+        }
+
+        .priority-alert {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .priority-alert .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .priority-alert .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .new-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .insight-card {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .insight-title {
+            font-weight: bold;
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-text {
+            color: #0c4a6e;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">🍽️ Restaurant Command Center</div>
+            <div class="user-info">
+                <span id="restaurantName">Loading...</span>
+                <button onclick="logout()" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome back! 👋</h1>
+            <p class="welcome-subtitle">Your restaurant command center - everything you need to run operations, grow revenue, and delight customers.</p>
+            
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="todayScans">--</div>
+                    <div class="stat-label">QR Scans Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeTables">--</div>
+                    <div class="stat-label">Active Tables</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="serviceAlerts">--</div>
+                    <div class="stat-label">Service Alerts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="weekGrowth">--</div>
+                    <div class="stat-label">Week Growth</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-grid">
+            <!-- Live Operations -->
+            <div class="control-section operations">
+                <div class="section-header">
+                    <div class="section-icon">⚡</div>
+                    <div>
+                        <div class="section-title">Live Operations</div>
+                    </div>
+                </div>
+                <p class="section-description">Real-time table monitoring, service alerts, and staff coordination. Handle urgent situations as they happen.</p>
+                
+                <div id="urgentAlerts"></div>
+                
+                <div class="action-buttons">
+                    <a href="table-control-center.html" class="action-btn">
+                        <i data-lucide="monitor"></i>
+                        <span>Table Control Center</span>
+                        <span class="new-badge" id="alertBadge" style="display: none;">NEW</span>
+                    </a>
+                    <a href="#" onclick="checkServiceRequests()" class="action-btn">
+                        <i data-lucide="bell"></i>
+                        <span>Service Requests</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Business Intelligence -->
+            <div class="control-section analytics">
+                <div class="section-header">
+                    <div class="section-icon">📊</div>
+                    <div>
+                        <div class="section-title">Business Intelligence</div>
+                    </div>
+                </div>
+                <p class="section-description">Revenue analytics, customer insights, and performance metrics. Understand what drives your business.</p>
+                
+                <div class="insights-grid" id="businessInsights">
+                    <div class="insight-card">
+                        <div class="insight-title">Revenue Opportunity</div>
+                        <div class="insight-text">Peak hours show 23% capacity. Consider promoting lunch specials.</div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="dashboard.html" class="action-btn">
+                        <i data-lucide="trending-up"></i>
+                        <span>Revenue Dashboard</span>
+                    </a>
+                    <a href="#" onclick="viewPredictions()" class="action-btn">
+                        <i data-lucide="crystal-ball"></i>
+                        <span>Predictive Analytics</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- QR Code Tools -->
+            <div class="control-section tools">
+                <div class="section-header">
+                    <div class="section-icon">🔧</div>
+                    <div>
+                        <div class="section-title">QR Code Tools</div>
+                    </div>
+                </div>
+                <p class="section-description">Generate, manage, and track QR codes for menus, tables, and marketing campaigns.</p>
+                
+                <div class="action-buttons">
+                    <a href="restaurant-pack.html" class="action-btn">
+                        <i data-lucide="qr-code"></i>
+                        <span>Basic QR Pack (Menu, Wi-Fi, etc.)</span>
+                    </a>
+                    <a href="table-intelligence-pack.html" class="action-btn">
+                        <i data-lucide="brain"></i>
+                        <span>Table Intelligence Pack</span>
+                    </a>
+                    <a href="#" onclick="manageQRCodes()" class="action-btn">
+                        <i data-lucide="settings"></i>
+                        <span>Manage Existing QR Codes</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Growth & Marketing -->
+            <div class="control-section growth">
+                <div class="section-header">
+                    <div class="section-icon">🚀</div>
+                    <div>
+                        <div class="section-title">Growth & Marketing</div>
+                    </div>
+                </div>
+                <p class="section-description">Customer feedback, review management, and marketing automation to grow your restaurant.</p>
+                
+                <div class="action-buttons">
+                    <a href="#" onclick="viewFeedback()" class="action-btn">
+                        <i data-lucide="star"></i>
+                        <span>Customer Feedback</span>
+                    </a>
+                    <a href="#" onclick="marketingCampaigns()" class="action-btn">
+                        <i data-lucide="megaphone"></i>
+                        <span>Marketing Campaigns</span>
+                    </a>
+                    <a href="#" onclick="loyaltyProgram()" class="action-btn">
+                        <i data-lucide="gift"></i>
+                        <span>Loyalty Program</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
+            lucide.createIcons();
+            
+            // Load restaurant data
+            loadRestaurantData();
+            
+            // Load quick stats
+            loadQuickStats();
+            
+            // Check for urgent alerts
+            checkUrgentAlerts();
+            
+            // Update data every 30 seconds
+            setInterval(() => {
+                loadQuickStats();
+                checkUrgentAlerts();
+            }, 30000);
+        });
+
+        async function loadRestaurantData() {
+            try {
+                const user = CONFIG.getAuthenticatedUser();
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                document.getElementById('restaurantName').textContent = user.restaurant_name || user.company_name || 'Your Restaurant';
+                
+            } catch (error) {
+                console.error('Error loading restaurant data:', error);
+            }
+        }
+
+        async function loadQuickStats() {
+            try {
+                const user = CONFIG.getAuthenticatedUser();
+                if (!user) return;
+                
+                const restaurantId = user.restaurant_id;
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                // Load today's scans
+                const scansResponse = await fetch(`${apiUrl}/api/analytics/${restaurantId}/scans-today`);
+                if (scansResponse.ok) {
+                    const scansData = await scansResponse.json();
+                    document.getElementById('todayScans').textContent = scansData.count || '0';
+                }
+                
+                // Load active tables
+                const tablesResponse = await fetch(`${apiUrl}/api/tables/${restaurantId}/active`);
+                if (tablesResponse.ok) {
+                    const tablesData = await tablesResponse.json();
+                    document.getElementById('activeTables').textContent = tablesData.count || '0';
+                }
+                
+                // Load service alerts
+                const alertsResponse = await fetch(`${apiUrl}/api/service/alerts/${restaurantId}`);
+                if (alertsResponse.ok) {
+                    const alertsData = await alertsResponse.json();
+                    document.getElementById('serviceAlerts').textContent = alertsData.count || '0';
+                    
+                    // Show badge if there are alerts
+                    const alertBadge = document.getElementById('alertBadge');
+                    if (alertsData.count > 0) {
+                        alertBadge.style.display = 'inline';
+                        alertBadge.textContent = alertsData.count;
+                    }
+                }
+                
+                // Calculate week growth
+                const weekGrowthResponse = await fetch(`${apiUrl}/api/analytics/${restaurantId}/week-growth`);
+                if (weekGrowthResponse.ok) {
+                    const growthData = await weekGrowthResponse.json();
+                    document.getElementById('weekGrowth').textContent = `+${growthData.percentage || 0}%`;
+                }
+                
+            } catch (error) {
+                console.error('Error loading quick stats:', error);
+            }
+        }
+
+        async function checkUrgentAlerts() {
+            try {
+                const user = CONFIG.getAuthenticatedUser();
+                if (!user) return;
+                
+                const restaurantId = user.restaurant_id;
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                const response = await fetch(`${apiUrl}/api/service/urgent/${restaurantId}`);
+                if (response.ok) {
+                    const alerts = await response.json();
+                    
+                    const urgentContainer = document.getElementById('urgentAlerts');
+                    if (alerts.length > 0) {
+                        urgentContainer.innerHTML = `
+                            <div class="priority-alert">
+                                <i data-lucide="alert-triangle"></i>
+                                <div>
+                                    <strong>Urgent Alert!</strong><br>
+                                    Table ${alerts[0].table_number} needs immediate attention
+                                </div>
+                                <a href="table-control-center.html" class="action-btn">
+                                    Handle Now
+                                </a>
+                            </div>
+                        `;
+                        lucide.createIcons();
+                    } else {
+                        urgentContainer.innerHTML = '';
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error checking urgent alerts:', error);
+            }
+        }
+
+        // Navigation functions
+        function checkServiceRequests() {
+            window.location.href = 'table-control-center.html#service-requests';
+        }
+
+        function viewPredictions() {
+            window.location.href = 'dashboard.html#predictions';
+        }
+
+        function manageQRCodes() {
+            alert('QR Code management coming soon! For now, use the generation tools to create new codes.');
+        }
+
+        function viewFeedback() {
+            alert('Customer feedback system coming soon!');
+        }
+
+        function marketingCampaigns() {
+            alert('Marketing automation coming soon!');
+        }
+
+        function loyaltyProgram() {
+            alert('Loyalty program features coming soon!');
+        }
+
+        function logout() {
+            localStorage.removeItem('qr_user_token');
+            localStorage.removeItem('user_data');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Professional QR Business Generator</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .step-circle.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .step-circle.inactive {
+            background-color: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .step-line {
+            width: 48px;
+            height: 4px;
+            transition: all 0.3s;
+        }
+
+        .step-line.active {
+            background-color: #2563eb;
+        }
+
+        .step-line.inactive {
+            background-color: #e5e7eb;
+        }
+
+        .step-labels {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            text-align: center;
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .step-label {
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .step-label.active {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .step-label.inactive {
+            color: #6b7280;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-title {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .step-title h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .step-title p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .qr-type-button {
+            padding: 24px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .qr-type-button:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-type-button.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        .qr-type-icon {
+            width: 32px;
+            height: 32px;
+            color: #2563eb;
+            margin-bottom: 12px;
+        }
+
+        .qr-type-button h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .qr-type-button p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .template-button {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .template-button:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .template-button.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        .template-color {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .template-color-inner {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: #2563eb;
+        }
+
+        .color-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-picker {
+            width: 48px;
+            height: 32px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .color-text {
+            flex: 1;
+            padding: 4px 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .preview-area {
+            background: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .preview-qr {
+            width: 192px;
+            height: 192px;
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pricing-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+        }
+
+        .pricing-total {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .qr-success {
+            width: 192px;
+            height: 192px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .btn-success {
+            background-color: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #047857;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .event-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-default {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .main-content {
+                padding: 24px;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .step-labels {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 Insane QR Business Generator Pro</h1>
+            <p>Create dynamic, trackable QR codes with advanced analytics</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-container">
+            <div class="progress-steps" id="progressSteps">
+                <div class="step-circle active" id="step-1">1</div>
+                <div class="step-line inactive" id="line-1"></div>
+                <div class="step-circle inactive" id="step-2">2</div>
+                <div class="step-line inactive" id="line-2"></div>
+                <div class="step-circle inactive" id="step-3">3</div>
+                <div class="step-line inactive" id="line-3"></div>
+                <div class="step-circle inactive" id="step-4">4</div>
+            </div>
+        </div>
+
+        <!-- Step Labels -->
+        <div class="step-labels">
+            <div class="step-label active">Choose Type</div>
+            <div class="step-label inactive">Set Up</div>
+            <div class="step-label inactive">Customize</div>
+            <div class="step-label inactive">Generate</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Step 1: Type Selection -->
+            <div class="step-content active" id="step1-content">
+                <div class="step-title">
+                    <h2>Choose Your Dynamic QR Code Type</h2>
+                    <p>Select the type of content you want to share</p>
+                </div>
+
+                <div class="section">
+                    <h3>🎨 Quick Templates</h3>
+                    <div class="grid grid-3" id="templates">
+                        <div class="template-button" data-template="restaurant" data-type="url" data-color="#FF6B35">
+                            <div class="template-color" style="background-color: #FF6B3520;">
+                                <div class="template-color-inner" style="background-color: #FF6B35;"></div>
+                            </div>
+                            <p><strong>Restaurant Menu</strong></p>
+                        </div>
+                        <div class="template-button" data-template="business" data-type="vcard" data-color="#2E86AB">
+                            <div class="template-color" style="background-color: #2E86AB20;">
+                                <div class="template-color-inner" style="background-color: #2E86AB;"></div>
+                            </div>
+                            <p><strong>Business Card</strong></p>
+                        </div>
+                        <div class="template-button" data-template="event" data-type="url" data-color="#A23B72">
+                            <div class="template-color" style="background-color: #A23B7220;">
+                                <div class="template-color-inner" style="background-color: #A23B72;"></div>
+                            </div>
+                            <p><strong>Event Registration</strong></p>
+                        </div>
+                        <div class="template-button" data-template="social" data-type="url" data-color="#F18F01">
+                            <div class="template-color" style="background-color: #F18F0120;">
+                                <div class="template-color-inner" style="background-color: #F18F01;"></div>
+                            </div>
+                            <p><strong>Social Media</strong></p>
+                        </div>
+                        <div class="template-button" data-template="wifi" data-type="wifi" data-color="#C73E1D">
+                            <div class="template-color" style="background-color: #C73E1D20;">
+                                <div class="template-color-inner" style="background-color: #C73E1D;"></div>
+                            </div>
+                            <p><strong>WiFi Access</strong></p>
+                        </div>
+                        <div class="template-button" data-template="feedback" data-type="url" data-color="#7209B7">
+                            <div class="template-color" style="background-color: #7209B720;">
+                                <div class="template-color-inner" style="background-color: #7209B7;"></div>
+                            </div>
+                            <p><strong>Customer Feedback</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>📱 QR Code Types</h3>
+                    <div class="grid grid-3" id="qrTypes">
+                        <div class="qr-type-button selected" data-type="url">
+                            <i data-lucide="globe" class="qr-type-icon"></i>
+                            <h3>Website URL</h3>
+                            <p>Link to any website or landing page</p>
+                        </div>
+                        <div class="qr-type-button" data-type="vcard">
+                            <i data-lucide="user" class="qr-type-icon"></i>
+                            <h3>Contact Card</h3>
+                            <p>Share your contact information</p>
+                        </div>
+                        <div class="qr-type-button" data-type="wifi">
+                            <i data-lucide="wifi" class="qr-type-icon"></i>
+                            <h3>WiFi Network</h3>
+                            <p>Share WiFi credentials instantly</p>
+                        </div>
+                        <div class="qr-type-button" data-type="sms">
+                            <i data-lucide="phone" class="qr-type-icon"></i>
+                            <h3>SMS Message</h3>
+                            <p>Pre-filled text message</p>
+                        </div>
+                        <div class="qr-type-button" data-type="email">
+                            <i data-lucide="mail" class="qr-type-icon"></i>
+                            <h3>Email</h3>
+                            <p>Pre-composed email message</p>
+                        </div>
+                        <div class="qr-type-button" data-type="text">
+                            <i data-lucide="file-text" class="qr-type-icon"></i>
+                            <h3>Plain Text</h3>
+                            <p>Display any text content</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Content Configuration -->
+            <div class="step-content" id="step2-content">
+                <div class="step-title">
+                    <h2>Configure Your Content</h2>
+                    <p>Set up the details for your QR code</p>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Basic Information</h3>
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">QR Code Name *</label>
+                            <input type="text" class="form-input" id="qrName" placeholder="e.g., Summer Campaign Menu">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Campaign</label>
+                            <input type="text" class="form-input" id="qrCampaign" placeholder="e.g., Summer 2025">
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="isDynamic" class="checkbox" checked>
+                        <label for="isDynamic">Create Dynamic QR Code (Recommended)</label>
+                        <i data-lucide="crown" style="width: 16px; height: 16px; color: #f59e0b;"></i>
+                    </div>
+                    <p style="font-size: 12px; color: #6b7280; margin-top: 4px; margin-left: 28px;">
+                        Dynamic QR codes allow you to change the destination URL after printing and provide detailed analytics.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 id="contentTitle">🎯 Website URL Configuration</h3>
+                    
+                    <!-- URL Content -->
+                    <div id="urlContent">
+                        <div class="form-group">
+                            <label class="form-label">Destination URL *</label>
+                            <input type="url" class="form-input" id="destinationUrl" placeholder="https://your-website.com">
+                        </div>
+                    </div>
+
+                    <!-- vCard Content -->
+                    <div id="vcardContent" class="hidden">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label">First Name *</label>
+                                <input type="text" class="form-input" id="firstName">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Name *</label>
+                                <input type="text" class="form-input" id="lastName">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Organization</label>
+                                <input type="text" class="form-input" id="organization">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-input" id="phone">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" id="email">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Website</label>
+                                <input type="url" class="form-input" id="website">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WiFi Content -->
+                    <div id="wifiContent" class="hidden">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Network Name (SSID) *</label>
+                                <input type="text" class="form-input" id="wifiSsid">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password *</label>
+                                <input type="text" class="form-input" id="wifiPassword">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Security Type</label>
+                                <select class="form-select" id="wifiSecurity">
+                                    <option value="WPA">WPA/WPA2</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">No Password</option>
+                                </select>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="wifiHidden" class="checkbox">
+                                <label for="wifiHidden">Hidden Network</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SMS Content -->
+                    <div id="smsContent" class="hidden">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Phone Number *</label>
+                                <input type="tel" class="form-input" id="smsNumber" placeholder="+1234567890">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Pre-filled Message</label>
+                                <input type="text" class="form-input" id="smsMessage" placeholder="Hello! I scanned your QR code...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Content -->
+                    <div id="emailContent" class="hidden">
+                        <div class="form-group">
+                            <label class="form-label">Email Address *</label>
+                            <input type="email" class="form-input" id="emailTo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-input" id="emailSubject">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message Body</label>
+                            <textarea class="form-textarea" id="emailBody"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="trackingCard">
+                    <h3>📊 Analytics & Tracking</h3>
+                    <div class="form-group">
+                        <label class="form-label">Custom Events to Track</label>
+                        <div class="events-grid">
+                            <div class="event-checkbox">
+                                <input type="checkbox" checked disabled> QR Code Scan
+                            </div>
+                            <div class="event-checkbox">
+                                <input type="checkbox" checked disabled> Page View
+                            </div>
+                            <div class="event-checkbox">
+                                <input type="checkbox" id="event-click"> Link Click
+                            </div>
+                            <div class="event-checkbox">
+                                <input type="checkbox" id="event-form"> Form Submission
+                            </div>
+                            <div class="event-checkbox">
+                                <input type="checkbox" id="event-purchase"> Purchase Made
+                            </div>
+                            <div class="event-checkbox">
+                                <input type="checkbox" id="event-signup"> Newsletter Signup
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Customization -->
+            <div class="step-content" id="step3-content">
+                <div class="step-title">
+                    <h2>Customize Your QR Code</h2>
+                    <p>Make it match your brand and stand out</p>
+                </div>
+
+                <div class="grid grid-2">
+                    <div>
+                        <div class="card">
+                            <h3>🎨 Colors</h3>
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Foreground Color</label>
+                                    <div class="color-input-group">
+                                        <input type="color" class="color-picker" id="foregroundColor" value="#000000">
+                                        <input type="text" class="color-text" id="foregroundText" value="#000000" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Background Color</label>
+                                    <div class="color-input-group">
+                                        <input type="color" class="color-picker" id="backgroundColor" value="#FFFFFF">
+                                        <input type="text" class="color-text" id="backgroundText" value="#FFFFFF" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>👁️ QR Preview</h3>
+                        <div class="preview-area">
+                            <div class="preview-qr">
+                                <i data-lucide="eye" style="width: 32px; height: 32px; color: #9ca3af;"></i>
+                                <p style="font-size: 14px; color: #6b7280;">QR Code Preview</p>
+                                <p style="font-size: 12px; color: #9ca3af;">Will appear here</p>
+                            </div>
+                            <p style="font-size: 14px; color: #6b7280;">Live preview of your QR code</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Generate -->
+            <div class="step-content" id="step4-content">
+                <div class="step-title">
+                    <h2>Review & Generate</h2>
+                    <p>Review your QR code details and generate</p>
+                </div>
+
+                <div class="grid grid-2">
+                    <div>
+                        <div class="card">
+                            <h3>📋 QR Code Summary</h3>
+                            <div class="summary-item">
+                                <span>Type:</span>
+                                <span id="summaryType">Website URL</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Name:</span>
+                                <span id="summaryName">Unnamed QR Code</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Campaign:</span>
+                                <span id="summaryCampaign">Default</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Dynamic:</span>
+                                <span id="summaryDynamic" class="status-badge status-success">Yes</span>
+                            </div>
+                            <div class="summary-item">
+<span>Events:</span>
+                                <span id="summaryEvents">2 tracked</span>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>💰 Pricing Breakdown</h3>
+                            <div class="pricing-item">
+                                <span>QR Code Generation:</span>
+                                <span>£2.00</span>
+                            </div>
+                            <div class="pricing-item" id="analyticsPrice">
+                                <span>Analytics Tracking (1 year):</span>
+                                <span>£12.00</span>
+                            </div>
+                            <div class="pricing-item" id="brandingPrice" style="display: none;">
+                                <span>Custom Branding:</span>
+                                <span>£3.00</span>
+                            </div>
+                            <div class="pricing-item" id="premiumPrice" style="display: none;">
+                                <span>Premium Events:</span>
+                                <span>£5.00</span>
+                            </div>
+                            <div class="pricing-total">
+                                <span>Total:</span>
+                                <span id="totalPrice">£14.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🎯 Generate QR Code</h3>
+                        
+                        <div id="generateArea">
+                            <div class="preview-qr">
+                                <i data-lucide="smartphone" style="width: 48px; height: 48px; color: #9ca3af;"></i>
+                                <p style="font-size: 14px; color: #6b7280;">Your QR code will</p>
+                                <p style="font-size: 14px; color: #6b7280;">appear here</p>
+                            </div>
+                            
+                            <button class="btn btn-primary btn-full" id="generateBtn">
+                                <span id="generateText">Generate QR Code - £14.00</span>
+                            </button>
+                            
+                            <p style="font-size: 12px; color: #6b7280; text-align: center; margin-top: 12px;">
+                                By generating, you agree to our terms and will be charged the total amount above.
+                            </p>
+                        </div>
+
+                        <div id="successArea" class="hidden">
+                            <div class="qr-success">
+                                <canvas id="generatedQRCanvas" width="160" height="160" style="background: white; border-radius: 8px; margin-bottom: 12px;"></canvas>
+                                <p style="font-weight: 600;">QR Generated!</p>
+                            </div>
+                            
+                            <div style="text-align: center; margin-bottom: 16px;">
+                                <p style="font-weight: 600;">QR Code ID: <span id="generatedId">qr_abc123</span></p>
+                                <p style="font-size: 14px; color: #6b7280;">Campaign: <span id="generatedCampaign">Summer 2025</span></p>
+                                <p style="font-size: 12px; color: #6b7280;">Tracking URL: <span id="trackingUrl" style="font-family: monospace;">https://insane.marketing/track/qr_abc123</span></p>
+                            </div>
+
+                            <!-- Download Options -->
+                            <div style="margin-bottom: 16px;">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; text-align: left;">Download Options</h4>
+                                <div class="grid grid-3" style="gap: 8px;">
+                                    <button class="btn btn-secondary" onclick="downloadQR('png', 'small')" style="font-size: 12px; padding: 8px;">
+                                        PNG Small<br><span style="font-size: 10px; opacity: 0.7;">300x300</span>
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="downloadQR('png', 'medium')" style="font-size: 12px; padding: 8px;">
+                                        PNG Medium<br><span style="font-size: 10px; opacity: 0.7;">600x600</span>
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="downloadQR('png', 'large')" style="font-size: 12px; padding: 8px;">
+                                        PNG Large<br><span style="font-size: 10px; opacity: 0.7;">1200x1200</span>
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="downloadQR('svg', 'vector')" style="font-size: 12px; padding: 8px;">
+                                        SVG Vector<br><span style="font-size: 10px; opacity: 0.7;">Scalable</span>
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="downloadQR('pdf', 'print')" style="font-size: 12px; padding: 8px;">
+                                        PDF Print<br><span style="font-size: 10px; opacity: 0.7;">High-res</span>
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="downloadQR('eps', 'professional')" style="font-size: 12px; padding: 8px;">
+                                        EPS Pro<br><span style="font-size: 10px; opacity: 0.7;">Adobe</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="btn-group" style="margin-bottom: 12px;">
+                                <button class="btn btn-primary" onclick="copyTrackingURL()" style="flex: 1;">
+                                    <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+                                    Copy URL
+                                </button>
+                                <button class="btn btn-secondary" onclick="testQRCode()" style="flex: 1;">
+                                    <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                                    Test QR
+                                </button>
+                            </div>
+
+                            <!-- Sharing Options -->
+                            <div style="margin-bottom: 16px;">
+                                <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; text-align: left;">Share & Send</h4>
+                                <div class="btn-group">
+                                    <button class="btn btn-secondary" onclick="emailQR()" style="flex: 1; font-size: 12px;">
+                                        <i data-lucide="mail" style="width: 14px; height: 14px;"></i>
+                                        Email
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="generatePreview()" style="flex: 1; font-size: 12px;">
+                                        <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                        Preview
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="addToLibrary()" style="flex: 1; font-size: 12px;">
+                                        <i data-lucide="bookmark" style="width: 14px; height: 14px;"></i>
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Management Actions -->
+                            <div class="btn-group" style="margin-bottom: 12px;">
+                                <button class="btn btn-success" onclick="viewAnalytics()" style="flex: 1;">
+                                    <i data-lucide="bar-chart-3" style="width: 16px; height: 16px;"></i>
+                                    View Analytics
+                                </button>
+                                <button class="btn btn-primary" onclick="editQRCode()" style="flex: 1;">
+                                    <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
+                                    Edit/Update
+                                </button>
+                            </div>
+
+                            <!-- Generate Another -->
+                            <button class="btn btn-secondary btn-full" onclick="createAnother()" style="margin-top: 8px;">
+                                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                                Create Another QR Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" disabled>
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                Previous
+            </button>
+            
+            <button class="btn btn-primary" id="nextBtn">
+                Next
+                <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // State management
+        let currentStep = 1;
+        let qrData = {
+            type: 'url',
+            name: '',
+            campaign: '',
+            isDynamic: true,
+            url: '',
+            vcard: {},
+            wifi: {},
+            sms: {},
+            email: {},
+            customization: {
+                foregroundColor: '#000000',
+                backgroundColor: '#FFFFFF'
+            },
+            tracking: {
+                customEvents: ['scan', 'page_view']
+            }
+        };
+
+        // DOM elements
+        const steps = document.querySelectorAll('.step-content');
+        const stepCircles = document.querySelectorAll('.step-circle');
+        const stepLines = document.querySelectorAll('.step-line');
+        const stepLabels = document.querySelectorAll('.step-label');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            updateUI();
+        });
+
+        function initializeEventListeners() {
+            // QR Type selection
+            document.querySelectorAll('.qr-type-button').forEach(button => {
+                button.addEventListener('click', () => selectQRType(button.dataset.type));
+            });
+
+            // Template selection
+            document.querySelectorAll('.template-button').forEach(button => {
+                button.addEventListener('click', () => selectTemplate(button));
+            });
+
+            // Navigation
+            prevBtn.addEventListener('click', () => changeStep(currentStep - 1));
+            nextBtn.addEventListener('click', () => changeStep(currentStep + 1));
+
+            // Form inputs
+            document.getElementById('qrName').addEventListener('input', (e) => {
+                qrData.name = e.target.value;
+                updateSummary();
+            });
+
+            document.getElementById('qrCampaign').addEventListener('input', (e) => {
+                qrData.campaign = e.target.value;
+                updateSummary();
+            });
+
+            document.getElementById('isDynamic').addEventListener('change', (e) => {
+                qrData.isDynamic = e.target.checked;
+                updateTrackingVisibility();
+                updatePricing();
+                updateSummary();
+            });
+
+            // Color inputs
+            document.getElementById('foregroundColor').addEventListener('change', (e) => {
+                qrData.customization.foregroundColor = e.target.value;
+                document.getElementById('foregroundText').value = e.target.value;
+            });
+
+            document.getElementById('backgroundColor').addEventListener('change', (e) => {
+                qrData.customization.backgroundColor = e.target.value;
+                document.getElementById('backgroundText').value = e.target.value;
+            });
+
+            // Generate button
+            document.getElementById('generateBtn').addEventListener('click', generateQR);
+        }
+
+        function selectQRType(type) {
+            qrData.type = type;
+            
+            // Update UI
+            document.querySelectorAll('.qr-type-button').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector(`[data-type="£{type}"]`).classList.add('selected');
+            
+            updateContentConfiguration();
+        }
+
+        function selectTemplate(button) {
+            const template = button.dataset.template;
+            const type = button.dataset.type;
+            const color = button.dataset.color;
+
+            // Update selection
+            document.querySelectorAll('.template-button').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+
+            // Apply template
+            qrData.type = type;
+            qrData.customization.foregroundColor = color;
+
+            // Update QR type selection
+            selectQRType(type);
+            
+            // Update color picker
+            document.getElementById('foregroundColor').value = color;
+            document.getElementById('foregroundText').value = color;
+        }
+
+        function updateContentConfiguration() {
+            const typeNames = {
+                url: 'Website URL',
+                vcard: 'Contact Card',
+                wifi: 'WiFi Network',
+                sms: 'SMS Message',
+                email: 'Email',
+                text: 'Plain Text'
+            };
+
+            document.getElementById('contentTitle').textContent = `🎯 £{typeNames[qrData.type]} Configuration`;
+
+            // Hide all content sections
+            document.querySelectorAll('#urlContent, #vcardContent, #wifiContent, #smsContent, #emailContent').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // Show relevant content section
+            const contentMap = {
+                url: 'urlContent',
+                vcard: 'vcardContent',
+                wifi: 'wifiContent',
+                sms: 'smsContent',
+                email: 'emailContent',
+                text: 'urlContent'
+            };
+
+            const contentId = contentMap[qrData.type];
+            if (contentId) {
+                document.getElementById(contentId).classList.remove('hidden');
+            }
+
+            updateSummary();
+        }
+
+        function updateTrackingVisibility() {
+            const trackingCard = document.getElementById('trackingCard');
+            if (qrData.isDynamic) {
+                trackingCard.style.display = 'block';
+            } else {
+                trackingCard.style.display = 'none';
+            }
+        }
+
+        function updatePricing() {
+            let total = 2.00; // Base price
+
+            const analyticsEl = document.getElementById('analyticsPrice');
+            const brandingEl = document.getElementById('brandingPrice');
+            const premiumEl = document.getElementById('premiumPrice');
+
+            if (qrData.isDynamic) {
+                total += 12.00;
+                analyticsEl.style.display = 'flex';
+            } else {
+                analyticsEl.style.display = 'none';
+            }
+
+            // Update total
+            document.getElementById('totalPrice').textContent = `££{total.toFixed(2)}`;
+            document.getElementById('generateText').textContent = `Generate QR Code - ££{total.toFixed(2)}`;
+        }
+
+        function updateSummary() {
+            const typeNames = {
+                url: 'Website URL',
+                vcard: 'Contact Card',
+                wifi: 'WiFi Network',
+                sms: 'SMS Message',
+                email: 'Email',
+                text: 'Plain Text'
+            };
+
+            document.getElementById('summaryType').textContent = typeNames[qrData.type];
+            document.getElementById('summaryName').textContent = qrData.name || 'Unnamed QR Code';
+            document.getElementById('summaryCampaign').textContent = qrData.campaign || 'Default';
+            
+            const dynamicEl = document.getElementById('summaryDynamic');
+            if (qrData.isDynamic) {
+                dynamicEl.textContent = 'Yes';
+                dynamicEl.className = 'status-badge status-success';
+            } else {
+                dynamicEl.textContent = 'No';
+                dynamicEl.className = 'status-badge status-default';
+            }
+
+            document.getElementById('summaryEvents').textContent = `£{qrData.tracking.customEvents.length} tracked`;
+        }
+
+        function changeStep(step) {
+            if (step < 1 || step > 4) return;
+
+            currentStep = step;
+            updateUI();
+        }
+
+        function updateUI() {
+            // Update step content
+            steps.forEach((step, index) => {
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            // Update progress indicators
+            stepCircles.forEach((circle, index) => {
+                if (index + 1 <= currentStep) {
+                    circle.classList.add('active');
+                    circle.classList.remove('inactive');
+                } else {
+                    circle.classList.add('inactive');
+                    circle.classList.remove('active');
+                }
+            });
+
+            stepLines.forEach((line, index) => {
+                if (index + 1 < currentStep) {
+                    line.classList.add('active');
+                    line.classList.remove('inactive');
+                } else {
+                    line.classList.add('inactive');
+                    line.classList.remove('active');
+                }
+            });
+
+            stepLabels.forEach((label, index) => {
+                if (index + 1 <= currentStep) {
+                    label.classList.add('active');
+                    label.classList.remove('inactive');
+                } else {
+                    label.classList.add('inactive');
+                    label.classList.remove('active');
+                }
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = currentStep === 1;
+            nextBtn.style.display = currentStep === 4 ? 'none' : 'flex';
+
+            // Update pricing and tracking visibility
+            if (currentStep === 2) {
+                updateTrackingVisibility();
+                updatePricing();
+            }
+
+            if (currentStep === 4) {
+                updateSummary();
+                updatePricing();
+            }
+
+            // Re-initialize icons after DOM changes
+            lucide.createIcons();
+        }
+
+        function getQRContent() {
+            switch (qrData.type) {
+                case 'url':
+                    return document.getElementById('destinationUrl').value || 'https://insane.marketing';
+                case 'vcard':
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const organization = document.getElementById('organization').value;
+                    const phone = document.getElementById('phone').value;
+                    const email = document.getElementById('email').value;
+                    const website = document.getElementById('website').value;
+                    return `BEGIN:VCARD\nVERSION:3.0\nFN:£{firstName} £{lastName}\nORG:£{organization}\nTEL:£{phone}\nEMAIL:£{email}\nURL:£{website}\nEND:VCARD`;
+                case 'wifi':
+                    const ssid = document.getElementById('wifiSsid').value;
+                    const password = document.getElementById('wifiPassword').value;
+                    const security = document.getElementById('wifiSecurity').value;
+                    const hidden = document.getElementById('wifiHidden').checked;
+                    return `WIFI:T:£{security};S:£{ssid};P:£{password};H:£{hidden ? 'true' : 'false'};;`;
+                case 'sms':
+                    const number = document.getElementById('smsNumber').value;
+                    const message = document.getElementById('smsMessage').value;
+                    return `sms:£{number}?body=£{encodeURIComponent(message)}`;
+                case 'email':
+                    const to = document.getElementById('emailTo').value;
+                    const subject = document.getElementById('emailSubject').value;
+                    const body = document.getElementById('emailBody').value;
+                    return `mailto:£{to}?subject=£{encodeURIComponent(subject)}&body=£{encodeURIComponent(body)}`;
+                default:
+                    return 'https://insane.marketing';
+            }
+        }
+
+        async function generateQR() {
+            const generateBtn = document.getElementById('generateBtn');
+            const generateArea = document.getElementById('generateArea');
+            const successArea = document.getElementById('successArea');
+
+            // Show loading
+            generateBtn.classList.add('loading');
+            generateBtn.textContent = 'Generating...';
+
+            // Simulate generation delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Generate mock QR data
+            const qrId = 'qr_' + Math.random().toString(36).substr(2, 9);
+            const trackingUrl = qrData.isDynamic 
+                ? `https://insane.marketing/track/£{qrId}`
+                : getQRContent();
+
+            // Store generated QR data globally
+            window.currentQR = {
+                id: qrId,
+                trackingUrl,
+                originalUrl: getQRContent(),
+                name: qrData.name || `£{qrData.type.toUpperCase()} QR Code`,
+                campaign: qrData.campaign || 'Default Campaign',
+                type: qrData.type,
+                isDynamic: qrData.isDynamic,
+                customization: qrData.customization,
+                createdAt: new Date()
+            };
+            
+            // Update success area
+            document.getElementById('generatedId').textContent = qrId;
+            document.getElementById('generatedCampaign').textContent = qrData.campaign || 'Default Campaign';
+            document.getElementById('trackingUrl').textContent = trackingUrl;
+
+            // Generate actual QR code
+            await generateActualQR(getQRContent());
+
+            // Show success
+            generateArea.classList.add('hidden');
+            successArea.classList.remove('hidden');
+
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        async function generateActualQR(content) {
+            const canvas = document.getElementById('generatedQRCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Simple QR code pattern generator (mock)
+            const size = 160;
+            const moduleSize = size / 25;
+            
+            // Clear canvas
+            ctx.fillStyle = qrData.customization.backgroundColor;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Generate pattern
+            ctx.fillStyle = qrData.customization.foregroundColor;
+            
+            // Create a simple QR-like pattern
+            for (let x = 0; x < 25; x++) {
+                for (let y = 0; y < 25; y++) {
+                    // Create finder patterns (corners)
+                    if ((x < 7 && y < 7) || (x < 7 && y > 17) || (x > 17 && y < 7)) {
+                        if ((x === 0 || x === 6 || y === 0 || y === 6) || 
+                            (x >= 2 && x <= 4 && y >= 2 && y <= 4)) {
+                            ctx.fillRect(x * moduleSize, y * moduleSize, moduleSize, moduleSize);
+                        }
+                    }
+                    // Create data pattern (pseudo-random based on content)
+                    else if (x > 8 && y > 8) {
+                        const hash = (x * 31 + y * 17 + content.length) % 3;
+                        if (hash === 0) {
+                            ctx.fillRect(x * moduleSize, y * moduleSize, moduleSize, moduleSize);
+                        }
+                    }
+                }
+            }
+            
+            // Store canvas data for downloads
+            window.qrCanvasData = canvas.toDataURL('image/png');
+        }
+
+        // Download Functions
+        function downloadQR(format, size) {
+            if (!window.currentQR) return;
+            
+            const filename = `£{window.currentQR.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_£{window.currentQR.id}`;
+            
+            switch (format) {
+                case 'png':
+                    downloadPNG(filename, size);
+                    break;
+                case 'svg':
+                    downloadSVG(filename);
+                    break;
+                case 'pdf':
+                    downloadPDF(filename);
+                    break;
+                case 'eps':
+                    downloadEPS(filename);
+                    break;
+            }
+            
+            showNotification(`📥 £{format.toUpperCase()} download started!`);
+        }
+
+        function downloadPNG(filename, size) {
+            const canvas = document.getElementById('generatedQRCanvas');
+            
+            // Create new canvas with desired size
+            const downloadCanvas = document.createElement('canvas');
+            const downloadCtx = downloadCanvas.getContext('2d');
+            
+            const dimensions = {
+                small: 300,
+                medium: 600,
+                large: 1200
+            };
+            
+            const targetSize = dimensions[size] || 600;
+            downloadCanvas.width = targetSize;
+            downloadCanvas.height = targetSize;
+            
+            // Scale and draw
+            downloadCtx.imageSmoothingEnabled = false;
+            downloadCtx.drawImage(canvas, 0, 0, targetSize, targetSize);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `£{filename}_£{size}.png`;
+            link.href = downloadCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadSVG(filename) {
+            const content = getQRContent();
+            const fg = qrData.customization.foregroundColor;
+            const bg = qrData.customization.backgroundColor;
+            
+            // Generate SVG QR code
+            const svgContent = generateSVGQR(content, fg, bg);
+            
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.download = `£{filename}.svg`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        }
+
+        function downloadPDF(filename) {
+            // For now, download as high-res PNG (in production, use jsPDF)
+            downloadPNG(filename, 'large');
+        }
+
+        function downloadEPS(filename) {
+            // Generate simple EPS content
+            const epsContent = `%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 0 0 300 300
+%%Title: QR Code - £{window.currentQR.name}
+%%Creator: QR Generator Pro
+newpath
+0 0 300 300 rectfill
+showpage
+%%EOF`;
+            
+            const blob = new Blob([epsContent], { type: 'application/postscript' });
+            const link = document.createElement('a');
+            link.download = `£{filename}.eps`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        }
+
+        function generateSVGQR(content, fg, bg) {
+            const size = 300;
+            const modules = 25;
+            const moduleSize = size / modules;
+            
+            let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="£{size}" height="£{size}" viewBox="0 0 £{size} £{size}" xmlns="http://www.w3.org/2000/svg">
+<rect width="£{size}" height="£{size}" fill="£{bg}"/>`;
+
+            // Generate QR pattern
+            for (let x = 0; x < modules; x++) {
+                for (let y = 0; y < modules; y++) {
+                    const shouldFill = shouldFillModule(x, y, content);
+                    if (shouldFill) {
+                        svg += `<rect x="£{x * moduleSize}" y="£{y * moduleSize}" width="£{moduleSize}" height="£{moduleSize}" fill="£{fg}"/>`;
+                    }
+                }
+            }
+            
+            svg += '</svg>';
+            return svg;
+        }
+
+        function shouldFillModule(x, y, content) {
+            // Finder patterns
+            if ((x < 7 && y < 7) || (x < 7 && y > 17) || (x > 17 && y < 7)) {
+                return (x === 0 || x === 6 || y === 0 || y === 6) || 
+                       (x >= 2 && x <= 4 && y >= 2 && y <= 4);
+            }
+            // Data pattern
+            else if (x > 8 && y > 8) {
+                return (x * 31 + y * 17 + content.length) % 3 === 0;
+            }
+            return false;
+        }
+
+        // Action Functions
+        async function copyTrackingURL() {
+            if (!window.currentQR) return;
+            
+            try {
+                await navigator.clipboard.writeText(window.currentQR.trackingUrl);
+                showNotification('✅ Tracking URL copied to clipboard!');
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = window.currentQR.trackingUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('✅ Tracking URL copied to clipboard!');
+            }
+        }
+
+        function testQRCode() {
+            if (!window.currentQR) return;
+            window.open(window.currentQR.trackingUrl, '_blank');
+        }
+
+        function emailQR() {
+            if (!window.currentQR) return;
+            
+            const subject = encodeURIComponent(`QR Code: £{window.currentQR.name}`);
+            const body = encodeURIComponent(`Hi,
+
+I've generated a QR code for you:
+
+Name: £{window.currentQR.name}
+Campaign: £{window.currentQR.campaign}
+QR ID: £{window.currentQR.id}
+Link: £{window.currentQR.trackingUrl}
+
+You can scan this QR code or click the link above.
+
+Best regards`);
+            
+            window.open(`mailto:?subject=£{subject}&body=£{body}`);
+        }
+
+        function generatePreview() {
+            if (!window.currentQR) return;
+            
+            const previewWindow = window.open('', '_blank', 'width=400,height=600');
+            previewWindow.document.write(`
+                <html>
+                <head><title>QR Code Preview - £{window.currentQR.name}</title></head>
+                <body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+                    <h2>£{window.currentQR.name}</h2>
+                    <p><strong>Campaign:</strong> £{window.currentQR.campaign}</p>
+                    <p><strong>QR ID:</strong> £{window.currentQR.id}</p>
+                    <div style="margin: 20px;">
+                        <img src="£{window.qrCanvasData}" style="max-width: 300px; border: 1px solid #ccc;">
+                    </div>
+                    <p><strong>Tracking URL:</strong><br>
+                    <a href="£{window.currentQR.trackingUrl}" target="_blank">£{window.currentQR.trackingUrl}</a></p>
+                    <p style="color: #666; font-size: 12px;">Generated on £{window.currentQR.createdAt.toLocaleString()}</p>
+                </body>
+                </html>
+            `);
+        }
+
+        function addToLibrary() {
+            if (!window.currentQR) return;
+            
+            const savedQRs = JSON.parse(localStorage.getItem('qr_library') || '[]');
+   savedQRs.push(window.currentQR);
+            localStorage.setItem('qr_library', JSON.stringify(savedQRs));
+            
+            showNotification('✅ QR Code saved to your library!');
+        }
+
+        function viewAnalytics() {
+            if (!window.currentQR) return;
+            
+            // In production, this would link to the actual analytics page
+            const analyticsUrl = `analytics.html?qr=£{window.currentQR.id}`;
+            window.open(analyticsUrl, '_blank');
+        }
+
+        function editQRCode() {
+            if (!window.currentQR || !qrData.isDynamic) {
+                showNotification('⚠️ Only dynamic QR codes can be edited');
+                return;
+            }
+            
+            showNotification('🔧 Edit feature coming soon! You\'ll be able to update the destination URL.');
+        }
+
+        function createAnother() {
+            // Reset form and go back to step 1
+            if (confirm('Create another QR code? This will clear the current form.')) {
+                location.reload();
+            }
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #2563eb;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-size: 14px;
+                font-weight: 500;
+                max-width: 300px;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        // Initialize
+        updateUI();
+        updatePricing();
+    </script>
+</body>
+</html>
+
+

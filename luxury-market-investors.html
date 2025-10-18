@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Luxury Venue Market - insane.marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        #neuralNetwork {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 30px 100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #4d7fff;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(77, 127, 255, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3366ff, #4d7fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        /* Blue theme for market data sections */
+        .theme-blue .section-title {
+            border-left-color: #3366ff;
+        }
+
+        .theme-blue .stat-card:hover {
+            border-color: #4d7fff;
+            box-shadow: 0 15px 40px rgba(77, 127, 255, 0.3);
+        }
+
+        .theme-blue .data-highlight {
+            background: rgba(51, 102, 255, 0.1);
+            border-left-color: #3366ff;
+        }
+
+        .theme-blue .data-highlight strong {
+            color: #4d7fff;
+        }
+
+        /* Green theme for growth/speed sections */
+        .theme-green .section-title {
+            border-left-color: #00ff88;
+        }
+
+        .theme-green .trajectory-item {
+            border-left-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .theme-green .trajectory-item:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .theme-green .trajectory-year {
+            color: #00ff88;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            font-weight: 600;
+        }
+
+        .stat-detail {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .section {
+            margin: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 30px;
+            border-left: 4px solid #ff3366;
+            padding-left: 20px;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .market-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .market-card:hover {
+            border-color: #4d7fff;
+            background: rgba(42, 42, 51, 0.8);
+        }
+
+        .market-card h3 {
+            font-size: 1.5rem;
+            color: #4d7fff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .market-card p {
+            color: #b0b0b0;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .data-highlight {
+            background: rgba(255, 51, 102, 0.1);
+            border-left: 3px solid #ff3366;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        .data-highlight strong {
+            color: #ff3366;
+            font-size: 1.2rem;
+        }
+
+        .region-comparison {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .region-bars {
+            margin-top: 30px;
+        }
+
+        .region-item {
+            margin-bottom: 25px;
+        }
+
+        .region-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .region-name {
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .region-value {
+            font-size: 1rem;
+            color: #4d7fff;
+            font-weight: 700;
+        }
+
+        .region-bar {
+            height: 12px;
+            background: #222;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .region-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3366ff, #4d7fff);
+            border-radius: 6px;
+            transition: width 1.5s ease;
+        }
+
+        .sector-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .sector-card {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .sector-card:hover {
+            border-color: #4d7fff;
+            transform: translateY(-5px);
+        }
+
+        .sector-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .sector-name {
+            font-size: 1.2rem;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .sector-cagr {
+            font-size: 1.5rem;
+            color: #4d7fff;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .sector-note {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .uk-spotlight {
+            background: linear-gradient(135deg, rgba(51, 102, 255, 0.1), rgba(77, 127, 255, 0.1));
+            border: 2px solid rgba(51, 102, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 50px 0;
+        }
+
+        .uk-spotlight h3 {
+            font-size: 2rem;
+            color: #4d7fff;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .uk-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .uk-stat {
+            text-align: center;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.6);
+            border-radius: 8px;
+        }
+
+        .uk-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .uk-stat-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        .growth-trajectory {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .trajectory-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            margin: 15px 0;
+            background: rgba(255, 51, 102, 0.05);
+            border-left: 4px solid #ff3366;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .trajectory-item:hover {
+            background: rgba(255, 51, 102, 0.1);
+            transform: translateX(10px);
+        }
+
+        .trajectory-year {
+            font-size: 1.2rem;
+            color: #ff3366;
+            font-weight: 700;
+            min-width: 100px;
+        }
+
+        .trajectory-value {
+            font-size: 1rem;
+            color: #ffffff;
+            flex: 1;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
+            border-radius: 12px;
+            padding: 50px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .cta-section h2 {
+            color: #ffffff;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .cta-section p {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #ffffff;
+            color: #ff3366;
+            padding: 18px 45px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        footer {
+            background: linear-gradient(180deg, #0a0a0a, #000000);
+            border-top: 1px solid #333;
+            padding: 60px 30px 30px;
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h4 {
+            color: #ff3366;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-column a:hover {
+            color: #ff3366;
+            transform: translateX(3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .footer-copyright {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 50px 0;
+            border: 2px solid #3366ff;
+        }
+
+        .chart-title {
+            font-size: 2rem;
+            color: #4d7fff;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .chart-subtitle {
+            font-size: 1rem;
+            color: #888;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #growthChart {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+
+        .inflection-section {
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.15), rgba(255, 107, 53, 0.15));
+            border: 2px solid #ff3366;
+            border-radius: 12px;
+            padding: 50px;
+            margin: 60px 0;
+        }
+
+        .inflection-section h2 {
+            font-size: 2.5rem;
+            color: #ff3366;
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .inflection-section .subtitle-text {
+            font-size: 1.3rem;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        .inflection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .inflection-card {
+            background: rgba(10, 10, 10, 0.7);
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+
+        .inflection-card h3 {
+            color: #ff3366;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .inflection-card p {
+            color: #b0b0b0;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .competitive-advantage {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border: 3px solid #ff3366;
+            border-radius: 12px;
+            padding: 50px;
+            margin: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .competitive-advantage::before {
+            content: "⚡";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 15rem;
+            opacity: 0.05;
+        }
+
+        .competitive-advantage h2 {
+            font-size: 2.3rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .competitive-advantage .tagline {
+            font-size: 1.4rem;
+            color: #ff3366;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .advantage-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .advantage-item {
+            background: rgba(255, 51, 102, 0.1);
+            border-left: 4px solid #ff3366;
+            padding: 25px;
+            border-radius: 6px;
+        }
+
+        .advantage-item h4 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .advantage-item p {
+            color: #b0b0b0;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .speed-callout {
+            background: linear-gradient(90deg, #ff3366, #ff6b35);
+            padding: 35px;
+            border-radius: 8px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .speed-callout h3 {
+            color: #ffffff;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .speed-callout p {
+            color: #ffffff;
+            font-size: 1.2rem;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 968px) {
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .market-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sector-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .uk-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .inflection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .advantage-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #growthChart {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .footer-columns {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="neuralNetwork"></canvas>
+
+    <div class="container">
+        <header>
+            <div class="logo">insane.marketing</div>
+            <h1>The $369B Opportunity</h1>
+            <p class="subtitle">Luxury Experience Market in Exponential Growth Phase • 11.5% CAGR • Scalable Technology Platform</p>
+        </header>
+
+        <!-- Executive Summary Box -->
+        <div class="data-highlight" style="background: linear-gradient(135deg, rgba(255, 51, 102, 0.15), rgba(255, 107, 53, 0.15)); border: 2px solid #ff3366; padding: 30px; margin-bottom: 50px;">
+            <h3 style="color: #ff3366; font-size: 1.5rem; margin-bottom: 15px; font-weight: 700;">Investment Thesis Summary</h3>
+            <p style="color: #ffffff; font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                <strong style="color: #ff3366;">Market:</strong> $154B → $369B (2024-2032) with 11.5% CAGR in exponential growth phase post-inflection point<br>
+                <strong style="color: #ff3366;">Timing:</strong> 2025-2028 capture window as 300M+ affluent consumers enter market and legacy systems fail to scale<br>
+                <strong style="color: #ff3366;">Advantage:</strong> Unified full-stack platform sets up and goes live in under 1 hour vs. competitors' 6-12 month implementation cycles<br>
+                <strong style="color: #ff3366;">Scale:</strong> Single boutique hotel or 1,000-property chain—identical setup speed with zero integration complexity
+            </p>
+        </div>
+
+        <!-- Hero Stats -->
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-number">$369B</div>
+                <div class="stat-label">Global Luxury Hotel Market by 2032</div>
+                <div class="stat-detail">From $154B in 2024</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number">11.5%</div>
+                <div class="stat-label">Global Market CAGR</div>
+                <div class="stat-detail">2024-2032 projection</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number">£72.7B</div>
+                <div class="stat-label">UK Hospitality Market by 2030</div>
+                <div class="stat-detail">From £61.2B in 2025</div>
+            </div>
+        </div>
+
+        <!-- Growth Chart -->
+        <div class="chart-container">
+            <div class="chart-title">The J-Curve: Exponential Growth Acceleration</div>
+            <div class="chart-subtitle">Global Luxury Hotel Market 2020-2032 ($B USD)</div>
+            <canvas id="growthChart"></canvas>
+            <div class="data-highlight" style="margin-top: 30px;">
+                <p style="color: #b0b0b0; margin: 0;"><strong>The Inflection Point Is Now:</strong> After steady 4-5% growth pre-2024, the market entered exponential acceleration phase. Growth rate more than doubled to 11.5% CAGR, driven by AI adoption, recovered travel, and 300M new affluent consumers entering the market by 2030.</p>
+            </div>
+        </div>
+
+        <!-- Inflection Point Section -->
+        <div class="inflection-section">
+            <h2>⚡ Why Now? The Perfect Storm</h2>
+            <p class="subtitle-text">Three converging forces are creating a once-in-a-decade capture window</p>
+
+            <div class="inflection-grid">
+                <div class="inflection-card">
+                    <h3>1. Technology Maturity</h3>
+                    <p>AI personalization, predictive analytics, and smart platforms have moved from experimental to essential. 52% of luxury hotels now integrating IoT. The tech is proven—adoption is accelerating.</p>
+                </div>
+
+                <div class="inflection-card">
+                    <h3>2. Demand Explosion</h3>
+                    <p>300M+ new luxury buyers entering market by 2030 from China, India, LatAm, Africa. Global travel spending hit $8.6 trillion (9% of GDP). Premium segments recovering 2x faster than mass market.</p>
+                </div>
+
+                <div class="inflection-card">
+                    <h3>3. Legacy System Failure</h3>
+                    <p>Patched-together tech stacks can't deliver real-time experiences. Venues spending $427K annually just maintaining integrations. The market is ready for unified platforms.</p>
+                </div>
+            </div>
+
+            <div class="data-highlight" style="margin-top: 40px; background: rgba(255, 255, 255, 0.1); border-color: #ffffff;">
+                <p style="color: #ffffff; margin: 0; font-size: 1.2rem; text-align: center;"><strong>Bottom Line:</strong> The window to capture market share at scale is 2025-2028. Early movers with scalable tech will dominate. Late adopters will fight for scraps.</p>
+            </div>
+        </div>
+
+        <!-- Competitive Advantage Section -->
+        <div class="competitive-advantage">
+            <h2>Our Unfair Advantage: Speed at Scale</h2>
+            <p class="tagline">While competitors spend 6-12 months implementing, we set up and go live in under an hour</p>
+
+            <div class="advantage-grid">
+                <div class="advantage-item">
+                    <h4>🚀 Set Up and Go Live in Minutes, Not Months</h4>
+                    <p>Single venue or 1,000 locations—same setup speed. Our unified platform goes live in under an hour. No consultants. No integration projects. No waiting.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <h4>🌍 Global Scale, Zero Complexity</h4>
+                    <p>One platform. One login. Every venue—whether London, Dubai, or New York—operates on identical infrastructure. International expansion takes minutes, not quarters.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <h4>⚡ Instant Scalability</h4>
+                    <p>Add unlimited venues, users, or capacity without provisioning, upgrades, or additional tech. Scale from boutique hotel to global chain with zero infrastructure changes.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <h4>🎯 Pure Full-Stack Technology</h4>
+                    <p>No third-party dependencies. No integration maintenance. No rate limits. One codebase, one database, zero bottlenecks. Built together, scales together.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <h4>💰 Capture Market at Speed</h4>
+                    <p>While competitors are still implementing, we're acquiring customers. Our setup speed = competitive moat. First-mover advantage at enterprise scale.</p>
+                </div>
+
+                <div class="advantage-item">
+                    <h4>🔗 Built for Chains & Franchises</h4>
+                    <p>Marriott, Hilton, IHG—they need platforms that work identically across thousands of properties. We're the only ones who can deliver that at speed.</p>
+                </div>
+            </div>
+
+            <div class="speed-callout">
+                <h3>The Market Is Growing 11.5% Annually. We Can Scale Faster.</h3>
+                <p>In the time it takes our competitors to implement at one property, we can launch 100. That's not an incremental advantage—that's market dominance.</p>
+            </div>
+        </div>
+
+        <!-- Setup Speed Comparison Visual -->
+        <div class="section theme-green">
+            <h2 class="section-title">Set Up and Go Live in Under 1 Hour vs. Competitors' 6-12 Month Implementation Cycles</h2>
+            
+            <div style="background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border-radius: 12px; padding: 50px; margin: 40px 0;">
+                
+                <!-- Our Setup -->
+                <div style="margin-bottom: 60px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <h3 style="color: #ff3366; font-size: 1.8rem; margin-bottom: 10px; font-weight: 800;">insane.marketing</h3>
+                            <p style="color: #b0b0b0; font-size: 1.1rem; margin: 0;">Unified Full-Stack Platform</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 3rem; font-weight: 800; color: #00ff88;">Under 1 Hour</div>
+                            <div style="font-size: 1.2rem; color: #00ff88; font-weight: 600;">100 Locations Live</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; border-radius: 8px; padding: 25px; margin-top: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="font-size: 2rem;">✓</div>
+                            <div style="flex: 1;">
+                                <div style="background: linear-gradient(90deg, #00ff88, #00cc66); height: 40px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 700; font-size: 1.1rem;">
+                                    Sign Up → Configure → Go Live
+                                </div>
+                                <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                                    <div style="background: rgba(0, 255, 136, 0.2); padding: 15px; border-radius: 6px; text-align: center;">
+                                        <div style="color: #00ff88; font-weight: 700; font-size: 0.9rem;">No Installation</div>
+                                        <div style="color: #888; font-size: 0.85rem; margin-top: 5px;">Cloud-native</div>
+                                    </div>
+                                    <div style="background: rgba(0, 255, 136, 0.2); padding: 15px; border-radius: 6px; text-align: center;">
+                                        <div style="color: #00ff88; font-weight: 700; font-size: 0.9rem;">No Training</div>
+                                        <div style="color: #888; font-size: 0.85rem; margin-top: 5px;">Intuitive interface</div>
+                                    </div>
+                                    <div style="background: rgba(0, 255, 136, 0.2); padding: 15px; border-radius: 6px; text-align: center;">
+                                        <div style="color: #00ff88; font-weight: 700; font-size: 0.9rem;">No Integrations</div>
+                                        <div style="color: #888; font-size: 0.85rem; margin-top: 5px;">Built unified</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0, 255, 136, 0.2);">
+                            <div style="color: #ffffff; font-weight: 600; margin-bottom: 10px;">Global Multi-Chain Setup:</div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <span style="background: rgba(0, 255, 136, 0.2); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; color: #00ff88;">London</span>
+                                <span style="background: rgba(0, 255, 136, 0.2); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; color: #00ff88;">Dubai</span>
+                                <span style="background: rgba(0, 255, 136, 0.2); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; color: #00ff88;">New York</span>
+                                <span style="background: rgba(0, 255, 136, 0.2); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; color: #00ff88;">Singapore</span>
+                                <span style="background: rgba(0, 255, 136, 0.2); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; color: #00ff88;">Paris</span>
+                                <span style="background: rgba(0, 255, 136, 0.2); padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; color: #00ff88;">Tokyo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- UK Spotlight -->
+        <div class="uk-spotlight">
+            <h3>🇬🇧 The UK Luxury Market: Mature, Stable, Growing</h3>
+            <p style="color: #b0b0b0; font-size: 1.05rem; margin-bottom: 20px;">The United Kingdom represents a sophisticated, high-value market for luxury experiences, with strong fundamentals and consistent growth trajectory.</p>
+            
+            <div class="uk-stats">
+                <div class="uk-stat">
+                    <div class="uk-stat-value">£61.2B</div>
+                    <div class="uk-stat-label">UK Hospitality 2025</div>
+                </div>
+                <div class="uk-stat">
+                    <div class="uk-stat-value">6.4%</div>
+                    <div class="uk-stat-label">Luxury Hotel CAGR</div>
+                </div>
+                <div class="uk-stat">
+                    <div class="uk-stat-value">£27.5B</div>
+                    <div class="uk-stat-label">UK Hotel Industry 2025</div>
+                </div>
+            </div>
+
+            <div class="data-highlight" style="margin-top: 30px;">
+                <p style="color: #b0b0b0; margin: 0;"><strong>Key Insight:</strong> The UK luxury hospitality market is growing at 6.4% CAGR through 2035, driven by increasing international tourism (projected 43.4 million visits worth £33.7B in 2025), domestic staycations (£72.9B in 2023), and rising demand for premium, personalized experiences.</p>
+            </div>
+        </div>
+
+        <!-- Global Regional Comparison -->
+        <div class="section theme-blue">
+            <h2 class="section-title">Global Regional Market Comparison</h2>
+            <div class="region-comparison">
+                <p style="color: #b0b0b0; font-size: 1.05rem; margin-bottom: 30px;">The luxury hospitality market varies significantly by region, with Europe and North America leading in market share while Asia-Pacific shows the fastest growth.</p>
+                
+                <div class="region-bars">
+                    <div class="region-item">
+                        <div class="region-header">
+                            <span class="region-name">Europe 🇪🇺</span>
+                            <span class="region-value">34-38% Market Share</span>
+                        </div>
+                        <div class="region-bar">
+                            <div class="region-fill" style="width: 38%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header">
+                            <span class="region-name">North America 🇺🇸 🇨🇦</span>
+                            <span class="region-value">32-36% Market Share</span>
+                        </div>
+                        <div class="region-bar">
+                            <div class="region-fill" style="width: 36%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header">
+                            <span class="region-name">Asia-Pacific 🌏</span>
+                            <span class="region-value">21% Share • 9.88% CAGR (Fastest Growing)</span>
+                        </div>
+                        <div class="region-bar">
+                            <div class="region-fill" style="width: 21%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="region-item">
+                        <div class="region-header">
+                            <span class="region-name">Middle East & Africa 🌍</span>
+                            <span class="region-value">~8% Market Share</span>
+                        </div>
+                        <div class="region-bar">
+                            <div class="region-fill" style="width: 8%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-highlight" style="margin-top: 40px;">
+                    <p style="color: #b0b0b0; margin: 0;"><strong>UK Position:</strong> The UK, as part of Europe's 34-38% market share, benefits from mature infrastructure and strong tourism fundamentals. While Asia-Pacific shows faster growth (9.88% CAGR), the UK's 6.4% CAGR represents stable, sustainable expansion in an established premium market with less volatility.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Sectors -->
+        <div class="section theme-blue">
+            <h2 class="section-title">Key Sectors in Luxury Experience Market</h2>
+            <p style="color: #b0b0b0; font-size: 1.05rem; margin-bottom: 30px;">Multiple high-growth sectors within luxury hospitality present significant opportunities for technology innovation and service enhancement.</p>
+
+            <div class="sector-grid">
+                <div class="sector-card">
+                    <div class="sector-icon">🏨</div>
+                    <div class="sector-name">Luxury Hotels</div>
+                    <div class="sector-cagr">7.2%</div>
+                    <div class="sector-note">CAGR Global</div>
+                    <p style="color: #888; font-size: 0.9rem; margin-top: 15px;">$154B (2024) → $369B (2032)</p>
+                </div>
+
+                <div class="sector-card">
+                    <div class="sector-icon">🏟️</div>
+                    <div class="sector-name">Stadium Seating & Suites</div>
+                    <div class="sector-cagr">3.73%</div>
+                    <div class="sector-note">CAGR Global</div>
+                    <p style="color: #888; font-size: 0.9rem; margin-top: 15px;">$7.6B (2025) → $10.6B (2034)</p>
+                </div>
+
+                <div class="sector-card">
+                    <div class="sector-icon">💎</div>
+                    <div class="sector-name">Premium Hospitality</div>
+                    <div class="sector-cagr">4.5%</div>
+                    <div class="sector-note">CAGR UK</div>
+                    <p style="color: #888; font-size: 0.9rem; margin-top: 15px;">$69.5B (2024) → $99.4B (2032)</p>
+                </div>
+
+                <div class="sector-card">
+                    <div class="sector-icon">🎪</div>
+                    <div class="sector-name">Luxury Suites</div>
+                    <div class="sector-cagr">50%+</div>
+                    <div class="sector-note">Growth in installations</div>
+                    <p style="color: #888; font-size: 0.9rem; margin-top: 15px;">VIP & premium experiences</p>
+                </div>
+
+                <div class="sector-card">
+                    <div class="sector-icon">✈️</div>
+                    <div class="sector-name">Business Hotels</div>
+                    <div class="sector-cagr">33.8%</div>
+                    <div class="sector-note">Market share leader</div>
+                    <p style="color: #888; font-size: 0.9rem; margin-top: 15px;">Corporate & MICE segments</p>
+                </div>
+
+                <div class="sector-card">
+                    <div class="sector-icon">🌴</div>
+                    <div class="sector-name">Resorts & Spas</div>
+                    <div class="sector-cagr">8.3%</div>
+                    <div class="sector-note">Independent luxury CAGR</div>
+                    <p style="color: #888; font-size: 0.9rem; margin-top: 15px;">Experiential wellness travel</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Luxury Brand & Sponsors Market -->
+        <div class="section">
+            <h2 class="section-title">The Hidden Market: Luxury Brand Partnerships & Event Sponsorships</h2>
+            
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1)); border: 2px solid rgba(255, 215, 0, 0.5); border-radius: 12px; padding: 50px; margin: 40px 0;">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <h3 style="color: #FFD700; font-size: 2rem; font-weight: 800; margin-bottom: 15px;">A Massive Secondary Revenue Stream</h3>
+                    <p style="color: #b0b0b0; font-size: 1.2rem;">Luxury brands spend billions to reach affluent consumers at premium venues—and they need better data, engagement, and ROI tracking</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px;">
+                    <div style="background: rgba(10, 10, 10, 0.6); padding: 25px; border-radius: 8px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.3);">
+                        <div style="font-size: 2.5rem; color: #FFD700; font-weight: 800; margin-bottom: 10px;">$67B</div>
+                        <div style="color: #ffffff; font-weight: 600; font-size: 1rem; margin-bottom: 5px;">Corporate Event Spending</div>
+                        <div style="color: #888; font-size: 0.85rem;">2023 (34% increase from 2022)</div>
+                    </div>
+
+                    <div style="background: rgba(10, 10, 10, 0.6); padding: 25px; border-radius: 8px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.3);">
+                        <div style="font-size: 2.5rem; color: #FFD700; font-weight: 800; margin-bottom: 10px;">$427B</div>
+                        <div style="color: #ffffff; font-weight: 600; font-size: 1rem; margin-bottom: 5px;">Global Luxury Goods Market</div>
+                        <div style="color: #888; font-size: 0.85rem;">Brands seeking high-net-worth consumers</div>
+                    </div>
+
+                    <div style="background: rgba(10, 10, 10, 0.6); padding: 25px; border-radius: 8px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.3);">
+                        <div style="font-size: 2.5rem; color: #FFD700; font-weight: 800; margin-bottom: 10px;">68%</div>
+                        <div style="color: #ffffff; font-weight: 600; font-size: 1rem; margin-bottom: 5px;">Events Include Hybrid Elements</div>
+                        <div style="color: #888; font-size: 0.85rem;">Requiring integrated tech platforms</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 215, 0, 0.05); border-radius: 8px; padding: 35px; margin-top: 30px;">
+                    <h4 style="color: #FFD700; font-size: 1.5rem; margin-bottom: 25px; font-weight: 700;">What Luxury Brands Desperately Need:</h4>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                        <div style="background: rgba(10, 10, 10, 0.5); padding: 20px; border-left: 3px solid #FFD700; border-radius: 4px;">
+                            <div style="color: #FFD700; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">📊 Real-Time Engagement Data</div>
+                            <p style="color: #b0b0b0; font-size: 0.95rem; margin: 0;">Track who attended their sponsored suite, who engaged with activations, dwell time, and behavioral patterns of high-net-worth guests.</p>
+                        </div>
+
+                        <div style="background: rgba(10, 10, 10, 0.5); padding: 20px; border-left: 3px solid #FFD700; border-radius: 4px;">
+                            <div style="color: #FFD700; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">🎯 Precise Audience Targeting</div>
+                            <p style="color: #b0b0b0; font-size: 0.95rem; margin: 0;">Identify affluent demographics, spending patterns, and preferences to reach the right consumers at premium events and venues.</p>
+                        </div>
+
+                        <div style="background: rgba(10, 10, 10, 0.5); padding: 20px; border-left: 3px solid #FFD700; border-radius: 4px;">
+                            <div style="color: #FFD700; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">💰 Sponsorship ROI Tracking</div>
+                            <p style="color: #b0b0b0; font-size: 0.95rem; margin: 0;">Prove marketing spend value with conversion tracking, lead generation metrics, and lifetime value analysis of sponsor-acquired customers.</p>
+                        </div>
+
+                        <div style="background: rgba(10, 10, 10, 0.5); padding: 20px; border-left: 3px solid #FFD700; border-radius: 4px;">
+                            <div style="color: #FFD700; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">✨ Personalized VIP Experiences</div>
+                            <p style="color: #b0b0b0; font-size: 0.95rem; margin: 0;">Deliver bespoke activations, exclusive offers, and personalized communications to guests in sponsored suites and premium areas.</p>
+                        </div>
+
+                        <div style="background: rgba(10, 10, 10, 0.5); padding: 20px; border-left: 3px solid #FFD700; border-radius: 4px;">
+                            <div style="color: #FFD700; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">🔗 Seamless Integration</div>
+                            <p style="color: #b0b0b0; font-size: 0.95rem; margin: 0;">Connect sponsorship activations directly to CRM, marketing automation, and sales systems—without complex integration projects.</p>
+                        </div>
+
+                        <div style="background: rgba(10, 10, 10, 0.5); padding: 20px; border-left: 3px solid #FFD700; border-radius: 4px;">
+                            <div style="color: #FFD700; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">🌐 Multi-Venue Consistency</div>
+                            <p style="color: #b0b0b0; font-size: 0.95rem; margin: 0;">Activate sponsorships across 100+ venues globally with identical data capture, reporting, and guest experiences everywhere.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding: 35px; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 12px;">
+                    <h4 style="color: #000; font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; text-align: center;">The Three-Way Win</h4>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 25px;">
+                        <div style="background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">🏨</div>
+                            <div style="color: #000; font-weight: 800; font-size: 1.1rem; margin-bottom: 8px;">Venues Win</div>
+                            <p style="color: #333; font-size: 0.9rem; margin: 0;">Command premium sponsorship fees with data-driven activation capabilities</p>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">👔</div>
+                            <div style="color: #000; font-weight: 800; font-size: 1.1rem; margin-bottom: 8px;">Brands Win</div>
+                            <p style="color: #333; font-size: 0.9rem; margin: 0;">Reach affluent consumers with measurable ROI and precise targeting</p>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 10px;">⚡</div>
+                            <div style="color: #000; font-weight: 800; font-size: 1.1rem; margin-bottom: 8px;">We Win</div>
+                            <p style="color: #333; font-size: 0.9rem; margin: 0;">Platform becomes essential for brand-venue partnerships, creating stickiness and additional revenue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 35px; padding: 25px; background: rgba(255, 215, 0, 0.1); border: 2px solid #FFD700; border-radius: 8px;">
+                    <p style="color: #ffffff; font-size: 1.2rem; text-align: center; margin: 0; font-weight: 600;">
+                        <strong style="color: #FFD700;">Market Opportunity:</strong> Every luxury venue with sponsor partnerships becomes a customer. Every luxury brand activating at events needs our platform. That's <strong style="color: #FFD700;">hundreds of billions</strong> in addressable sponsor spending flowing through our unified system.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stadium & Venue Deep Dive -->
+        <div class="section theme-blue">
+            <h2 class="section-title">Stadium & Venue Premium Experiences</h2>
+            
+            <div class="market-grid">
+                <div class="market-card">
+                    <h3>Stadium Seating Market</h3>
+                    <p>The global stadium seating market is experiencing steady growth driven by infrastructure development, premium experiences, and smart stadium technology.</p>
+                    <div class="data-highlight">
+                        <strong>$7.63B</strong> (2025) → <strong>$10.61B</strong> (2034)
+                    </div>
+                    <p style="margin-top: 15px;">Luxury suites segment showing exceptional growth with 50%+ increase in high-end installations globally.</p>
+                </div>
+
+                <div class="market-card">
+                    <h3>Premium Suite Transformation</h3>
+                    <p>Stadium luxury suites are evolving from basic hospitality to full smart experiences with AI-driven personalization and seamless technology.</p>
+                    <div class="data-highlight">
+                        <strong>60%+</strong> increase in luxury seating installations
+                    </div>
+                    <p style="margin-top: 15px;">Corporate hospitality and VIP experiences are driving investment in high-end seating with integrated tech.</p>
+                </div>
+
+                <div class="market-card">
+                    <h3>Smart Stadium Revolution</h3>
+                    <p>Venues like SoFi Stadium (LA) and Allegiant Stadium (Las Vegas) pioneering smart seating with charging ports, climate control, and real-time engagement.</p>
+                    <div class="data-highlight">
+                        <strong>55%+</strong> growth in smart seating adoption
+                    </div>
+                    <p style="margin-top: 15px;">Premium experiences require integrated platforms—not patched-together systems—to deliver seamless service.</p>
+                </div>
+
+                <div class="market-card">
+                    <h3>UK Spectator Sports</h3>
+                    <p>UK spectator sports market projected to grow at over 5% CAGR (2025-2030), with rising demand for premium experiences.</p>
+                    <div class="data-highlight">
+                        <strong>5%+</strong> CAGR through 2030
+                    </div>
+                    <p style="margin-top: 15px;">E-sports, hybrid events, and premium seating driving innovation in UK venues and stadiums.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Growth Trajectory -->
+        <div class="section theme-green">
+            <h2 class="section-title">Global Luxury Hotel Market Trajectory</h2>
+            <div class="growth-trajectory">
+                <div class="trajectory-item">
+                    <div class="trajectory-year">2024</div>
+                    <div class="trajectory-value">$154.32 Billion — Current market valuation</div>
+                </div>
+
+                <div class="trajectory-item">
+                    <div class="trajectory-year">2025</div>
+                    <div class="trajectory-value">$166.41 Billion — Projected growth continues</div>
+                </div>
+
+                <div class="trajectory-item">
+                    <div class="trajectory-year">2029</div>
+                    <div class="trajectory-value">$218 Billion — Midpoint growth milestone</div>
+                </div>
+
+                <div class="trajectory-item">
+                    <div class="trajectory-year">2032</div>
+                    <div class="trajectory-value">$369.36 Billion — Market more than doubles from 2024</div>
+                </div>
+
+                <div class="trajectory-item">
+                    <div class="trajectory-year">2030s</div>
+                    <div class="trajectory-value">300M+ new luxury buyers entering market (China, India, LatAm, Africa)</div>
+                </div>
+            </div>
+
+            <div class="data-highlight" style="margin-top: 30px;">
+                <p style="color: #b0b0b0; margin: 0;"><strong>Investment Outlook:</strong> The luxury hospitality sector is set to receive €6 trillion in investments by 2030, with AI-powered personalization, smart room technology, and experiential wellness driving the transformation.</p>
+            </div>
+        </div>
+
+        <!-- Key Drivers -->
+        <div class="section theme-blue">
+            <h2 class="section-title">What's Driving This Explosive Growth?</h2>
+            
+            <div class="market-grid">
+                <div class="market-card">
+                    <h3>🌏 Rising Affluence</h3>
+                    <p>Expanding middle and upper classes in Asia-Pacific, particularly China and India, creating massive new demand for luxury experiences.</p>
+                    <p style="color: #ff3366; font-weight: 600; margin-top: 15px;">India's five-star hotels saw 47% tariff surge in 2025 alongside record occupancy.</p>
+                </div>
+
+                <div class="market-card">
+                    <h3>✈️ International Tourism Recovery</h3>
+                    <p>Global travel spending reached $8.6 trillion in 2024, accounting for 9% of global GDP. Premium segments outpacing mass-market recovery.</p>
+                    <p style="color: #ff3366; font-weight: 600; margin-top: 15px;">UK projects 43.4M international visits worth £33.7B in 2025.</p>
+                </div>
+
+                <div class="market-card">
+                    <h3>🎯 Experiential Demand</h3>
+                    <p>84% of upscale travelers expect bespoke experiences. Shift from possessions to experiences driving demand for personalized luxury.</p>
+                    <p style="color: #ff3366; font-weight: 600; margin-top: 15px;">76% of consumers prioritize experiences over material goods.</p>
+                </div>
+
+                <div class="market-card">
+                    <h3>🤖 Technology Integration</h3>
+                    <p>AI personalization, smart rooms, mobile apps becoming standard. 52% of luxury hotels integrating IoT devices for enhanced guest comfort.</p>
+                    <p style="color: #ff3366; font-weight: 600; margin-top: 15px;">Tech-enabled personalization is the new competitive battleground.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <h2>$369B Market Opportunity by 2032</h2>
+            <p>Exponential growth. Proven technology. Instant scalability. The timing has never been better.</p>
+            <a href="/contact" class="cta-button">Let's Discuss This Opportunity</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/case-studies">Case Studies</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="/solutions">Solutions</a></li>
+                        <li><a href="/luxury-venues">Luxury Venues</a></li>
+                        <li><a href="/stadiums">Stadiums</a></li>
+                        <li><a href="/premium-hospitality">Premium Hospitality</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                        <li><a href="/demo">Book a Demo</a></li>
+                        <li><a href="/support">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/cookies">Cookie Policy</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-logo">insane.marketing</div>
+                <p class="footer-copyright">© 2025 insane.marketing. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Growth Chart
+        const chartCanvas = document.getElementById('growthChart');
+        const chartCtx = chartCanvas.getContext('2d');
+
+        chartCanvas.width = chartCanvas.offsetWidth;
+        chartCanvas.height = 400;
+
+        const dataPoints = [
+            { year: '2020', value: 85 },
+            { year: '2021', value: 95 },
+            { year: '2022', value: 110 },
+            { year: '2023', value: 140 },
+            { year: '2024', value: 154 },
+            { year: '2025', value: 166 },
+            { year: '2026', value: 185 },
+            { year: '2027', value: 208 },
+            { year: '2028', value: 240 },
+            { year: '2029', value: 280 },
+            { year: '2030', value: 310 },
+            { year: '2031', value: 340 },
+            { year: '2032', value: 369 }
+        ];
+
+        function drawChart() {
+            const padding = 60;
+            const width = chartCanvas.width - padding * 2;
+            const height = chartCanvas.height - padding * 2;
+            
+            const maxValue = 400;
+            const minValue = 0;
+            
+            chartCtx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+            
+            chartCtx.strokeStyle = '#333';
+            chartCtx.lineWidth = 1;
+            for (let i = 0; i <= 8; i++) {
+                const y = padding + (height / 8) * i;
+                chartCtx.beginPath();
+                chartCtx.moveTo(padding, y);
+                chartCtx.lineTo(padding + width, y);
+                chartCtx.stroke();
+                
+                const value = maxValue - (maxValue / 8) * i;
+                chartCtx.fillStyle = '#888';
+                chartCtx.font = '12px Arial';
+                chartCtx.textAlign = 'right';
+                chartCtx.fillText('$' + value + 'B', padding - 10, y + 4);
+            }
+            
+            chartCtx.strokeStyle = '#4d7fff';
+            chartCtx.lineWidth = 3;
+            chartCtx.beginPath();
+            
+            dataPoints.forEach((point, index) => {
+                const x = padding + (width / (dataPoints.length - 1)) * index;
+                const y = padding + height - ((point.value - minValue) / (maxValue - minValue)) * height;
+                
+                if (index === 0) {
+                    chartCtx.moveTo(x, y);
+                } else {
+                    chartCtx.lineTo(x, y);
+                }
+                
+                chartCtx.fillStyle = '#4d7fff';
+                chartCtx.beginPath();
+                chartCtx.arc(x, y, 5, 0, Math.PI * 2);
+                chartCtx.fill();
+                
+                if (index % 2 === 0) {
+                    chartCtx.fillStyle = '#888';
+                    chartCtx.font = '12px Arial';
+                    chartCtx.textAlign = 'center';
+                    chartCtx.fillText(point.year, x, chartCanvas.height - 30);
+                }
+                
+                if (point.year === '2024' || point.year === '2032') {
+                    chartCtx.fillStyle = '#ffffff';
+                    chartCtx.font = 'bold 14px Arial';
+                    chartCtx.textAlign = 'center';
+                    chartCtx.fillText('$' + point.value + 'B', x, y - 15);
+                }
+            });
+            
+            chartCtx.stroke();
+            
+            const inflectionIndex = 4;
+            const inflectionX = padding + (width / (dataPoints.length - 1)) * inflectionIndex;
+            const inflectionY = padding + height - ((dataPoints[inflectionIndex].value - minValue) / (maxValue - minValue)) * height;
+            
+            chartCtx.strokeStyle = '#ff6b35';
+            chartCtx.lineWidth = 2;
+            chartCtx.beginPath();
+            chartCtx.moveTo(inflectionX - 30, inflectionY - 60);
+            chartCtx.lineTo(inflectionX - 5, inflectionY - 15);
+            chartCtx.stroke();
+            
+            chartCtx.beginPath();
+            chartCtx.moveTo(inflectionX - 5, inflectionY - 15);
+            chartCtx.lineTo(inflectionX - 10, inflectionY - 25);
+            chartCtx.lineTo(inflectionX, inflectionY - 20);
+            chartCtx.closePath();
+            chartCtx.fillStyle = '#ff6b35';
+            chartCtx.fill();
+            
+            chartCtx.fillStyle = '#ff6b35';
+            chartCtx.font = 'bold 14px Arial';
+            chartCtx.textAlign = 'center';
+            chartCtx.fillText('Inflection', inflectionX - 50, inflectionY - 70);
+            chartCtx.fillText('Point', inflectionX - 50, inflectionY - 55);
+            
+            chartCtx.fillStyle = '#b0b0b0';
+            chartCtx.font = '16px Arial';
+            chartCtx.textAlign = 'center';
+            chartCtx.fillText('Market Size (Billions USD)', chartCanvas.width / 2, 30);
+        }
+
+        drawChart();
+        window.addEventListener('resize', () => {
+            chartCanvas.width = chartCanvas.offsetWidth;
+            drawChart();
+        });
+
+        // Neural Network Animation
+        const canvas = document.getElementById('neuralNetwork');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Node {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff3366';
+                ctx.fill();
+            }
+        }
+
+        const nodes = [];
+        const nodeCount = 50;
+        const maxDistance = 150;
+
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push(new Node(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height
+            ));
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
+
+                nodes.forEach(otherNode => {
+                    if (node !== otherNode) {
+                        const dx = node.x - otherNode.x;
+                        const dy = node.y - otherNode.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < maxDistance) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(otherNode.x, otherNode.y);
+                            const opacity = 1 - (distance / maxDistance);
+                            ctx.strokeStyle = `rgba(255, 51, 102, ${opacity * 0.3})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                });
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.region-fill').forEach(fill => {
+                    fill.style.width = fill.style.width;
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>

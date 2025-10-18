@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>AI Business Intelligence - Sign In</title>
+    <script src="config-client.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .auth-header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-button {
+            width: 100%;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .form-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+        }
+
+        .form-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-button.loading {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        .form-switch {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-switch p {
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .form-switch button {
+            background: none;
+            border: none;
+            color: #fbbf24;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .form-switch button:hover {
+            color: #f59e0b;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            color: #86efac;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+            font-size: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .feature-list li i {
+            color: #22c55e;
+            width: 18px;
+            height: 18px;
+        }
+
+        .trial-badge {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 35px 25px;
+            }
+            
+            .logo {
+                font-size: 2em;
+            }
+
+            .auth-header p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo">🚀 Mission Control</div>
+            <p id="headerSubtitle">Welcome back to your dashboard</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="auth-form active" id="loginForm">
+            <div class="error-message" id="loginError"></div>
+            <div class="success-message" id="loginSuccess"></div>
+            
+            <form id="loginFormElement">
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Business Email Address</label>
+                    <input type="email" id="loginEmail" class="form-input" required autocomplete="email" placeholder="you@yourbusiness.com">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-input" required autocomplete="current-password" placeholder="••••••••">
+                </div>
+                
+                <button type="submit" class="form-button" id="loginButton">
+                    <i data-lucide="log-in"></i>
+                    Sign In to Dashboard
+                </button>
+            </form>
+            
+            <div class="form-switch">
+                <p>Don't have an account? <button type="button" onclick="showForm('signup')">Start free trial</button></p>
+                <p><button type="button" onclick="showForm('forgot')">Forgot password?</button></p>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="auth-form" id="signupForm">
+            <div class="trial-badge">✨ 15-Day Free Trial. 5 Minute Setup</div>
+            
+            <div class="error-message" id="signupError"></div>
+            <div class="success-message" id="signupSuccess"></div>
+            
+            <form id="signupFormElement">
+                <div class="form-group">
+                    <label class="form-label" for="signupRestaurantName">Restaurant/Venue Name</label>
+                    <input type="text" id="signupRestaurantName" class="form-input" required placeholder="Your Venue Name">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signupFullName">Your Full Name</label>
+                    <input type="text" id="signupFullName" class="form-input" required placeholder="John Smith">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signupEmail">Business Email Address</label>
+                    <input type="email" id="signupEmail" class="form-input" required autocomplete="email" placeholder="you@yourbusiness.com">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" class="form-input" required autocomplete="new-password" minlength="6" placeholder="Minimum 6 characters">
+                </div>
+                
+                <ul class="feature-list">
+                    <li><i data-lucide="check"></i> Real-time table intelligence</li>
+                    <li><i data-lucide="check"></i> AI-powered insights</li>
+                    <li><i data-lucide="check"></i> Customer analytics</li>
+                    <li><i data-lucide="briefcase"></i> Business email required</li>
+                    <li><i data-lucide="check"></i> No credit card required</li>
+                </ul>
+                
+                <button type="submit" class="form-button" id="signupButton">
+                    <i data-lucide="rocket"></i>
+                    Start Free Trial
+                </button>
+            </form>
+            
+            <div class="form-switch">
+                <p>Already have an account? <button type="button" onclick="showForm('login')">Sign in</button></p>
+            </div>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div class="auth-form" id="forgotForm">
+            <div class="error-message" id="forgotError"></div>
+            <div class="success-message" id="forgotSuccess"></div>
+            
+            <form id="forgotFormElement">
+                <div class="form-group">
+                    <label class="form-label" for="forgotEmail">Business Email Address</label>
+                    <input type="email" id="forgotEmail" class="form-input" required autocomplete="email" placeholder="you@yourbusiness.com">
+                </div>
+                
+                <button type="submit" class="form-button" id="forgotButton">
+                    <i data-lucide="mail"></i>
+                    Send Reset Link
+                </button>
+            </form>
+            
+            <div class="form-switch">
+                <p><button type="button" onclick="showForm('login')">← Back to login</button></p>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    // Use the imported CONFIG from config-client.js (don't redefine it!)
+    
+    // Business email validation
+    const PERSONAL_EMAIL_DOMAINS = [
+        'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com',
+        'icloud.com', 'mail.com', 'protonmail.com', 'yandex.com', 'zoho.com',
+        'gmx.com', 'inbox.com', 'mail.ru', 'live.com', 'msn.com', 'hey.com',
+        'fastmail.com', 'tutanota.com', 'pm.me', 'googlemail.com', 'me.com',
+        'mac.com', 'yahoo.co.uk', 'hotmail.co.uk', 'outlook.co.uk', 'live.co.uk'
+    ];
+
+    const VALID_TLDS = [
+        'com', 'co.uk', 'uk', 'net', 'org', 'io', 'co', 'us', 'ca', 'au',
+        'de', 'fr', 'it', 'es', 'nl', 'be', 'ch', 'at', 'se', 'no', 'dk',
+        'ie', 'nz', 'sg', 'hk', 'jp', 'in', 'br', 'mx', 'ar', 'cl', 'pe',
+        'eu', 'app', 'dev', 'tech', 'digital', 'online', 'store', 'shop',
+        'restaurant', 'marketing', 'cafe', 'bar', 'pub', 'bistro', 'biz'
+    ];
+
+    function validateBusinessEmail(email) {
+        if (!email || typeof email !== 'string') {
+            return { valid: false, message: 'Email is required.' };
+        }
+
+        email = email.toLowerCase().trim();
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return { valid: false, message: 'Please enter a valid email address.' };
+        }
+
+        const domain = email.split('@')[1];
+        if (!domain) {
+            return { valid: false, message: 'Invalid email format.' };
+        }
+
+        if (PERSONAL_EMAIL_DOMAINS.includes(domain)) {
+            return { 
+                valid: false, 
+                message: 'Please use a business email address. Personal emails (Gmail, Yahoo, etc.) are not accepted.' 
+            };
+        }
+
+        const parts = domain.split('.');
+        if (parts.length < 2) {
+            return { valid: false, message: 'Invalid email domain.' };
+        }
+
+        const lastPart = parts[parts.length - 1];
+        const lastTwoParts = parts.length >= 2 ? `${parts[parts.length - 2]}.${parts[parts.length - 1]}` : '';
+
+        const hasValidTld = VALID_TLDS.includes(lastPart) || VALID_TLDS.includes(lastTwoParts);
+        
+        if (!hasValidTld) {
+            return { 
+                valid: false, 
+                message: 'Please use a valid business email domain (e.g., .com, .co.uk, .io, etc.)' 
+            };
+        }
+
+        return { valid: true };
+    }
+
+    function validateRestaurantName(name) {
+        if (!name || typeof name !== 'string') {
+            return { valid: false, message: 'Restaurant/venue name is required.' };
+        }
+
+        name = name.trim();
+
+        if (name.length < 2) {
+            return { valid: false, message: 'Restaurant/venue name is too short.' };
+        }
+
+        if (name.length > 100) {
+            return { valid: false, message: 'Restaurant/venue name is too long.' };
+        }
+
+        const uniqueChars = new Set(name.toLowerCase().replace(/\s/g, '')).size;
+        if (uniqueChars < 2) {
+            return { valid: false, message: 'Please enter a valid restaurant/venue name.' };
+        }
+
+        const specialCharCount = (name.match(/[^a-zA-Z0-9\s\-'&.]/g) || []).length;
+        if (specialCharCount > name.length * 0.3) {
+            return { valid: false, message: 'Restaurant/venue name contains too many special characters.' };
+        }
+
+        return { valid: true };
+    }
+
+    function generateRestaurantId(restaurantName) {
+        if (!restaurantName) return null;
+        
+        return restaurantName
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '')
+            .substring(0, 20);
+    }
+
+    function showForm(formName) {
+        document.querySelectorAll('.auth-form').forEach(form => {
+            form.classList.remove('active');
+        });
+
+        const formMap = {
+            'login': { 
+                id: 'loginForm', 
+                title: 'Welcome back to your dashboard' 
+            },
+            'signup': { 
+                id: 'signupForm', 
+                title: 'Start your 15-day free trial' 
+            },
+            'forgot': { 
+                id: 'forgotForm', 
+                title: 'Reset your password' 
+            }
+        };
+
+        const formConfig = formMap[formName];
+        if (formConfig) {
+            document.getElementById(formConfig.id).classList.add('active');
+            document.getElementById('headerSubtitle').textContent = formConfig.title;
+        }
+
+        clearMessages();
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    function clearMessages() {
+        document.querySelectorAll('.error-message, .success-message').forEach(msg => {
+            msg.style.display = 'none';
+            msg.textContent = '';
+        });
+    }
+
+    function showError(elementId, message) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+    }
+
+    function showSuccess(elementId, message) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+    }
+
+    // Login form handler
+    document.getElementById('loginFormElement').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const btn = document.getElementById('loginButton');
+        
+        if (!email || !password) {
+            showError('loginError', 'Please fill in all fields.');
+            return;
+        }
+
+        const emailValidation = validateBusinessEmail(email);
+        if (!emailValidation.valid) {
+            showError('loginError', emailValidation.message);
+            return;
+        }
+        
+        btn.classList.add('loading');
+        btn.innerHTML = '<div class="spinner"></div> Signing in...';
+        clearMessages();
+        
+        try {
+            console.log('Login request to:', `${CONFIG.getApiBaseUrl()}/auth/login`);
+            
+            const response = await fetch(`${CONFIG.getApiBaseUrl()}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await response.json();
+            if (response.ok && data.success) {
+    localStorage.setItem('qr_user_token', data.token);
+    localStorage.setItem('user_email', data.user.email);
+    localStorage.setItem('user_restaurant_name', data.user.restaurant_name);
+    localStorage.setItem('user_restaurant_id', data.user.restaurant_id);
+    localStorage.setItem('user_type', 'restaurant');
+    localStorage.setItem('user_name', data.user.full_name);
+    
+    // ✅ Use backend response to set setup status
+    if (data.user.needsSetup) {
+        localStorage.setItem('needs_venue_setup', 'true');
+        localStorage.setItem('venue_setup_complete', 'false');
+    } else {
+        localStorage.setItem('needs_venue_setup', 'false');
+        localStorage.setItem('venue_setup_complete', 'true');
+    }
+    
+    showSuccess('loginSuccess', '✅ Login successful! Redirecting...');
+    
+    setTimeout(() => {
+        // Use the value we just set from the backend
+        if (data.user.needsSetup) {
+            window.location.href = 'venue-setup.html';
+        } else {
+            window.location.href = 'welcome.html';
+        }
+    }, 1500);
+    
+} else {  // ← This is the else for "if (response.ok && data.success)"
+    throw new Error(data.message || 'Login failed');
+            }
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            showError('loginError', error.message || 'Login failed. Please check your credentials.');
+            
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i data-lucide="log-in"></i> Sign In to Dashboard';
+            lucide.createIcons();
+        }
+    });
+
+    // Signup form handler
+    document.getElementById('signupFormElement').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const restaurantName = document.getElementById('signupRestaurantName').value.trim();
+        const fullName = document.getElementById('signupFullName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const btn = document.getElementById('signupButton');
+        
+        if (!restaurantName || !fullName || !email || !password) {
+            showError('signupError', 'Please fill in all fields.');
+            return;
+        }
+
+        const nameValidation = validateRestaurantName(restaurantName);
+        if (!nameValidation.valid) {
+            showError('signupError', nameValidation.message);
+            return;
+        }
+
+        const emailValidation = validateBusinessEmail(email);
+        if (!emailValidation.valid) {
+            showError('signupError', emailValidation.message);
+            return;
+        }
+        
+        if (password.length < 6) {
+            showError('signupError', 'Password must be at least 6 characters long.');
+            return;
+        }
+        
+        btn.classList.add('loading');
+        btn.innerHTML = '<div class="spinner"></div> Creating account...';
+        clearMessages();
+        
+        try {
+            const restaurantId = generateRestaurantId(restaurantName);
+            
+            console.log('Signup request to:', `${CONFIG.getApiBaseUrl()}/auth/register`);
+
+            console.log('Sending:', { restaurantName, restaurantId, fullName, email, password: '***hidden***' });
+            
+console.log('Password captured?', password ? 'YES' : 'NO', 'Length:', password?.length);
+
+            const response = await fetch(`${CONFIG.getApiBaseUrl()}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    restaurantName,
+                    restaurantId,
+                    fullName,
+                    email,
+                    password
+                })
+            });
+            
+            const data = await response.json();
+            console.log('Signup response:', data);
+            
+            if (response.ok && data.success) {
+                localStorage.setItem('qr_user_token', data.token);
+                localStorage.setItem('user_email', data.user.email);
+                localStorage.setItem('user_restaurant_name', data.user.restaurant_name);
+                localStorage.setItem('user_restaurant_id', data.user.restaurant_id);
+                localStorage.setItem('user_type', 'restaurant');
+                localStorage.setItem('user_name', data.user.full_name);
+                localStorage.setItem('needs_venue_setup', 'true');
+                
+                showSuccess('signupSuccess', '✅ Account created! Setting up your dashboard...');
+                
+                setTimeout(() => {
+                    window.location.href = 'venue-setup.html';
+                }, 1500);
+                
+            } else {
+                throw new Error(data.message || 'Registration failed');
+            }
+            
+        } catch (error) {
+            console.error('Signup error:', error);
+            showError('signupError', error.message || 'Registration failed. Please try again.');
+            
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i data-lucide="rocket"></i> Start Free Trial';
+            lucide.createIcons();
+        }
+    });
+
+    // Forgot password form handler
+    document.getElementById('forgotFormElement').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('forgotEmail').value.trim();
+        const btn = document.getElementById('forgotButton');
+        
+        if (!email) {
+            showError('forgotError', 'Please enter your email address.');
+            return;
+        }
+
+        const emailValidation = validateBusinessEmail(email);
+        if (!emailValidation.valid) {
+            showError('forgotError', emailValidation.message);
+            return;
+        }
+        
+        btn.classList.add('loading');
+        btn.innerHTML = '<div class="spinner"></div> Sending...';
+        clearMessages();
+        
+        try {
+            const response = await fetch(`${CONFIG.getApiBaseUrl()}/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                showSuccess('forgotSuccess', '✅ Password reset link sent to your email!');
+                
+                setTimeout(() => {
+                    showForm('login');
+                }, 3000);
+                
+            } else {
+                throw new Error(data.message || 'Failed to send reset link');
+            }
+            
+        } catch (error) {
+            console.error('Forgot password error:', error);
+            showError('forgotError', error.message || 'Failed to send reset link. Please try again.');
+        } finally {
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i data-lucide="mail"></i> Send Reset Link';
+            lucide.createIcons();
+        }
+    });
+
+    // Handle URL parameters and auto-login check
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        const form = urlParams.get('form');
+        
+        if (action === 'signup' || form === 'signup' || form === 'trial') {
+            showForm('signup');
+            
+            const restaurantName = urlParams.get('restaurant') || localStorage.getItem('temp_restaurant_name');
+            if (restaurantName) {
+                document.getElementById('signupRestaurantName').value = restaurantName;
+                localStorage.removeItem('temp_restaurant_name');
+            }
+        } else if (form === 'forgot') {
+            showForm('forgot');
+        } else {
+            const token = localStorage.getItem('qr_user_token');
+            if (token) {
+                fetch(`${CONFIG.getApiBaseUrl()}/auth/verify`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token })
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        window.location.href = 'welcome.html';
+                    } else {
+                        localStorage.clear();
+                    }
+                }).catch(() => {
+                    localStorage.clear();
+                });
+            }
+            
+            showForm('login');
+        }
+    });
+</script>
+</body>
+</html>

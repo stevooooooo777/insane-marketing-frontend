@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - insane.marketing</title>
+<script src="config-client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .restaurant-logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .header-info h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .header-info p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .stat-number.urgent {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+            animation: livePulse 1.5s infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            border-color: #fbbf24;
+            color: #000;
+        }
+
+        .filter-tab:hover:not(.active) {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+
+        .requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .request-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .request-card.urgent {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.5);
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.2);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .request-info .table-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .request-type {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-urgent { background: rgba(251, 191, 36, 0.3); color: #fbbf24; border: 1px solid #fbbf24; }
+        .type-server { background: rgba(59, 130, 246, 0.3); color: #3b82f6; border: 1px solid #3b82f6; }
+        .type-order { background: rgba(34, 197, 94, 0.3); color: #22c55e; border: 1px solid #22c55e; }
+        .type-check { background: rgba(245, 158, 11, 0.3); color: #f59e0b; border: 1px solid #f59e0b; }
+        .type-question { background: rgba(168, 85, 247, 0.3); color: #a855f7; border: 1px solid #a855f7; }
+
+        .request-time {
+            text-align: right;
+        }
+
+        .time-elapsed {
+            font-size: 1.2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .timestamp {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .request-message {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-acknowledge {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .btn-acknowledge:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-complete {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .btn-complete:hover {
+            background: #22c55e;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-reassign {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .btn-reassign:hover {
+            background: #f59e0b;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: white;
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .table-status {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+
+        .table-available {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .table-occupied {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border-color: #f59e0b;
+        }
+
+        .table-needs-attention {
+            background: rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+            border-color: #fbbf24;
+            animation: tableAlert 2s infinite;
+        }
+
+        @keyframes tableAlert {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .table-status:hover {
+            transform: scale(1.1);
+        }
+
+        .no-requests {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .no-requests-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .request-actions {
+                flex-direction: column;
+            }
+
+            .table-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .filter-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="restaurant-logo" id="restaurantLogo">🍽️</div>
+                <div class="header-info">
+                    <h1 id="restaurantName">Staff Dashboard</h1>
+                    <p>Service Command Center</p>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <div class="stat-number" id="activeRequests">0</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number urgent" id="urgentRequests">0</div>
+                    <div class="stat-label">Urgent</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="avgResponseTime">--</div>
+                    <div class="stat-label">Avg Response</div>
+                </div>
+                <div class="live-badge">
+                    <div class="live-dot"></div>
+                    <span>Live</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">🔔 Service Requests</h2>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterRequests('all')">All</button>
+                        <button class="filter-tab" onclick="filterRequests('urgent')">Urgent</button>
+                        <button class="filter-tab" onclick="filterRequests('pending')">Pending</button>
+                        <button class="filter-tab" onclick="filterRequests('acknowledged')">In Progress</button>
+                    </div>
+                </div>
+                
+                <div class="requests-list" id="requestsList">
+                    <div class="no-requests">
+                        <div class="no-requests-icon">✨</div>
+                        <h3>All caught up!</h3>
+                        <p>No active service requests</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">📊 Today's Metrics</h3>
+                    <div class="metric-row">
+                        <span class="metric-label">Total Requests</span>
+                        <span class="metric-value" id="requestsToday">0</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Avg Response Time</span>
+                        <span class="metric-value" id="avgResponseTimeDetailed">-- min</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Satisfaction</span>
+                        <span class="metric-value" id="satisfaction">4.8/5</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Fastest Response</span>
+                        <span class="metric-value" id="fastestResponse">45 sec</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">🪑 Table Status</h3>
+                    <div class="table-grid" id="tableGrid"></div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">📈 Request Types</h3>
+                    <div class="metric-row">
+                        <span class="metric-label">Server Assistance</span>
+                        <span class="metric-value" id="serverRequests">0</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Ready to Order</span>
+                        <span class="metric-value" id="orderRequests">0</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Check Requests</span>
+                        <span class="metric-value" id="checkRequests">0</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Questions</span>
+                        <span class="metric-value" id="questionRequests">0</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="welcome.html" class="back-btn">← Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = CONFIG.getApiBaseUrl();
+        let serviceRequests = [];
+        let currentFilter = 'all';
+        let restaurantId = 'demo-restaurant';
+        
+        const mockRequests = [
+            {
+                id: 1,
+                table_number: 7,
+                request_type: 'urgent',
+                priority: 'immediate',
+                message: '🚨 URGENT: Table 7 needs immediate assistance',
+                timestamp: new Date(Date.now() - 2 * 60 * 1000),
+                status: 'pending',
+                acknowledged_by: null,
+                acknowledged_at: null
+            },
+            {
+                id: 2,
+                table_number: 3,
+                request_type: 'server',
+                priority: 'normal',
+                message: '👋 Table 3 is requesting server assistance',
+                timestamp: new Date(Date.now() - 5 * 60 * 1000),
+                status: 'acknowledged',
+                acknowledged_by: 'Sarah',
+                acknowledged_at: new Date(Date.now() - 4 * 60 * 1000)
+            },
+            {
+                id: 3,
+                table_number: 12,
+                request_type: 'order',
+                priority: 'normal',
+                message: '🍔 Table 12 is ready to place their order',
+                timestamp: new Date(Date.now() - 8 * 60 * 1000),
+                status: 'pending',
+                acknowledged_by: null,
+                acknowledged_at: null
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('qr_user_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            initializeDashboard();
+            loadServiceRequests();
+            generateTableGrid();
+            updateMetrics();
+            
+            setInterval(loadServiceRequests, 10000);
+            setInterval(updateMetrics, 30000);
+            setInterval(updateTimestamps, 1000);
+        });
+
+        function initializeDashboard() {
+            document.getElementById('restaurantName').textContent = 'Demo Restaurant';
+        }
+
+        function loadServiceRequests() {
+            if (Math.random() < 0.1) {
+                addMockRequest();
+            }
+            
+            serviceRequests = mockRequests.filter(req => req.status !== 'completed');
+            renderRequests();
+            updateHeaderStats();
+        }
+
+        function addMockRequest() {
+            const requestTypes = ['server', 'order', 'check', 'question'];
+            const randomType = requestTypes[Math.floor(Math.random() * requestTypes.length)];
+            const tableNumber = Math.floor(Math.random() * 20) + 1;
+            
+            const newRequest = {
+                id: Date.now(),
+                table_number: tableNumber,
+                request_type: randomType,
+                priority: Math.random() < 0.2 ? 'immediate' : 'normal',
+                message: getRequestMessage(randomType, tableNumber),
+                timestamp: new Date(),
+                status: 'pending',
+                acknowledged_by: null,
+                acknowledged_at: null
+            };
+            
+            mockRequests.unshift(newRequest);
+            playNotificationSound();
+        }
+
+        function getRequestMessage(requestType, tableNumber) {
+            const messages = {
+                'server': `👋 Table ${tableNumber} is requesting server assistance`,
+                'order': `🍔 Table ${tableNumber} is ready to place their order`,
+                'check': `🧾 Table ${tableNumber} would like to pay the bill`,
+                'question': `❓ Table ${tableNumber} has a question about menu/service`
+            };
+            return messages[requestType] || `Table ${tableNumber} is requesting assistance`;
+        }
+
+        function playNotificationSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function renderRequests() {
+            const container = document.getElementById('requestsList');
+            const filteredRequests = filterRequestsByType(serviceRequests);
+            
+            if (filteredRequests.length === 0) {
+                container.innerHTML = `
+                    <div class="no-requests">
+                        <div class="no-requests-icon">✨</div>
+                        <h3>All caught up!</h3>
+                        <p>No ${currentFilter === 'all' ? 'active' : currentFilter} service requests</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredRequests.map(request => `
+                <div class="request-card ${request.priority === 'immediate' ? 'urgent' : ''}" data-id="${request.id}">
+                    <div class="request-header">
+                        <div class="request-info">
+                            <div class="table-number">Table ${request.table_number}</div>
+                            <span class="request-type type-${request.request_type}">${request.request_type}</span>
+                        </div>
+                        <div class="request-time">
+                            <div class="time-elapsed">${getTimeElapsed(request.timestamp)}</div>
+                            <div class="timestamp">${formatTime(request.timestamp)}</div>
+                        </div>
+                    </div>
+                    <div class="request-message">${request.message}</div>
+                    <div class="request-actions">
+                        ${request.status === 'pending' ? `
+                            <button class="action-btn btn-acknowledge" onclick="acknowledgeRequest(${request.id})">
+                                👀 Acknowledge
+                            </button>
+                            <button class="action-btn btn-complete" onclick="completeRequest(${request.id})">
+                                ✅ Complete
+                            </button>
+                        ` : `
+                            <button class="action-btn btn-complete" onclick="completeRequest(${request.id})">
+                                ✅ Mark Complete
+                            </button>
+                            <button class="action-btn btn-reassign" onclick="reassignRequest(${request.id})">
+                                🔄 Reassign
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterRequestsByType(requests) {
+            switch (currentFilter) {
+                case 'urgent':
+                    return requests.filter(req => req.priority === 'immediate');
+                case 'pending':
+                    return requests.filter(req => req.status === 'pending');
+                case 'acknowledged':
+                    return requests.filter(req => req.status === 'acknowledged');
+                default:
+                    return requests;
+            }
+        }
+
+        function filterRequests(type) {
+            currentFilter = type;
+            
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderRequests();
+        }
+
+        function getTimeElapsed(timestamp) {
+            const now = new Date();
+            const diff = Math.floor((now - timestamp) / 1000 / 60);
+            
+            if (diff < 1) return 'Just now';
+            if (diff === 1) return '1 min';
+            if (diff < 60) return `${diff} min`;
+            
+            const hours = Math.floor(diff / 60);
+            if (hours === 1) return '1 hour';
+            return `${hours} hours`;
+        }
+
+        function formatTime(timestamp) {
+            return timestamp.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function updateTimestamps() {
+            document.querySelectorAll('.time-elapsed').forEach((element, index) => {
+                const request = filterRequestsByType(serviceRequests)[index];
+                if (request) {
+                    element.textContent = getTimeElapsed(request.timestamp);
+                }
+            });
+        }
+
+        function acknowledgeRequest(id) {
+            const request = mockRequests.find(req => req.id === id);
+            if (request) {
+                request.status = 'acknowledged';
+                request.acknowledged_by = 'Current User';
+                request.acknowledged_at = new Date();
+                
+                renderRequests();
+                updateHeaderStats();
+                trackServiceAction(id, 'acknowledged');
+            }
+        }
+
+        function completeRequest(id) {
+            const request = mockRequests.find(req => req.id === id);
+            if (request) {
+                request.status = 'completed';
+                request.completed_at = new Date();
+                
+                serviceRequests = serviceRequests.filter(req => req.id !== id);
+                
+                renderRequests();
+                updateHeaderStats();
+                updateMetrics();
+                trackServiceAction(id, 'completed');
+            }
+        }
+
+        function reassignRequest(id) {
+            const request = mockRequests.find(req => req.id === id);
+            if (request) {
+                request.status = 'pending';
+                request.acknowledged_by = null;
+                request.acknowledged_at = null;
+                
+                renderRequests();
+                updateHeaderStats();
+                trackServiceAction(id, 'reassigned');
+            }
+        }
+
+        function updateHeaderStats() {
+            const activeCount = serviceRequests.length;
+            const urgentCount = serviceRequests.filter(req => req.priority === 'immediate').length;
+            
+            document.getElementById('activeRequests').textContent = activeCount;
+            document.getElementById('urgentRequests').textContent = urgentCount;
+        }
+
+        function updateMetrics() {
+            const completedToday = mockRequests.filter(req => 
+                req.status === 'completed' && 
+                isToday(req.timestamp)
+            );
+            
+            const responseTimes = completedToday
+                .filter(req => req.acknowledged_at)
+                .map(req => Math.floor((req.acknowledged_at - req.timestamp) / 1000 / 60));
+            
+            const avgResponseTime = responseTimes.length > 0 
+                ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
+                : 0;
+            
+            document.getElementById('avgResponseTime').textContent = avgResponseTime || '--';
+            document.getElementById('avgResponseTimeDetailed').textContent = avgResponseTime ? `${avgResponseTime} min` : '-- min';
+            document.getElementById('requestsToday').textContent = completedToday.length + serviceRequests.length;
+            
+            if (responseTimes.length > 0) {
+                document.getElementById('fastestResponse').textContent = `${Math.min(...responseTimes)} min`;
+            }
+            
+            const todayRequests = [...completedToday, ...serviceRequests];
+            document.getElementById('serverRequests').textContent = todayRequests.filter(req => req.request_type === 'server').length;
+            document.getElementById('orderRequests').textContent = todayRequests.filter(req => req.request_type === 'order').length;
+            document.getElementById('checkRequests').textContent = todayRequests.filter(req => req.request_type === 'check').length;
+            document.getElementById('questionRequests').textContent = todayRequests.filter(req => req.request_type === 'question').length;
+        }
+
+        function isToday(date) {
+            const today = new Date();
+            return date.toDateString() === today.toDateString();
+        }
+
+        function generateTableGrid() {
+            const container = document.getElementById('tableGrid');
+            const tableCount = 20;
+            
+            let tablesHTML = '';
+            for (let i = 1; i <= tableCount; i++) {
+                const hasRequest = serviceRequests.some(req => req.table_number === i);
+                const status = hasRequest ? 'needs-attention' : (Math.random() > 0.3 ? 'occupied' : 'available');
+                
+                tablesHTML += `
+                    <div class="table-status table-${status}" title="Table ${i}" onclick="focusTable(${i})">
+                        ${i}
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = tablesHTML;
+        }
+
+        function focusTable(tableNumber) {
+            const tableRequests = serviceRequests.filter(req => req.table_number === tableNumber);
+            if (tableRequests.length > 0) {
+                const requestCard = document.querySelector(`[data-id="${tableRequests[0].id}"]`);
+                if (requestCard) {
+                    requestCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    requestCard.style.borderColor = '#fbbf24';
+                    setTimeout(() => {
+                        requestCard.style.borderColor = '';
+                    }, 2000);
+                }
+            }
+        }
+
+        async function trackServiceAction(requestId, action) {
+            try {
+                await fetch(`${API_URL}/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('qr_user_token')}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        interaction_type: 'staff_action',
+                        request_id: requestId,
+                        action: action,
+                        staff_member: 'Current User',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking staff action:', error);
+            }
+        }
+    </script>
+</body>
+</html>

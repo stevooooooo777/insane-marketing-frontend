@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Hour Specials - Restaurant Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .happy-hour-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .floating-bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: floatUp 8s infinite ease-in-out;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .happy-hour-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: cocktailShake 2s infinite ease-in-out;
+        }
+
+        @keyframes cocktailShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .restaurant-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff, #feca57);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .happy-hour-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ff9ff3, #feca57);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-remaining {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 12px 20px;
+            margin: 15px auto;
+            display: inline-block;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .countdown {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #feca57;
+        }
+
+        .deals-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .deal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deal-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .deal-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .deal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .deal-icon {
+            font-size: 2.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .deal-info {
+            flex: 1;
+        }
+
+        .deal-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #feca57;
+        }
+
+        .deal-description {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .pricing {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .original-price {
+            font-size: 1.1rem;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .happy-price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #26de81;
+        }
+
+        .savings {
+            background: #26de81;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .order-button {
+            width: 100%;
+            background: linear-gradient(135deg, #ff9ff3, #feca57);
+            border: none;
+            border-radius: 15px;
+            padding: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .order-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(255, 159, 243, 0.3);
+        }
+
+        .availability {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 15px;
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .availability-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .availability-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stock-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .in-stock { background: #26de81; }
+        .low-stock { background: #feca57; }
+        .out-stock { background: #ff6b6b; }
+
+        .social-sharing {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .sharing-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #feca57;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .reservations {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .reservation-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .reservation-btn {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .reservation-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(78, 205, 196, 0.3);
+        }
+
+        .back-to-table {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 12px 24px;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .analytics-tracker {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            z-index: 100;
+        }
+
+        .urgent-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: urgentPulse 2s infinite;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+        }
+
+        @media (max-width: 480px) {
+            .happy-hour-container {
+                padding: 15px;
+            }
+            
+            .deal-card {
+                padding: 20px;
+            }
+            
+            .happy-hour-title {
+                font-size: 2rem;
+            }
+            
+            .deal-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .pricing {
+                justify-content: center;
+            }
+        }
+
+        .time-sensitive {
+            animation: timeSensitive 1.5s infinite;
+        }
+
+        @keyframes timeSensitive {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-bubbles" id="bubbles"></div>
+    
+    <div class="happy-hour-container">
+        <div class="header">
+            <div class="happy-hour-icon">🍹</div>
+            <div class="restaurant-name" id="restaurantName">Loading...</div>
+            <div class="happy-hour-title">Happy Hour Special</div>
+            <div class="time-remaining">
+                <div class="countdown" id="countdown">Loading...</div>
+                <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">Time remaining</div>
+            </div>
+        </div>
+
+        <div class="urgent-banner" id="urgentBanner" style="display: none;">
+            <div style="font-weight: bold; margin-bottom: 5px;">⏰ Limited Time Offer!</div>
+            <div style="font-size: 0.9rem;">Happy hour ends in less than 30 minutes. Order now!</div>
+        </div>
+
+        <div class="deals-grid">
+            <div class="deal-card">
+                <div class="deal-badge">50% OFF</div>
+                <div class="deal-header">
+                    <div class="deal-icon">🍺</div>
+                    <div class="deal-info">
+                        <div class="deal-title">Craft Beer Special</div>
+                        <div class="deal-description">All draft beers including IPAs, lagers, and seasonal selections</div>
+                    </div>
+                </div>
+                <div class="pricing">
+                    <span class="original-price">$8.00</span>
+                    <span class="happy-price">$4.00</span>
+                    <span class="savings">Save $4</span>
+                </div>
+                <button class="order-button" onclick="orderItem('craft-beer', '$4.00')">
+                    🍺 Order Craft Beer
+                </button>
+                <div class="availability">
+                    <div class="availability-item">
+                        <span>IPA Selection</span>
+                        <div class="stock-status">
+                            <div class="stock-dot in-stock"></div>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                    <div class="availability-item">
+                        <span>Local Lager</span>
+                        <div class="stock-status">
+                            <div class="stock-dot low-stock"></div>
+                            <span>Limited</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="deal-card">
+                <div class="deal-badge">60% OFF</div>
+                <div class="deal-header">
+                    <div class="deal-icon">🍸</div>
+                    <div class="deal-info">
+                        <div class="deal-title">Premium Cocktails</div>
+                        <div class="deal-description">Handcrafted cocktails made with top-shelf spirits</div>
+                    </div>
+                </div>
+                <div class="pricing">
+                    <span class="original-price">$15.00</span>
+                    <span class="happy-price">$6.00</span>
+                    <span class="savings">Save $9</span>
+                </div>
+                <button class="order-button" onclick="orderItem('premium-cocktails', '$6.00')">
+                    🍸 Order Cocktail
+                </button>
+                <div class="availability">
+                    <div class="availability-item">
+                        <span>Mojitos & Margaritas</span>
+                        <div class="stock-status">
+                            <div class="stock-dot in-stock"></div>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                    <div class="availability-item">
+                        <span>Whiskey Selection</span>
+                        <div class="stock-status">
+                            <div class="stock-dot in-stock"></div>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="deal-card">
+                <div class="deal-badge">40% OFF</div>
+                <div class="deal-header">
+                    <div class="deal-icon">🍤</div>
+                    <div class="deal-info">
+                        <div class="deal-title">Appetizer Platter</div>
+                        <div class="deal-description">Perfect for sharing - wings, sliders, and loaded nachos</div>
+                    </div>
+                </div>
+                <div class="pricing">
+                    <span class="original-price">$18.00</span>
+                    <span class="happy-price">$11.00</span>
+                    <span class="savings">Save $7</span>
+                </div>
+                <button class="order-button" onclick="orderItem('appetizer-platter', '$11.00')">
+                    🍤 Order Appetizers
+                </button>
+                <div class="availability">
+                    <div class="availability-item">
+                        <span>Wings & Sliders</span>
+                        <div class="stock-status">
+                            <div class="stock-dot in-stock"></div>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                    <div class="availability-item">
+                        <span>Loaded Nachos</span>
+                        <div class="stock-status">
+                            <div class="stock-dot in-stock"></div>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="social-sharing">
+            <div class="sharing-title">🎉 Share the Fun!</div>
+            <div style="margin-bottom: 15px; font-size: 0.9rem; opacity: 0.9;">
+                Let your friends know about these amazing deals
+            </div>
+            <div class="share-buttons">
+                <a href="#" class="share-btn" onclick="shareToSocial('facebook')">
+                    📘 Facebook
+                </a>
+                <a href="#" class="share-btn" onclick="shareToSocial('instagram')">
+                    📷 Instagram
+                </a>
+                <a href="#" class="share-btn" onclick="shareToSocial('whatsapp')">
+                    💬 WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <div class="reservations">
+            <div class="reservation-title">🪑 Secure Your Spot</div>
+            <div style="margin-bottom: 20px; font-size: 0.95rem; opacity: 0.9;">
+                Reserve a table to guarantee you don't miss out on these deals
+            </div>
+            <button class="reservation-btn" onclick="makeReservation()">
+                📅 Reserve Table for Happy Hour
+            </button>
+        </div>
+
+        <div class="back-to-table">
+            <a href="javascript:history.back()" class="back-btn">
+                🎠 Back to Table Experience
+            </a>
+        </div>
+    </div>
+
+    <div class="analytics-tracker">
+        Happy Hour • <span id="tableInfo">Table --</span> • <span id="currentTime">--:--</span>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            getApiBaseUrl() {
+                if (window.location.hostname === 'localhost') {
+                    return 'http://localhost:8080';
+                }
+                return '';
+            }
+        };
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get('restaurant') || 'demo-restaurant';
+        const tableNumber = urlParams.get('table') || null;
+
+        // Happy hour data
+        let restaurantData = null;
+        let happyHourData = null;
+        let countdownInterval = null;
+
+        // Create floating bubbles
+        function createBubbles() {
+            const container = document.getElementById('bubbles');
+            
+            setInterval(() => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                // Random size
+                const size = 20 + Math.random() * 40;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                
+                // Random position
+                bubble.style.left = Math.random() * 100 + '%';
+                
+                // Random animation duration
+                bubble.style.animationDuration = (6 + Math.random() * 4) + 's';
+                
+                container.appendChild(bubble);
+                
+                // Remove bubble after animation
+                setTimeout(() => {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                    }
+                }, 10000);
+            }, 1000);
+        }
+
+        // Initialize page
+        async function init() {
+            try {
+                // Create visual effects
+                createBubbles();
+                
+                // Load restaurant data
+                await loadRestaurantData();
+                
+                // Load happy hour data
+                await loadHappyHourData();
+                
+                // Update UI
+                updateUI();
+                
+                // Start countdown
+                startCountdown();
+                
+                // Track page view
+                trackHappyHourView();
+                
+            } catch (error) {
+                console.error('Error initializing happy hour page:', error);
+                useDefaultData();
+            }
+        }
+
+        async function loadRestaurantData() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const response = await fetch(`${apiUrl}/api/restaurant/${restaurantId}`);
+                
+                if (response.ok) {
+                    restaurantData = await response.json();
+                } else {
+                    restaurantData = { name: 'Demo Restaurant' };
+                }
+            } catch (error) {
+                console.error('Error loading restaurant data:', error);
+                restaurantData = { name: 'Demo Restaurant' };
+            }
+        }
+
+        async function loadHappyHourData() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const response = await fetch(`${apiUrl}/api/restaurant/${restaurantId}/happy-hour`);
+                
+                if (response.ok) {
+                    happyHourData = await response.json();
+                } else {
+                    // Default happy hour data
+                    happyHourData = {
+                        start_time: '16:00',
+                        end_time: '19:00',
+                        active: isHappyHourActive(),
+                        deals: getDefaultDeals()
+                    };
+                }
+            } catch (error) {
+                console.error('Error loading happy hour data:', error);
+                happyHourData = {
+                    start_time: '16:00',
+                    end_time: '19:00',
+                    active: isHappyHourActive(),
+                    deals: getDefaultDeals()
+                };
+            }
+        }
+
+        function isHappyHourActive() {
+            const now = new Date();
+            const hour = now.getHours();
+            return hour >= 16 && hour < 19;
+        }
+
+        function getDefaultDeals() {
+            return [
+                {
+                    id: 'craft-beer',
+                    name: 'Craft Beer Special',
+                    original_price: 8.00,
+                    happy_price: 4.00,
+                    discount_percent: 50
+                },
+                {
+                    id: 'premium-cocktails',
+                    name: 'Premium Cocktails',
+                    original_price: 15.00,
+                    happy_price: 6.00,
+                    discount_percent: 60
+                },
+                {
+                    id: 'appetizer-platter',
+                    name: 'Appetizer Platter',
+                    original_price: 18.00,
+                    happy_price: 11.00,
+                    discount_percent: 40
+                }
+            ];
+        }
+
+        function useDefaultData() {
+            restaurantData = { name: 'Demo Restaurant' };
+            happyHourData = {
+                start_time: '16:00',
+                end_time: '19:00',
+                active: isHappyHourActive(),
+                deals: getDefaultDeals()
+            };
+            updateUI();
+            startCountdown();
+        }
+
+        function updateUI() {
+            // Update restaurant name
+            document.getElementById('restaurantName').textContent = restaurantData.name;
+            
+            // Update table info
+            if (tableNumber) {
+                document.getElementById('tableInfo').textContent = `Table ${tableNumber}`;
+            } else {
+                document.getElementById('tableInfo').textContent = 'Guest Access';
+            }
+            
+            // Update current time
+            updateCurrentTime();
+        }
+
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        function startCountdown() {
+            function updateCountdown() {
+                const now = new Date();
+                const endTime = new Date();
+                endTime.setHours(19, 0, 0, 0); // 7 PM
+                
+                if (now > endTime) {
+                    // Happy hour is over
+                    document.getElementById('countdown').textContent = 'Happy Hour Ended';
+                    document.getElementById('countdown').classList.add('time-sensitive');
+                    return;
+                }
+                
+                const timeDiff = endTime - now;
+                const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+                
+                const countdownText = `${hours}h ${minutes}m ${seconds}s`;
+                document.getElementById('countdown').textContent = countdownText;
+                
+                // Show urgent banner if less than 30 minutes remaining
+                if (timeDiff < 30 * 60 * 1000) {
+                    document.getElementById('urgentBanner').style.display = 'block';
+                    document.getElementById('countdown').classList.add('time-sensitive');
+                }
+                
+                updateCurrentTime();
+            }
+            
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // Interactive functions
+        function orderItem(itemId, price) {
+            // Track order
+            trackHappyHourOrder(itemId, price);
+            
+            // Show order confirmation
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '✅ Added to Order!';
+            button.style.background = 'linear-gradient(135deg, #26de81, #20bf6b)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = 'linear-gradient(135deg, #ff9ff3, #feca57)';
+            }, 3000);
+            
+            // In a real app, this would integrate with the restaurant's POS system
+            setTimeout(() => {
+                alert(`${itemId.replace('-', ' ')} added to your order for ${price}!\n\nThis would integrate with the restaurant's ordering system.`);
+            }, 500);
+        }
+
+        function shareToSocial(platform) {
+            const restaurantName = restaurantData.name;
+            const shareText = `🍹 Amazing happy hour deals at ${restaurantName}! 50% off craft beer, 60% off cocktails! Check it out!`;
+            const shareUrl = window.location.href;
+            
+            let shareLink = '';
+            
+            switch (platform) {
+                case 'facebook':
+                    shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+                    break;
+                case 'instagram':
+                    // Instagram doesn't support direct URL sharing, so copy to clipboard
+                    copyToClipboard(shareText + ' ' + shareUrl);
+                    alert('Text copied to clipboard! Paste it in your Instagram story or post.');
+                    return;
+                case 'whatsapp':
+                    shareLink = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+                    break;
+            }
+            
+            if (shareLink) {
+                window.open(shareLink, '_blank', 'width=600,height=400');
+            }
+            
+            // Track sharing
+            trackSocialShare(platform);
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+            } else {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function makeReservation() {
+            // Track reservation attempt
+            trackReservationAttempt();
+            
+            // In a real app, this would integrate with reservation system
+            alert('Reservation system integration coming soon!\n\nThis would connect to OpenTable, Resy, or the restaurant\'s booking system.');
+        }
+
+        // Analytics tracking
+        async function trackHappyHourView() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'happy_hour_page_view',
+                        timestamp: new Date().toISOString(),
+                        happy_hour_active: happyHourData.active,
+                        time_remaining: getTimeRemaining()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking happy hour view:', error);
+            }
+        }
+
+        async function trackHappyHourOrder(itemId, price) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'happy_hour_order',
+                        item_id: itemId,
+                        price: price,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking happy hour order:', error);
+            }
+        }
+
+        async function trackSocialShare(platform) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'social_share',
+                        platform: platform,
+                        content_type: 'happy_hour',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking social share:', error);
+            }
+        }
+
+        async function trackReservationAttempt() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'reservation_attempt',
+                        source: 'happy_hour_page',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking reservation attempt:', error);
+            }
+        }
+
+        function getTimeRemaining() {
+            const now = new Date();
+            const endTime = new Date();
+            endTime.setHours(19, 0, 0, 0);
+            return Math.max(0, endTime - now);
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+
+        // Cleanup interval on page unload
+        window.addEventListener('beforeunload', () => {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        });
+    </script>
+</body>
+</html>

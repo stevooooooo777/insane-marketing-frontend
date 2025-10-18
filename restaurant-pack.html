@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Restaurant QR Pack - Live Tracking Enabled</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+<script src="/config-client.js"></script>
+<script>
+  window.addEventListener('load', async () => {
+    const user = CONFIG.getAuthenticatedUser();
+    const analytics = await CONFIG.makeApiCall(`/analytics/${user.restaurantId}`);
+    document.getElementById('total-scans').textContent = analytics.totalScans || 0;
+  });
+</script> 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .live-badge {
+            background: rgba(16,185,129,0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-top: 15px;
+            display: inline-block;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .auth-banner {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .setup-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .qr-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        
+        .qr-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .qr-card.generated {
+            border-color: #10b981;
+            background: #f0fdfa;
+        }
+        
+        .qr-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .qr-icon {
+            font-size: 2em;
+        }
+        
+        .qr-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .qr-display {
+            width: 180px;
+            height: 180px;
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a0aec0;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .qr-display.generated {
+            border: 2px solid #10b981;
+            background: white;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 18px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .live-tracking-info {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .tracking-urls {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #10b981;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .qr-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header - ADD THIS ENTIRE SECTION -->
+    <nav class="system-nav" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px 20px;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    ">
+        <!-- Left: Back to Control Center -->
+        <div class="nav-left">
+            <a href="onboarding.html" class="control-center-btn" style="
+                background: rgba(220, 38, 38, 0.2);
+                border: 1px solid #dc2626;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 8px;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 600;
+                font-size: 14px;
+                transition: all 0.3s;
+            " onmouseover="this.style.background='rgba(220, 38, 38, 0.3)'" 
+               onmouseout="this.style.background='rgba(220, 38, 38, 0.2)'">
+                <i data-lucide="grid-3x3" style="width: 16px; height: 16px;"></i>
+                Control Center
+            </a>
+        </div>
+
+        <!-- Center: Current Page Indicator -->
+        <div class="current-page" style="
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        ">
+            <i data-lucide="activity" style="width: 18px; height: 18px; color: #dc2626;" id="pageIcon"></i>
+            <span id="pageName">Dashboard</span>
+        </div>
+
+        <!-- Right: Account Controls -->
+        <div class="nav-right" style="display: flex; align-items: center; gap: 15px;">
+            <!-- Restaurant Name -->
+            <div class="restaurant-info" style="
+                color: #fbbf24;
+                font-size: 14px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            ">
+                <i data-lucide="store" style="width: 16px; height: 16px;"></i>
+                <span id="navRestaurantName">Loading...</span>
+            </div>
+
+            <!-- Account Dropdown -->
+            <div class="account-dropdown" style="position: relative;">
+                <button class="account-btn" onclick="toggleAccountMenu()" style="
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 14px;
+                    transition: all 0.3s;
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'"
+                   onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'">
+                    <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                    <span id="navUserName">Account</span>
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px;" id="accountChevron"></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div class="account-menu" id="accountMenu" style="
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    margin-top: 8px;
+                    background: rgba(0, 0, 0, 0.95);
+                    backdrop-filter: blur(15px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 12px;
+                    padding: 8px 0;
+                    min-width: 200px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                    display: none;
+                    z-index: 1001;
+                ">
+                    <!-- Account Info -->
+                    <div style="
+                        padding: 12px 16px;
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                        margin-bottom: 8px;
+                    ">
+                        <div style="color: #f1f5f9; font-weight: 600; font-size: 14px;" id="menuUserName">Loading...</div>
+                        <div style="color: #94a3b8; font-size: 12px;" id="menuUserEmail">Loading...</div>
+                        <div style="color: #fbbf24; font-size: 12px; margin-top: 4px;">
+                            <i data-lucide="crown" style="width: 12px; height: 12px;"></i>
+                            <span id="menuUserPlan">Professional Plan</span>
+                        </div>
+                    </div>
+
+                    <!-- Menu Items -->
+                    <a href="#" onclick="openAccountSettings()" class="menu-item" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 10px 16px;
+                        color: #e2e8f0;
+                        text-decoration: none;
+                        font-size: 14px;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'"
+                       onmouseout="this.style.background='transparent'">
+                        <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+                        Account Settings
+                    </a>
+
+                    <a href="#" onclick="openBilling()" class="menu-item" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 10px 16px;
+                        color: #e2e8f0;
+                        text-decoration: none;
+                        font-size: 14px;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'"
+                       onmouseout="this.style.background='transparent'">
+                        <i data-lucide="credit-card" style="width: 16px; height: 16px;"></i>
+                        Billing & Plans
+                    </a>
+
+                    <a href="#" onclick="openHelp()" class="menu-item" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 10px 16px;
+                        color: #e2e8f0;
+                        text-decoration: none;
+                        font-size: 14px;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'"
+                       onmouseout="this.style.background='transparent'">
+                        <i data-lucide="help-circle" style="width: 16px; height: 16px;"></i>
+                        Help & Support
+                    </a>
+
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 8px 0;"></div>
+
+                    <a href="#" onclick="confirmLogout()" class="menu-item logout" style="
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 10px 16px;
+                        color: #ef4444;
+                        text-decoration: none;
+                        font-size: 14px;
+                        font-weight: 600;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.background='rgba(239, 68, 68, 0.1)'"
+                       onmouseout="this.style.background='transparent'">
+                        <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Add margin to page content to account for fixed nav -->
+    <style>
+        body {
+            margin-top: 60px !important;
+        }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .system-nav {
+                padding: 8px 15px;
+            }
+            
+            .restaurant-info {
+                display: none !important;
+            }
+            
+            .current-page {
+                font-size: 14px !important;
+            }
+            
+            .control-center-btn {
+                padding: 6px 12px !important;
+                font-size: 12px !important;
+            }
+            
+            .account-btn {
+                padding: 6px 10px !important;
+                font-size: 12px !important;
+            }
+            
+            .account-menu {
+                min-width: 180px !important;
+                right: -10px !important;
+            }
+        }
+    </style>
+    <!-- END Navigation Header -->
+
+    <div class="dashboard-container">
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Restaurant QR Pack</h1>
+            <p>Complete QR Code Solution with Live Analytics</p>
+            <div class="live-badge">
+                📊 LIVE TRACKING ENABLED
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Authentication Banner -->
+            <div class="auth-banner" id="authBanner">
+                <h3>🔐 Restaurant Account Detected</h3>
+                <p id="authMessage">Logged in as: <span id="restaurantNameDisplay">Loading...</span></p>
+                <p>All QR codes will be linked to your account for live analytics tracking</p>
+            </div>
+            
+            <!-- Restaurant Setup Section -->
+            <div class="setup-section">
+                <h2 style="margin-bottom: 20px; color: #2d3748;">📋 Restaurant Information</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="form-group">
+                        <label>Restaurant Name</label>
+                        <input type="text" id="restaurant-name" placeholder="e.g., Mario's Italian Kitchen" readonly>
+                        <small style="color: #6b7280;">Automatically set from your account</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Menu URL (Optional)</label>
+                        <input type="url" id="menu-url" placeholder="https://yourmenu.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>WiFi Network Name</label>
+                        <input type="text" id="wifi-name" placeholder="Restaurant_WiFi">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>WiFi Password</label>
+                        <input type="text" id="wifi-password" placeholder="welcome123">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Review URL (Optional)</label>
+                        <input type="url" id="review-url" placeholder="https://g.page/yourrestaurant/review">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Booking URL (Optional)</label>
+                        <input type="url" id="booking-url" placeholder="https://opentable.com/yourrestaurant">
+                    </div>
+                </div>
+                
+                <button class="btn btn-large" onclick="generateAllQRCodes()">
+                    🚀 Generate Live-Tracked QR Codes
+                </button>
+            </div>
+            
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <h3>🎉 QR Codes Generated Successfully!</h3>
+                <p>Your QR codes are now connected to live analytics. Every scan will be tracked in your dashboard!</p>
+                <div style="margin-top: 15px;">
+                    <a href="dashboard.html" style="background: #059669; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; margin-right: 10px;">
+                        📊 View Live Dashboard
+                    </a>
+                    <a href="table-control-center.html" style="background: #7c3aed; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none;">
+                        🎯 Table Control Center
+                    </a>
+                </div>
+            </div>
+            
+            <!-- QR Code Display Grid -->
+            <div class="qr-grid">
+                <!-- Menu QR -->
+                <div class="qr-card" id="menu-qr">
+                    <div class="qr-header">
+                        <div class="qr-icon">🍽️</div>
+                        <div class="qr-title">Menu QR Code</div>
+                    </div>
+                    <div class="qr-display" id="menu-display">
+                        Click "Generate" to create trackable Menu QR
+                    </div>
+                    <button class="btn" onclick="generateMenuQR()">Generate Menu QR</button>
+                </div>
+                
+                <!-- WiFi QR -->
+                <div class="qr-card" id="wifi-qr">
+                    <div class="qr-header">
+                        <div class="qr-icon">📶</div>
+                        <div class="qr-title">WiFi QR Code</div>
+                    </div>
+                    <div class="qr-display" id="wifi-display">
+                        Click "Generate" to create trackable WiFi QR
+                    </div>
+                    <button class="btn" onclick="generateWiFiQR()">Generate WiFi QR</button>
+                </div>
+                
+                <!-- Review QR -->
+                <div class="qr-card" id="review-qr">
+                    <div class="qr-header">
+                        <div class="qr-icon">⭐</div>
+                        <div class="qr-title">Review QR Code</div>
+                    </div>
+                    <div class="qr-display" id="review-display">
+                        Click "Generate" to create trackable Review QR
+                    </div>
+                    <button class="btn" onclick="generateReviewQR()">Generate Review QR</button>
+                </div>
+                
+                <!-- Booking QR -->
+                <div class="qr-card" id="booking-qr">
+                    <div class="qr-header">
+                        <div class="qr-icon">📅</div>
+                        <div class="qr-title">Booking QR Code</div>
+                    </div>
+                    <div class="qr-display" id="booking-display">
+                        Click "Generate" to create trackable Booking QR
+                    </div>
+                    <button class="btn" onclick="generateBookingQR()">Generate Booking QR</button>
+                </div>
+                
+                <!-- Specials QR -->
+                <div class="qr-card" id="specials-qr">
+                    <div class="qr-header">
+                        <div class="qr-icon">🎉</div>
+                        <div class="qr-title">Specials QR Code</div>
+                    </div>
+                    <div class="qr-display" id="specials-display">
+                        Click "Generate" to create trackable Specials QR
+                    </div>
+                    <button class="btn" onclick="generateSpecialsQR()">Generate Specials QR</button>
+                </div>
+            </div>
+            
+            <!-- Live Tracking Information -->
+            <div class="live-tracking-info" id="trackingInfo" style="display: none;">
+                <h3 style="color: #1e40af; margin-bottom: 15px;">📊 Live Tracking URLs Generated</h3>
+                <p style="margin-bottom: 15px;">Your QR codes now use these tracking URLs that feed data to your dashboard:</p>
+                <div class="tracking-urls" id="trackingUrls">
+                    <!-- Tracking URLs will be populated here -->
+                </div>
+                <p style="font-size: 14px; color: #4b5563; margin-top: 15px;">
+                    Every scan will be recorded and analyzed in your dashboard. Customer behavior, peak times, and conversion insights will be automatically generated.
+                </p>
+            </div>
+            
+            <!-- Download Section -->
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="btn btn-large" onclick="downloadQRPack()" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    📱 Download Complete QR Pack
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================
+        // AUTHENTICATION & INITIALIZATION
+        // =====================================
+        
+        let restaurantData = {};
+        let generatedQRs = {};
+        let authenticatedUser = null;
+        
+        // Get authenticated user's restaurant information
+        function getAuthenticatedRestaurantData() {
+    return CONFIG.getAuthenticatedUser();
+}
+        
+        // Check authentication and redirect if needed
+        function checkRestaurantPackAuth() {
+            const authData = getAuthenticatedRestaurantData();
+            
+            if (!authData) {
+                const shouldSignup = confirm('To use live QR tracking, you need an account. Would you like to sign up now?');
+                if (shouldSignup) {
+                    // Save current form data and redirect
+                    saveCurrentFormData();
+                    window.location.href = 'login.html?action=signup';
+                    return false;
+                }
+                
+                // Show demo mode
+                showDemoMode();
+                return false;
+            }
+            
+            // User is authenticated
+            authenticatedUser = authData;
+            updateAuthDisplay(authData);
+            return true;
+        }
+        
+        function updateAuthDisplay(authData) {
+            document.getElementById('restaurantNameDisplay').textContent = authData.restaurantName;
+            document.getElementById('restaurant-name').value = authData.restaurantName;
+            
+            // Auto-populate WiFi name if empty
+            const wifiField = document.getElementById('wifi-name');
+            if (!wifiField.value) {
+                wifiField.value = `${authData.restaurantName.replace(/[^a-zA-Z0-9]/g, '_')}_WiFi`;
+            }
+        }
+        
+        function showDemoMode() {
+            document.getElementById('authBanner').innerHTML = `
+                <h3>🧪 Demo Mode</h3>
+                <p>QR codes will work but won't connect to live analytics. <a href="login.html?action=signup" style="color: white; text-decoration: underline;">Sign up for free</a> to enable tracking.</p>
+            `;
+            document.getElementById('authBanner').style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        }
+        
+        function saveCurrentFormData() {
+            const formData = {
+                menuUrl: document.getElementById('menu-url').value,
+                wifiName: document.getElementById('wifi-name').value,
+                wifiPassword: document.getElementById('wifi-password').value,
+                reviewUrl: document.getElementById('review-url').value,
+                bookingUrl: document.getElementById('booking-url').value
+            };
+            
+            localStorage.setItem('restaurant_pack_data', JSON.stringify(formData));
+        }
+        
+        function restoreFormData() {
+            const savedData = localStorage.getItem('restaurant_pack_data');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                if (data.menuUrl) document.getElementById('menu-url').value = data.menuUrl;
+                if (data.wifiName) document.getElementById('wifi-name').value = data.wifiName;
+                if (data.wifiPassword) document.getElementById('wifi-password').value = data.wifiPassword;
+                if (data.reviewUrl) document.getElementById('review-url').value = data.reviewUrl;
+                if (data.bookingUrl) document.getElementById('booking-url').value = data.bookingUrl;
+                
+                localStorage.removeItem('restaurant_pack_data');
+            }
+        }
+        
+        // =====================================
+        // QR CODE GENERATION WITH TRACKING
+        // =====================================
+        
+        function generateAllQRCodes() {
+            if (!checkRestaurantPackAuth()) return;
+            
+            // Collect form data
+            restaurantData = {
+                name: authenticatedUser.restaurantName,
+                restaurantId: authenticatedUser.restaurantId,
+                menuUrl: document.getElementById('menu-url').value,
+                wifiName: document.getElementById('wifi-name').value,
+                wifiPassword: document.getElementById('wifi-password').value,
+                reviewUrl: document.getElementById('review-url').value,
+                bookingUrl: document.getElementById('booking-url').value
+            };
+            
+            // Generate all QR codes
+            generateMenuQR();
+            generateWiFiQR();
+            generateReviewQR();
+            generateBookingQR();
+            generateSpecialsQR();
+            
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('trackingInfo').style.display = 'block';
+            
+            // Scroll to success message
+            document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function generateMenuQR() {
+            if (!authenticatedUser) {
+                alert('Please sign up first to enable live tracking!');
+                return;
+            }
+            
+            const container = document.getElementById('menu-display');
+            const menuUrl = document.getElementById('menu-url').value;
+            
+            const baseUrl = getBaseUrl();
+            const trackingUrl = `${baseUrl}/qr/${authenticatedUser.restaurantId}/menu${menuUrl ? `?dest=${encodeURIComponent(menuUrl)}` : ''}`;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                const qr = new QRious({
+                    element: canvas,
+                    value: trackingUrl,
+                    size: 180,
+                    background: '#ffffff',
+                    foreground: '#000000'
+                });
+                
+                container.innerHTML = '';
+                container.appendChild(canvas);
+                container.classList.add('generated');
+                document.getElementById('menu-qr').classList.add('generated');
+                generatedQRs.menu = { canvas, trackingUrl, destinationUrl: menuUrl };
+                
+                recordQRGeneration('menu', trackingUrl, menuUrl);
+                updateTrackingDisplay();
+                
+            } catch (error) {
+                console.error('Menu QR Generation Error:', error);
+                alert('Failed to generate Menu QR code');
+            }
+        }
+        
+        function generateWiFiQR() {
+            if (!authenticatedUser) {
+                alert('Please sign up first to enable live tracking!');
+                return;
+            }
+            
+            const container = document.getElementById('wifi-display');
+            const ssid = document.getElementById('wifi-name').value;
+            const password = document.getElementById('wifi-password').value;
+            
+            const baseUrl = getBaseUrl();
+            const trackingUrl = `${baseUrl}/qr/${authenticatedUser.restaurantId}/wifi?ssid=${encodeURIComponent(ssid)}&pass=${encodeURIComponent(password)}`;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                const qr = new QRious({
+                    element: canvas,
+                    value: trackingUrl,
+                    size: 180,
+                    background: '#ffffff',
+                    foreground: '#3b82f6'
+                });
+                
+                container.innerHTML = '';
+                container.appendChild(canvas);
+                container.classList.add('generated');
+                document.getElementById('wifi-qr').classList.add('generated');
+                generatedQRs.wifi = { canvas, trackingUrl, destinationUrl: `WIFI:T:WPA;S:${ssid};P:${password};;` };
+                
+                recordQRGeneration('wifi', trackingUrl, `WIFI:T:WPA;S:${ssid};P:${password};;`);
+                updateTrackingDisplay();
+                
+            } catch (error) {
+                console.error('WiFi QR Generation Error:', error);
+                alert('Failed to generate WiFi QR code');
+            }
+        }
+        
+        function generateReviewQR() {
+            if (!authenticatedUser) {
+                alert('Please sign up first to enable live tracking!');
+                return;
+            }
+            
+            const container = document.getElementById('review-display');
+            const reviewUrl = document.getElementById('review-url').value;
+            
+            const baseUrl = getBaseUrl();
+            const trackingUrl = `${baseUrl}/qr/${authenticatedUser.restaurantId}/review${reviewUrl ? `?dest=${encodeURIComponent(reviewUrl)}` : ''}`;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                const qr = new QRious({
+                    element: canvas,
+                    value: trackingUrl,
+                    size: 180,
+                    background: '#ffffff',
+                    foreground: '#f59e0b'
+                });
+                
+                container.innerHTML = '';
+                container.appendChild(canvas);
+                container.classList.add('generated');
+                document.getElementById('review-qr').classList.add('generated');
+                generatedQRs.review = { canvas, trackingUrl, destinationUrl: reviewUrl };
+                
+                recordQRGeneration('review', trackingUrl, reviewUrl);
+                updateTrackingDisplay();
+                
+            } catch (error) {
+                console.error('Review QR Generation Error:', error);
+                alert('Failed to generate Review QR code');
+            }
+        }
+        
+        function generateBookingQR() {
+            if (!authenticatedUser) {
+                alert('Please sign up first to enable live tracking!');
+                return;
+            }
+            
+            const container = document.getElementById('booking-display');
+            const bookingUrl = document.getElementById('booking-url').value;
+            
+            const baseUrl = getBaseUrl();
+            const trackingUrl = `${baseUrl}/qr/${authenticatedUser.restaurantId}/booking${bookingUrl ? `?dest=${encodeURIComponent(bookingUrl)}` : ''}`;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                const qr = new QRious({
+                    element: canvas,
+                    value: trackingUrl,
+                    size: 180,
+                    background: '#ffffff',
+                    foreground: '#10b981'
+                });
+                
+                container.innerHTML = '';
+                container.appendChild(canvas);
+                container.classList.add('generated');
+                document.getElementById('booking-qr').classList.add('generated');
+                generatedQRs.booking = { canvas, trackingUrl, destinationUrl: bookingUrl };
+                
+                recordQRGeneration('booking', trackingUrl, bookingUrl);
+                updateTrackingDisplay();
+                
+            } catch (error) {
+                console.error('Booking QR Generation Error:', error);
+                alert('Failed to generate Booking QR code');
+            }
+        }
+        
+        function generateSpecialsQR() {
+            if (!authenticatedUser) {
+                alert('Please sign up first to enable live tracking!');
+                return;
+            }
+            
+            const container = document.getElementById('specials-display');
+            const specialsUrl = `https://${authenticatedUser.restaurantId}.com/specials`;
+            
+            const baseUrl = getBaseUrl();
+            const trackingUrl = `${baseUrl}/qr/${authenticatedUser.restaurantId}/specials?dest=${encodeURIComponent(specialsUrl)}`;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                const qr = new QRious({
+                    element: canvas,
+                    value: trackingUrl,
+                    size: 180,
+                    background: '#ffffff',
+                    foreground: '#8b5cf6'
+                });
+                
+                container.innerHTML = '';
+                container.appendChild(canvas);
+                container.classList.add('generated');
+                document.getElementById('specials-qr').classList.add('generated');
+                generatedQRs.specials = { canvas, trackingUrl, destinationUrl: specialsUrl };
+                
+                recordQRGeneration('specials', trackingUrl, specialsUrl);
+                updateTrackingDisplay();
+                
+            } catch (error) {
+                console.error('Specials QR Generation Error:', error);
+                alert('Failed to generate Specials QR code');
+            }
+        }
+        
+        // =====================================
+        // TRACKING & ANALYTICS INTEGRATION
+        // =====================================
+        
+        async function recordQRGeneration(qrType, trackingUrl, destinationUrl) {
+            if (!authenticatedUser) return;
+            
+            const baseUrl = getBaseUrl();
+            
+            try {
+                const response = await fetch(`${baseUrl}/qr/generated`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        restaurantId: authenticatedUser.restaurantId,
+                        qrType: qrType,
+                        trackingUrl: trackingUrl,
+                        destinationUrl: destinationUrl,
+                        timestamp: new Date().toISOString(),
+                        restaurantData: {
+                            name: authenticatedUser.restaurantName,
+                            userId: authenticatedUser.userId
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log(`✅ QR Generation recorded: ${qrType} for ${authenticatedUser.restaurantId}`);
+                } else {
+                    console.warn(`⚠️ Failed to record QR generation: ${qrType}`);
+                }
+                
+            } catch (error) {
+                console.error('Failed to record QR generation:', error);
+            }
+        }
+        
+        function updateTrackingDisplay() {
+            const trackingUrls = document.getElementById('trackingUrls');
+            const urls = Object.entries(generatedQRs).map(([type, data]) => 
+                `${type.toUpperCase()}: ${data.trackingUrl}`
+            ).join('\n');
+            
+            trackingUrls.textContent = urls;
+        }
+        
+        function getBaseUrl() {
+    return CONFIG.getApiBaseUrl();
+}
+        
+        // =====================================
+        // DOWNLOAD FUNCTIONALITY
+        // =====================================
+        
+        function downloadQRPack() {
+            if (Object.keys(generatedQRs).length === 0) {
+                alert('Please generate QR codes first!');
+                return;
+            }
+            
+            if (!authenticatedUser) {
+                alert('Please sign up to download QR codes with live tracking!');
+                return;
+            }
+            
+            alert(`📱 Preparing download for ${authenticatedUser.restaurantName}!
+
+Your QR Pack includes:
+• 5 High-resolution QR codes (PNG format)
+• Live tracking URLs
+• Setup instructions
+• Dashboard access links
+
+Every scan will appear in your live dashboard:
+📊 Analytics: ${window.location.origin}/dashboard.html
+🎯 Control Center: ${window.location.origin}/table-control-center.html
+
+🚀 Deploy these QR codes and watch your analytics come alive!`);
+            
+            console.log('QR Pack ready for download:', {
+                restaurant: authenticatedUser.restaurantName,
+                restaurantId: authenticatedUser.restaurantId,
+                qrCodes: Object.keys(generatedQRs).length,
+                trackingUrls: Object.values(generatedQRs).map(qr => qr.trackingUrl),
+                analyticsUrl: `${getBaseUrl()}/analytics/${authenticatedUser.restaurantId}`
+            });
+        }
+        
+        // =====================================
+        // INITIALIZATION
+        // =====================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication and setup
+            checkRestaurantPackAuth();
+            
+            // Restore any saved form data
+            restoreFormData();
+            
+            console.log('🍽️ Restaurant QR Pack loaded');
+            console.log('📊 Live tracking integration ready');
+        });
+    </script>
+
+<script>
+        // Navigation functionality
+        let accountMenuOpen = false;
+
+        // Initialize navigation
+        function initializeNavigation() {
+            loadUserData();
+            setPageInfo();
+            
+            // Close account menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.account-dropdown')) {
+                    closeAccountMenu();
+                }
+            });
+        }
+
+        // Load user data into navigation
+        function loadUserData() {
+            try {
+                const userData = JSON.parse(localStorage.getItem('qr_user_data') || '{}');
+                const restaurantName = localStorage.getItem('user_restaurant_name') || userData.companyName || 'Your Restaurant';
+                const userName = userData.name || 'Restaurant Owner';
+                const userEmail = userData.email || 'owner@restaurant.com';
+                const userPlan = userData.plan || 'Professional';
+                
+                // Update navigation elements
+                document.getElementById('navRestaurantName').textContent = restaurantName;
+                document.getElementById('navUserName').textContent = userName.split(' ')[0]; // First name only
+                document.getElementById('menuUserName').textContent = userName;
+                document.getElementById('menuUserEmail').textContent = userEmail;
+                document.getElementById('menuUserPlan').textContent = userPlan + ' Plan';
+                
+            } catch (error) {
+                console.error('Failed to load user data:', error);
+                // Fallback values
+                document.getElementById('navRestaurantName').textContent = 'Demo Restaurant';
+                document.getElementById('navUserName').textContent = 'Demo';
+                document.getElementById('menuUserName').textContent = 'Demo User';
+                document.getElementById('menuUserEmail').textContent = 'demo@example.com';
+            }
+        }
+
+        // Set page-specific information
+        function setPageInfo() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const pageIcon = document.getElementById('pageIcon');
+            const pageName = document.getElementById('pageName');
+            
+            const pageConfig = {
+                'dashboard.html': { icon: 'bar-chart-3', name: 'Analytics Dashboard' },
+                'table-control-center.html': { icon: 'monitor', name: 'Table Control' },
+                'restaurant-pack.html': { icon: 'qr-code', name: 'QR Code Generator' },
+                'table-intelligence-pack.html': { icon: 'activity', name: 'Table Intelligence' },
+                'staff-training.html': { icon: 'graduation-cap', name: 'Staff Training' },
+                'onboarding.html': { icon: 'grid-3x3', name: 'Control Center' }
+            };
+            
+            const config = pageConfig[currentPage] || { icon: 'activity', name: 'Restaurant System' };
+            pageIcon.setAttribute('data-lucide', config.icon);
+            pageName.textContent = config.name;
+            
+            // Reinitialize icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        // Account menu functions
+        function toggleAccountMenu() {
+            if (accountMenuOpen) {
+                closeAccountMenu();
+            } else {
+                openAccountMenu();
+            }
+        }
+
+        function openAccountMenu() {
+            document.getElementById('accountMenu').style.display = 'block';
+            document.getElementById('accountChevron').style.transform = 'rotate(180deg)';
+            accountMenuOpen = true;
+        }
+
+        function closeAccountMenu() {
+            document.getElementById('accountMenu').style.display = 'none';
+            document.getElementById('accountChevron').style.transform = 'rotate(0deg)';
+            accountMenuOpen = false;
+        }
+
+        // Account action functions
+        function openAccountSettings() {
+            closeAccountMenu();
+            alert('Account Settings\n\nFeatures coming soon:\n• Update restaurant information\n• Change password\n• Notification preferences\n• User permissions');
+        }
+
+        function openBilling() {
+            closeAccountMenu();
+            alert('Billing & Plans\n\nCurrent Plan: Professional\n\nFeatures:\n• View billing history\n• Update payment method\n• Upgrade/downgrade plans\n• Usage analytics');
+        }
+
+        function openHelp() {
+            closeAccountMenu();
+            alert('Help & Support\n\nGet help with:\n• System setup and configuration\n• Staff training resources\n• Technical support\n• Best practices guide\n\nContact: support@restaurantintelligence.com');
+        }
+
+        function confirmLogout() {
+            closeAccountMenu();
+            
+            if (confirm('Are you sure you want to sign out?\n\nYou will need to log in again to access the system.')) {
+                performLogout();
+            }
+        }
+
+        function performLogout() {
+            try {
+                // Clear authentication data
+                localStorage.removeItem('qr_user_data');
+                localStorage.removeItem('user_restaurant_name');
+                localStorage.removeItem('user_restaurant_id');
+                localStorage.removeItem('auth_token');
+                
+                // Clear any session data
+                sessionStorage.clear();
+                
+                // Show logout message
+                alert('You have been signed out successfully.\n\nRedirecting to login page...');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout completed. Please close your browser for security.');
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to ensure other scripts have loaded
+            setTimeout(initializeNavigation, 100);
+        });
+    </script>
+   </body>
+  </html>

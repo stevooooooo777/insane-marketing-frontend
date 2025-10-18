@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free WiFi - Restaurant Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .wifi-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.6; }
+            25% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+            50% { transform: translateY(0px) translateX(-5px); opacity: 0.8; }
+            75% { transform: translateY(-15px) translateX(-10px); opacity: 1; }
+        }
+
+        .wifi-header {
+            text-align: center;
+            margin-bottom: 40px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .wifi-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .restaurant-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff, #feca57);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wifi-title {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .wifi-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .wifi-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .wifi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .connection-status {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 50px;
+            margin-bottom: 15px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #26de81;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .network-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .network-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .network-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .network-label {
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .network-value {
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .password-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .password-display {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .password-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #feca57;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quick-connect {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .connect-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .auto-connect-note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .guest-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #feca57;
+        }
+
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #feca57;
+        }
+
+        .info-list {
+            list-style: none;
+            line-height: 1.6;
+        }
+
+        .info-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .info-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #26de81;
+            font-weight: bold;
+        }
+
+        .back-to-table {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 12px 24px;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .analytics-tracker {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            z-index: 100;
+        }
+
+        .connection-steps {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            background: #4ecdc4;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .wifi-container {
+                padding: 15px;
+            }
+            
+            .wifi-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .wifi-title {
+                font-size: 1.8rem;
+            }
+            
+            .restaurant-name {
+                font-size: 1.5rem;
+            }
+            
+            .password-text {
+                font-size: 1.4rem;
+                letter-spacing: 2px;
+            }
+        }
+
+        .success-animation {
+            display: none;
+            text-align: center;
+            animation: successPulse 0.6s ease-out;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+    
+    <div class="wifi-container">
+        <div class="wifi-header">
+            <div class="wifi-icon">📶</div>
+            <div class="restaurant-name" id="restaurantName">Loading...</div>
+            <div class="wifi-title">Free WiFi Access</div>
+            <div class="wifi-subtitle">Connect instantly and enjoy complimentary high-speed internet</div>
+        </div>
+
+        <div class="wifi-card">
+            <div class="connection-status">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span id="connectionStatus">WiFi Available</span>
+                </div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">Strong signal • Unlimited access</div>
+            </div>
+
+            <div class="network-info">
+                <div class="network-row">
+                    <span class="network-label">Network Name:</span>
+                    <span class="network-value" id="networkName">Restaurant_WiFi</span>
+                </div>
+                <div class="network-row">
+                    <span class="network-label">Signal Strength:</span>
+                    <span class="network-value">Excellent</span>
+                </div>
+                <div class="network-row">
+                    <span class="network-label">Security:</span>
+                    <span class="network-value">WPA2 Protected</span>
+                </div>
+                <div class="network-row">
+                    <span class="network-label">Speed:</span>
+                    <span class="network-value">Up to 100 Mbps</span>
+                </div>
+            </div>
+
+            <div class="password-section" id="passwordSection">
+                <h3 style="margin-bottom: 15px; color: #feca57;">WiFi Password</h3>
+                <div class="password-display">
+                    <div class="password-text" id="wifiPassword">WELCOME2025</div>
+                    <button class="copy-btn" onclick="copyPassword()">📋 Copy Password</button>
+                </div>
+            </div>
+
+            <div class="quick-connect">
+                <button class="connect-btn" onclick="initiateConnection()">
+                    🚀 Connect to WiFi Now
+                </button>
+                <div class="auto-connect-note">
+                    Tap to open WiFi settings automatically. Your device will remember this network for future visits.
+                </div>
+            </div>
+
+            <div class="success-animation" id="successMessage">
+                <div style="font-size: 3rem; margin-bottom: 10px;">✅</div>
+                <div style="font-size: 1.2rem; font-weight: bold; color: #26de81;">Connected Successfully!</div>
+                <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">You're now online and ready to browse</div>
+            </div>
+        </div>
+
+        <div class="connection-steps">
+            <h3 style="margin-bottom: 20px; color: #4ecdc4;">Quick Connection Guide</h3>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div>Open your device's WiFi settings</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div>Select "<span id="networkNameStep">Restaurant_WiFi</span>" from available networks</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div>Enter the password shown above</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div>Enjoy unlimited free internet access!</div>
+            </div>
+        </div>
+
+        <div class="guest-info">
+            <div class="info-title">Guest WiFi Benefits</div>
+            <ul class="info-list">
+                <li>Unlimited data and time</li>
+                <li>High-speed connection for streaming</li>
+                <li>Secure and regularly maintained</li>
+                <li>No registration or personal info required</li>
+                <li>Compatible with all devices</li>
+            </ul>
+        </div>
+
+        <div class="back-to-table">
+            <a href="javascript:history.back()" class="back-btn">
+                🎠 Back to Table Experience
+            </a>
+        </div>
+    </div>
+
+    <div class="analytics-tracker">
+        WiFi Page • <span id="tableInfo">Table --</span>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            getApiBaseUrl() {
+                if (window.location.hostname === 'localhost') {
+                    return 'http://localhost:8080';
+                }
+                return '';
+            }
+        };
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const restaurantId = urlParams.get('restaurant') || 'demo-restaurant';
+        const tableNumber = urlParams.get('table') || null;
+
+        // Restaurant WiFi data
+        let restaurantData = null;
+        let wifiCredentials = null;
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random position
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                // Random animation delay
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                
+                // Random size variation
+                const size = 3 + Math.random() * 4;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize page
+        async function init() {
+            try {
+                // Create visual effects
+                createParticles();
+                
+                // Load restaurant data
+                await loadRestaurantData();
+                
+                // Load WiFi credentials
+                await loadWiFiCredentials();
+                
+                // Update UI
+                updateUI();
+                
+                // Track page view
+                trackWiFiPageView();
+                
+            } catch (error) {
+                console.error('Error initializing WiFi page:', error);
+                // Continue with demo data
+                useDefaultData();
+            }
+        }
+
+        async function loadRestaurantData() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const response = await fetch(`${apiUrl}/api/restaurant/${restaurantId}`);
+                
+                if (response.ok) {
+                    restaurantData = await response.json();
+                } else {
+                    restaurantData = { 
+                        name: 'Demo Restaurant',
+                        wifi_network: 'Restaurant_WiFi',
+                        wifi_password: 'WELCOME2025'
+                    };
+                }
+            } catch (error) {
+                console.error('Error loading restaurant data:', error);
+                restaurantData = { 
+                    name: 'Demo Restaurant',
+                    wifi_network: 'Restaurant_WiFi',
+                    wifi_password: 'WELCOME2025'
+                };
+            }
+        }
+
+        async function loadWiFiCredentials() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const response = await fetch(`${apiUrl}/api/restaurant/${restaurantId}/wifi`);
+                
+                if (response.ok) {
+                    wifiCredentials = await response.json();
+                } else {
+                    wifiCredentials = {
+                        network_name: restaurantData.wifi_network || 'Restaurant_WiFi',
+                        password: restaurantData.wifi_password || 'WELCOME2025',
+                        security_type: 'WPA2',
+                        max_speed: '100 Mbps'
+                    };
+                }
+            } catch (error) {
+                console.error('Error loading WiFi credentials:', error);
+                wifiCredentials = {
+                    network_name: 'Restaurant_WiFi',
+                    password: 'WELCOME2025',
+                    security_type: 'WPA2',
+                    max_speed: '100 Mbps'
+                };
+            }
+        }
+
+        function useDefaultData() {
+            restaurantData = { name: 'Demo Restaurant' };
+            wifiCredentials = {
+                network_name: 'Restaurant_WiFi',
+                password: 'WELCOME2025',
+                security_type: 'WPA2',
+                max_speed: '100 Mbps'
+            };
+            updateUI();
+        }
+
+        function updateUI() {
+            // Update restaurant name
+            document.getElementById('restaurantName').textContent = restaurantData.name;
+            
+            // Update network information
+            document.getElementById('networkName').textContent = wifiCredentials.network_name;
+            document.getElementById('networkNameStep').textContent = wifiCredentials.network_name;
+            document.getElementById('wifiPassword').textContent = wifiCredentials.password;
+            
+            // Update table info if available
+            if (tableNumber) {
+                document.getElementById('tableInfo').textContent = `Table ${tableNumber}`;
+            } else {
+                document.getElementById('tableInfo').textContent = 'Guest Access';
+            }
+        }
+
+        function copyPassword() {
+            const password = wifiCredentials.password;
+            
+            // Modern clipboard API
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(password).then(() => {
+                    showCopySuccess();
+                }).catch(() => {
+                    fallbackCopy(password);
+                });
+            } else {
+                fallbackCopy(password);
+            }
+        }
+
+        function fallbackCopy(text) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopySuccess();
+            } catch (err) {
+                alert('Password: ' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess() {
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            btn.style.background = 'linear-gradient(135deg, #26de81, #20bf6b)';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = 'linear-gradient(135deg, #4ecdc4, #44a08d)';
+            }, 2000);
+        }
+
+        function initiateConnection() {
+            // Track connection attempt
+            trackWiFiConnectionAttempt();
+            
+            // Try to open WiFi settings (works on some mobile devices)
+            const networkName = wifiCredentials.network_name;
+            const password = wifiCredentials.password;
+            
+            // Create WiFi connection URL (works on some Android devices)
+            const wifiUrl = `wifi:T:WPA;S:${networkName};P:${password};;`;
+            
+            // Try to open WiFi settings
+            if (/Android/i.test(navigator.userAgent)) {
+                // Android devices - try to open WiFi settings
+                try {
+                    window.location.href = wifiUrl;
+                } catch (error) {
+                    // Fallback: show instructions
+                    showConnectionInstructions();
+                }
+            } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // iOS devices - show instructions (iOS doesn't support direct WiFi connection)
+                showConnectionInstructions();
+            } else {
+                // Desktop/other devices
+                showConnectionInstructions();
+            }
+        }
+
+        function showConnectionInstructions() {
+            // Temporarily hide password section and show success message
+            document.getElementById('passwordSection').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Show instructions after a moment
+            setTimeout(() => {
+                document.getElementById('passwordSection').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+                
+                // Scroll to connection steps
+                document.querySelector('.connection-steps').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 3000);
+        }
+
+        // Analytics tracking
+        async function trackWiFiPageView() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'wifi_page_view',
+                        timestamp: new Date().toISOString(),
+                        user_agent: navigator.userAgent,
+                        page_url: window.location.href
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking WiFi page view:', error);
+            }
+        }
+
+        async function trackWiFiConnectionAttempt() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                await fetch(`${apiUrl}/api/analytics/interaction`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        restaurant_id: restaurantId,
+                        table_number: tableNumber,
+                        interaction_type: 'wifi_connection_attempt',
+                        timestamp: new Date().toISOString(),
+                        network_name: wifiCredentials.network_name
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking WiFi connection attempt:', error);
+            }
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+
+        // Add some interactive enhancements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add touch feedback for mobile
+            const buttons = document.querySelectorAll('.copy-btn, .connect-btn, .back-btn');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', () => {
+                    button.style.transform = 'scale(0.95)';
+                });
+                
+                button.addEventListener('touchend', () => {
+                    setTimeout(() => {
+                        button.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

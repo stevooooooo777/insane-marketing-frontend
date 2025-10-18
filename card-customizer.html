@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Customizer - insane.marketing</title>
+<script src="config-client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .card-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card-option:hover {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .card-option.selected {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: #fbbf24;
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .card-option .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card-option .label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .selected-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #000;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .card-option.selected .selected-badge {
+            display: flex;
+        }
+
+        .config-forms {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .config-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            display: none;
+        }
+
+        .config-card.active {
+            display: block;
+        }
+
+        .config-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .config-header .icon {
+            font-size: 1.8rem;
+        }
+
+        .config-header .title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+
+        .right-panel {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .preview-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .preview-phone {
+            background: #1a1a1a;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .preview-screen {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .preview-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .preview-card {
+            background: linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .preview-card-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .preview-card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .preview-card-detail {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .save-section {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .save-btn {
+            flex: 1;
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+        }
+
+        .empty-preview {
+            text-align: center;
+            color: #94a3b8;
+            padding: 50px 20px;
+        }
+
+        .empty-preview .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .right-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>🎨 Card Customizer</h1>
+                <p>Design your interactive QR carousel experience</p>
+            </div>
+            <a href="welcome.html" class="back-btn">← Back to Dashboard</a>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="section">
+                    <h2 class="section-title">📱 Select Your Cards</h2>
+                    <div class="cards-grid" id="cardSelection">
+                        <div class="card-option" data-card="wifi" onclick="toggleCard('wifi')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">📶</div>
+                            <div class="label">WiFi</div>
+                        </div>
+                        <div class="card-option" data-card="menu" onclick="toggleCard('menu')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🍽️</div>
+                            <div class="label">Menu</div>
+                        </div>
+                        <div class="card-option" data-card="instagram" onclick="toggleCard('instagram')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">📸</div>
+                            <div class="label">Instagram</div>
+                        </div>
+                        <div class="card-option" data-card="facebook" onclick="toggleCard('facebook')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">👍</div>
+                            <div class="label">Facebook</div>
+                        </div>
+                        <div class="card-option" data-card="website" onclick="toggleCard('website')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🌐</div>
+                            <div class="label">Website</div>
+                        </div>
+                        <div class="card-option" data-card="order" onclick="toggleCard('order')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🛵</div>
+                            <div class="label">Order Now</div>
+                        </div>
+                        <div class="card-option" data-card="reservations" onclick="toggleCard('reservations')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">📅</div>
+                            <div class="label">Reservations</div>
+                        </div>
+                        <div class="card-option" data-card="offers" onclick="toggleCard('offers')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🎁</div>
+                            <div class="label">Special Offers</div>
+                        </div>
+                        <div class="card-option" data-card="call" onclick="toggleCard('call')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">📞</div>
+                            <div class="label">Call Us</div>
+                        </div>
+                        <div class="card-option" data-card="server" onclick="toggleCard('server')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🔔</div>
+                            <div class="label">Call Server</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">⚙️ Configure Selected Cards</h2>
+                    <div class="config-forms" id="configForms">
+                        <div class="empty-preview">
+                            <div class="icon">👆</div>
+                            <p>Select cards above to configure them</p>
+                        </div>
+
+                        <!-- WiFi Card Config -->
+                        <div class="config-card" id="config-wifi">
+                            <div class="config-header">
+                                <span class="icon">📶</span>
+                                <span class="title">WiFi Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Network Name (SSID)</label>
+                                <input type="text" class="form-input" id="wifi-ssid" placeholder="e.g., Restaurant_Guest_WiFi">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="text" class="form-input" id="wifi-password" placeholder="Enter WiFi password">
+                                <div class="form-help">Leave blank if open network</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Security Type</label>
+                                <select class="form-select" id="wifi-security">
+                                    <option value="WPA">WPA/WPA2</option>
+                                    <option value="WPA3">WPA3</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">Open Network</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Menu Card Config -->
+                        <div class="config-card" id="config-menu">
+                            <div class="config-header">
+                                <span class="icon">🍽️</span>
+                                <span class="title">Menu Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Menu URL</label>
+                                <input type="url" class="form-input" id="menu-url" placeholder="https://your-menu.com">
+                                <div class="form-help">Link to your digital menu or PDF</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Display Text</label>
+                                <input type="text" class="form-input" id="menu-text" placeholder="View Our Menu" value="View Our Menu">
+                            </div>
+                        </div>
+
+                        <!-- Instagram Card Config -->
+                        <div class="config-card" id="config-instagram">
+                            <div class="config-header">
+                                <span class="icon">📸</span>
+                                <span class="title">Instagram Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Instagram Handle</label>
+                                <input type="text" class="form-input" id="instagram-handle" placeholder="@yourrestaurant">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Profile URL</label>
+                                <input type="url" class="form-input" id="instagram-url" placeholder="https://instagram.com/yourrestaurant">
+                            </div>
+                        </div>
+
+                        <!-- Facebook Card Config -->
+                        <div class="config-card" id="config-facebook">
+                            <div class="config-header">
+                                <span class="icon">👍</span>
+                                <span class="title">Facebook Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Facebook Page URL</label>
+                                <input type="url" class="form-input" id="facebook-url" placeholder="https://facebook.com/yourrestaurant">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Display Text</label>
+                                <input type="text" class="form-input" id="facebook-text" placeholder="Follow Us on Facebook" value="Follow Us on Facebook">
+                            </div>
+                        </div>
+
+                        <!-- Website Card Config -->
+                        <div class="config-card" id="config-website">
+                            <div class="config-header">
+                                <span class="icon">🌐</span>
+                                <span class="title">Website Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Website URL</label>
+                                <input type="url" class="form-input" id="website-url" placeholder="https://yourwebsite.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Button Text</label>
+                                <input type="text" class="form-input" id="website-text" placeholder="Visit Our Website" value="Visit Our Website">
+                            </div>
+                        </div>
+
+                        <!-- Order Card Config -->
+                        <div class="config-card" id="config-order">
+                            <div class="config-header">
+                                <span class="icon">🛵</span>
+                                <span class="title">Order Now Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ordering Platform</label>
+                                <select class="form-select" id="order-platform">
+                                    <option value="custom">Custom Link</option>
+                                    <option value="ubereats">Uber Eats</option>
+                                    <option value="doordash">DoorDash</option>
+                                    <option value="grubhub">GrubHub</option>
+                                    <option value="postmates">Postmates</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Order URL</label>
+                                <input type="url" class="form-input" id="order-url" placeholder="https://order-link.com">
+                            </div>
+                        </div>
+
+                        <!-- Reservations Card Config -->
+                        <div class="config-card" id="config-reservations">
+                            <div class="config-header">
+                                <span class="icon">📅</span>
+                                <span class="title">Reservations Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Booking Platform</label>
+                                <select class="form-select" id="reservations-platform">
+                                    <option value="custom">Custom Link</option>
+                                    <option value="opentable">OpenTable</option>
+                                    <option value="resy">Resy</option>
+                                    <option value="yelp">Yelp Reservations</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Reservation URL</label>
+                                <input type="url" class="form-input" id="reservations-url" placeholder="https://booking-link.com">
+                            </div>
+                        </div>
+
+                        <!-- Offers Card Config -->
+                        <div class="config-card" id="config-offers">
+                            <div class="config-header">
+                                <span class="icon">🎁</span>
+                                <span class="title">Special Offers Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Offer Title</label>
+                                <input type="text" class="form-input" id="offers-title" placeholder="e.g., Happy Hour Special">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Offer Description</label>
+                                <input type="text" class="form-input" id="offers-description" placeholder="Brief description of the offer">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Offer Link (Optional)</label>
+                                <input type="url" class="form-input" id="offers-url" placeholder="https://link-to-offer-details.com">
+                            </div>
+                        </div>
+
+                        <!-- Call Card Config -->
+                        <div class="config-card" id="config-call">
+                            <div class="config-header">
+                                <span class="icon">📞</span>
+                                <span class="title">Call Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-input" id="call-number" placeholder="+1 (555) 123-4567">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Display Text</label>
+                                <input type="text" class="form-input" id="call-text" placeholder="Call Restaurant" value="Call Restaurant">
+                            </div>
+                        </div>
+
+                        <!-- Server Card Config -->
+                        <div class="config-card" id="config-server">
+                            <div class="config-header">
+                                <span class="icon">🔔</span>
+                                <span class="title">Call Server Configuration</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Button Text</label>
+                                <input type="text" class="form-input" id="server-text" placeholder="Call Server" value="Call Server">
+                            </div>
+                            <div class="form-help">This will send a notification to your staff dashboard</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="preview-section">
+                    <h2 class="section-title">📱 Live Preview</h2>
+                    <div class="preview-phone">
+                        <div class="preview-screen">
+                            <div class="preview-cards" id="previewCards">
+                                <div class="empty-preview">
+                                    <div class="icon">🎨</div>
+                                    <p>Your cards will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="save-section">
+                        <button class="save-btn" onclick="saveConfiguration()">💾 Save Cards</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = CONFIG.getApiBaseUrl();
+        let selectedCards = new Set();
+        let cardConfigurations = {};
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('qr_user_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            await loadSavedConfiguration();
+            updatePreview();
+        });
+
+        function toggleCard(cardType) {
+            const cardElement = document.querySelector(`[data-card="${cardType}"]`);
+            const configElement = document.getElementById(`config-${cardType}`);
+            
+            if (selectedCards.has(cardType)) {
+                selectedCards.delete(cardType);
+                cardElement.classList.remove('selected');
+                configElement.classList.remove('active');
+            } else {
+                selectedCards.add(cardType);
+                cardElement.classList.add('selected');
+                configElement.classList.add('active');
+            }
+
+            updateConfigFormsDisplay();
+            updatePreview();
+        }
+
+        function updateConfigFormsDisplay() {
+            const formsContainer = document.getElementById('configForms');
+            const hasSelected = selectedCards.size > 0;
+            
+            const emptyState = formsContainer.querySelector('.empty-preview');
+            if (emptyState) {
+                emptyState.style.display = hasSelected ? 'none' : 'block';
+            }
+        }
+
+        function updatePreview() {
+            const previewContainer = document.getElementById('previewCards');
+            
+            if (selectedCards.size === 0) {
+                previewContainer.innerHTML = `
+                    <div class="empty-preview">
+                        <div class="icon">🎨</div>
+                        <p>Your cards will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const cardPreviews = {
+                'wifi': { icon: '📶', title: 'Free WiFi', detail: 'Connect to our network' },
+                'menu': { icon: '🍽️', title: 'View Menu', detail: 'See our full menu' },
+                'instagram': { icon: '📸', title: 'Follow Us', detail: 'Instagram' },
+                'facebook': { icon: '👍', title: 'Like Our Page', detail: 'Facebook' },
+                'website': { icon: '🌐', title: 'Visit Website', detail: 'Learn more about us' },
+                'order': { icon: '🛵', title: 'Order Online', detail: 'Delivery & Takeout' },
+                'reservations': { icon: '📅', title: 'Book a Table', detail: 'Make a reservation' },
+                'offers': { icon: '🎁', title: 'Special Offers', detail: 'View current deals' },
+                'call': { icon: '📞', title: 'Call Restaurant', detail: 'Speak with us' },
+                'server': { icon: '🔔', title: 'Call Server', detail: 'Request assistance' }
+            };
+
+            let previewHTML = '';
+            selectedCards.forEach(cardType => {
+                const preview = cardPreviews[cardType];
+                previewHTML += `
+                    <div class="preview-card">
+                        <div class="preview-card-icon">${preview.icon}</div>
+                        <div class="preview-card-title">${preview.title}</div>
+                        <div class="preview-card-detail">${preview.detail}</div>
+                    </div>
+                `;
+            });
+
+            previewContainer.innerHTML = previewHTML;
+        }
+
+        async function saveConfiguration() {
+            const token = localStorage.getItem('qr_user_token');
+            
+            const config = {
+                selectedCards: Array.from(selectedCards),
+                configurations: {}
+            };
+
+            selectedCards.forEach(cardType => {
+                const cardConfig = {};
+                
+                switch(cardType) {
+                    case 'wifi':
+                        cardConfig.ssid = document.getElementById('wifi-ssid').value;
+                        cardConfig.password = document.getElementById('wifi-password').value;
+                        cardConfig.security = document.getElementById('wifi-security').value;
+                        break;
+                    case 'menu':
+                        cardConfig.url = document.getElementById('menu-url').value;
+                        cardConfig.text = document.getElementById('menu-text').value;
+                        break;
+                    case 'instagram':
+                        cardConfig.handle = document.getElementById('instagram-handle').value;
+                        cardConfig.url = document.getElementById('instagram-url').value;
+                        break;
+                    case 'facebook':
+                        cardConfig.url = document.getElementById('facebook-url').value;
+                        cardConfig.text = document.getElementById('facebook-text').value;
+                        break;
+                    case 'website':
+                        cardConfig.url = document.getElementById('website-url').value;
+                        cardConfig.text = document.getElementById('website-text').value;
+                        break;
+                    case 'order':
+                        cardConfig.platform = document.getElementById('order-platform').value;
+                        cardConfig.url = document.getElementById('order-url').value;
+                        break;
+                    case 'reservations':
+                        cardConfig.platform = document.getElementById('reservations-platform').value;
+                        cardConfig.url = document.getElementById('reservations-url').value;
+                        break;
+                    case 'offers':
+                        cardConfig.title = document.getElementById('offers-title').value;
+                        cardConfig.description = document.getElementById('offers-description').value;
+                        cardConfig.url = document.getElementById('offers-url').value;
+                        break;
+                    case 'call':
+                        cardConfig.number = document.getElementById('call-number').value;
+                        cardConfig.text = document.getElementById('call-text').value;
+                        break;
+                    case 'server':
+                        cardConfig.text = document.getElementById('server-text').value;
+                        break;
+                }
+                
+                config.configurations[cardType] = cardConfig;
+            });
+
+            try {
+                const response = await fetch(`${API_URL}/cards/configuration`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+
+                if (response.ok) {
+                    alert('✅ Card configuration saved successfully!');
+                } else {
+                    throw new Error('Failed to save configuration');
+                }
+            } catch (error) {
+                console.error('Error saving configuration:', error);
+                alert('❌ Error saving configuration. Please try again.');
+            }
+        }
+
+        async function loadSavedConfiguration() {
+            const token = localStorage.getItem('qr_user_token');
+            
+            try {
+                const response = await fetch(`${API_URL}/cards/configuration`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const config = await response.json();
+                    
+                    if (config.selectedCards) {
+                        config.selectedCards.forEach(cardType => {
+                            selectedCards.add(cardType);
+                            const cardElement = document.querySelector(`[data-card="${cardType}"]`);
+                            const configElement = document.getElementById(`config-${cardType}`);
+                            if (cardElement) cardElement.classList.add('selected');
+                            if (configElement) configElement.classList.add('active');
+                        });
+                    }
+
+                    if (config.configurations) {
+                        Object.keys(config.configurations).forEach(cardType => {
+                            const cardConfig = config.configurations[cardType];
+                            restoreCardConfig(cardType, cardConfig);
+                        });
+                    }
+
+                    updateConfigFormsDisplay();
+                    updatePreview();
+                }
+            } catch (error) {
+                console.error('Error loading configuration:', error);
+            }
+        }
+
+        function restoreCardConfig(cardType, config) {
+            switch(cardType) {
+                case 'wifi':
+                    if (config.ssid) document.getElementById('wifi-ssid').value = config.ssid;
+                    if (config.password) document.getElementById('wifi-password').value = config.password;
+                    if (config.security) document.getElementById('wifi-security').value = config.security;
+                    break;
+                case 'menu':
+                    if (config.url) document.getElementById('menu-url').value = config.url;
+                    if (config.text) document.getElementById('menu-text').value = config.text;
+                    break;
+                case 'instagram':
+                    if (config.handle) document.getElementById('instagram-handle').value = config.handle;
+                    if (config.url) document.getElementById('instagram-url').value = config.url;
+                    break;
+                case 'facebook':
+                    if (config.url) document.getElementById('facebook-url').value = config.url;
+                    if (config.text) document.getElementById('facebook-text').value = config.text;
+                    break;
+                case 'website':
+                    if (config.url) document.getElementById('website-url').value = config.url;
+                    if (config.text) document.getElementById('website-text').value = config.text;
+                    break;
+                case 'order':
+                    if (config.platform) document.getElementById('order-platform').value = config.platform;
+                    if (config.url) document.getElementById('order-url').value = config.url;
+                    break;
+                case 'reservations':
+                    if (config.platform) document.getElementById('reservations-platform').value = config.platform;
+                    if (config.url) document.getElementById('reservations-url').value = config.url;
+                    break;
+                case 'offers':
+                    if (config.title) document.getElementById('offers-title').value = config.title;
+                    if (config.description) document.getElementById('offers-description').value = config.description;
+                    if (config.url) document.getElementById('offers-url').value = config.url;
+                    break;
+                case 'call':
+                    if (config.number) document.getElementById('call-number').value = config.number;
+                    if (config.text) document.getElementById('call-text').value = config.text;
+                    break;
+                case 'server':
+                    if (config.text) document.getElementById('server-text').value = config.text;
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security & Data Protection | Insane Marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .intro {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .intro h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .intro p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .security-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .security-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .security-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .security-card h3 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .security-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .security-card .tech-detail {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #555;
+            font-family: 'Courier New', monospace;
+        }
+
+        .commitment {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+        }
+
+        .commitment h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .commitment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .commitment-item {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .commitment-item .check {
+            color: #10b981;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .commitment-item p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .difference {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .difference h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .difference p {
+            font-size: 1.15rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        .difference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .difference-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .difference-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .footer-cta {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .footer-cta h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-cta p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .commitment-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>Enterprise-Grade Security</h1>
+        <p>Your guest data deserves the highest level of protection. We use industry-standard security practices to keep your venue intelligence safe and private.</p>
+    </div>
+
+    <div class="container">
+        <div class="intro">
+            <h2>Security Without Compromise</h2>
+            <p>We don't handle payment cards or financial transactions—which means we can focus entirely on what matters: protecting your guest interaction data, venue analytics, and operational intelligence with proven, enterprise-grade security standards.</p>
+        </div>
+
+        <div class="security-grid">
+            <div class="security-card">
+                <div class="icon">🔐</div>
+                <h3>Password Protection</h3>
+                <p>All passwords are encrypted using bcrypt hashing with salt rounds—the same technology used by major financial institutions. Your passwords are never stored in plain text, ever.</p>
+                <div class="tech-detail">Industry-standard bcrypt encryption</div>
+            </div>
+
+            <div class="security-card">
+                <div class="icon">🔒</div>
+                <h3>Encrypted Connections</h3>
+                <p>Every connection to our platform uses HTTPS/TLS encryption. Your data is encrypted in transit, protecting it from interception between your browser and our servers.</p>
+                <div class="tech-detail">256-bit SSL/TLS encryption</div>
+            </div>
+
+            <div class="security-card">
+                <div class="icon">🛡️</div>
+                <h3>Secure Authentication</h3>
+                <p>We use JSON Web Tokens (JWT) for session management—a modern, stateless authentication method that ensures secure access to your venue data across all devices.</p>
+                <div class="tech-detail">JWT-based authentication system</div>
+            </div>
+
+            <div class="security-card">
+                <div class="icon">🏢</div>
+                <h3>Isolated Database Architecture</h3>
+                <p>Your venue data is stored in enterprise-grade PostgreSQL databases with strict access controls. Each venue's data is isolated and protected with role-based permissions.</p>
+                <div class="tech-detail">PostgreSQL with authentication layers</div>
+            </div>
+
+            <div class="security-card">
+                <div class="icon">🌐</div>
+                <h3>Protected API Access</h3>
+                <p>Our backend API uses CORS (Cross-Origin Resource Sharing) protection to ensure only authorized domains can access your data—blocking unauthorized access attempts.</p>
+                <div class="tech-detail">CORS-protected endpoints</div>
+            </div>
+
+            <div class="security-card">
+                <div class="icon">🔧</div>
+                <h3>Separated Infrastructure</h3>
+                <p>Our frontend and backend run on completely separate infrastructure with isolated access controls. This architecture minimizes attack surface and enhances overall security.</p>
+                <div class="tech-detail">Decoupled frontend/backend architecture</div>
+            </div>
+        </div>
+
+        <div class="commitment">
+            <h2>Our Data Protection Commitments</h2>
+            <div class="commitment-list">
+                <div class="commitment-item">
+                    <div class="check">✓</div>
+                    <p><strong>Your Data Stays Yours</strong> – We never sell, share, or monetize your venue or guest data.</p>
+                </div>
+                <div class="commitment-item">
+                    <div class="check">✓</div>
+                    <p><strong>No Cross-Venue Data Sharing</strong> – Each venue's data is completely isolated from others.</p>
+                </div>
+                <div class="commitment-item">
+                    <div class="check">✓</div>
+                    <p><strong>Transparent Security</strong> – We're honest about what we protect and how we protect it.</p>
+                </div>
+                <div class="commitment-item">
+                    <div class="check">✓</div>
+                    <p><strong>Regular Updates</strong> – Our security infrastructure is continuously maintained and updated.</p>
+                </div>
+                <div class="commitment-item">
+                    <div class="check">✓</div>
+                    <p><strong>Secure Hosting Partners</strong> – We use trusted infrastructure providers with proven security track records.</p>
+                </div>
+                <div class="commitment-item">
+                    <div class="check">✓</div>
+                    <p><strong>No Payment Data</strong> – We don't handle credit cards or financial transactions, reducing your compliance burden.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="difference">
+            <h2>What Sets Us Apart</h2>
+            <p>Many hospitality tech providers are shockingly careless with venue and guest data. They store passwords insecurely, share data without consent, or have minimal access controls. We take a different approach.</p>
+            
+            <div class="difference-grid">
+                <div class="difference-item">
+                    <h4>🚫 No Plain Text Passwords</h4>
+                    <p>Every password is hashed and salted</p>
+                </div>
+                <div class="difference-item">
+                    <h4>🚫 No Data Selling</h4>
+                    <p>Your data is never monetized</p>
+                </div>
+                <div class="difference-item">
+                    <h4>🚫 No Shared Access</h4>
+                    <p>Complete venue data isolation</p>
+                </div>
+                <div class="difference-item">
+                    <h4>✅ Industry Standards</h4>
+                    <p>Proven security technologies</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-cta">
+            <h2>Security You Can Trust</h2>
+            <p>Focus on delivering exceptional guest experiences while we protect your data with enterprise-grade security.</p>
+            <a href="/signup.html" class="cta-button">Get Started Today</a>
+        </div>
+    </div>
+</body>
+</html>

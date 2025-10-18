@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Training Guide - Restaurant Intelligence System</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 80px;
+        }
+
+        /* Header */
+        .training-header {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .training-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: #f1f5f9;
+        }
+
+        .restaurant-name {
+            font-size: 1.3em;
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .training-subtitle {
+            font-size: 1.1em;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Quick Links */
+        .quick-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .quick-link-btn {
+            background: rgba(251, 191, 36, 0.2);
+            border: 2px solid #fbbf24;
+            color: #fbbf24;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-link-btn:hover {
+            background: rgba(251, 191, 36, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Role Selection */
+        .role-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .role-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .role-card:hover {
+            border-color: #dc2626;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.2);
+        }
+
+        .role-card.selected {
+            border-color: #dc2626;
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .role-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.5em;
+            color: white;
+        }
+
+        .role-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #f1f5f9;
+        }
+
+        .role-description {
+            font-size: 0.9em;
+            color: #cbd5e1;
+        }
+
+        /* Training Modules */
+        .training-modules {
+            display: none;
+        }
+
+        .training-modules.active {
+            display: block;
+        }
+
+        .module {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .module-header:hover {
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+        }
+
+        .module-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-content {
+            padding: 25px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .module-content.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module-section {
+            margin-bottom: 25px;
+        }
+
+        .module-section h4 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .step-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .step-list li {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #22c55e;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .step-number {
+            background: #22c55e;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 5px;
+        }
+
+        .step-description {
+            color: #cbd5e1;
+            font-size: 0.9em;
+        }
+
+        /* Alert Examples */
+        .alert-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .alert-example {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-example.customer-request {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .alert-example.behavioral {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .alert-type {
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .alert-message {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #f1f5f9;
+        }
+
+        .alert-action {
+            color: #cbd5e1;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .response-time {
+            background: #dc2626;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        /* Interactive Elements */
+        .practice-section {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #22c55e;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .practice-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .practice-icon {
+            width: 40px;
+            height: 40px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #e2e8f0;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        /* Progress Tracking */
+        .training-progress {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            height: 100%;
+            width: 0%;
+            transition: width 0.8s ease;
+            border-radius: 10px;
+        }
+
+        /* Navigation */
+        .system-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid #dc2626;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(220, 38, 38, 0.3);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                padding-top: 80px;
+            }
+
+            .training-header {
+                padding: 25px;
+            }
+
+            .training-header h1 {
+                font-size: 2em;
+            }
+
+            .alert-examples {
+                grid-template-columns: 1fr;
+            }
+
+            .role-selection {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-links {
+                flex-direction: column;
+            }
+
+            .quick-link-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="system-nav">
+        <div class="nav-left">
+            <a href="onboarding.html" class="nav-btn">
+                <i data-lucide="grid-3x3" style="width: 16px; height: 16px;"></i>
+                Control Center
+            </a>
+        </div>
+
+        <div style="color: #e2e8f0; font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="graduation-cap" style="width: 18px; height: 18px; color: #dc2626;"></i>
+            <span>Staff Training</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="color: #fbbf24; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                <i data-lucide="store" style="width: 16px; height: 16px;"></i>
+                <span id="navRestaurantName">Loading...</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Training Header -->
+        <div class="training-header">
+            <h1>Staff Training Guide</h1>
+            <div class="restaurant-name" id="restaurantNameDisplay">Loading...</div>
+            <div class="training-subtitle">
+                Master the restaurant intelligence system to optimize service timing and enhance customer experience
+            </div>
+            
+            <div class="quick-links">
+                <a href="expert-tips.html" class="quick-link-btn">
+                    <i data-lucide="lightbulb" style="width: 16px; height: 16px;"></i>
+                    Expert Tips & Best Practices
+                </a>
+                <a href="table-control-center.html" class="quick-link-btn">
+                    <i data-lucide="monitor" style="width: 16px; height: 16px;"></i>
+                    Live Dashboard Practice
+                </a>
+                <a href="restaurant-revolution-demo.html" class="quick-link-btn">
+                    <i data-lucide="play-circle" style="width: 16px; height: 16px;"></i>
+                    View Demo Presentation
+                </a>
+            </div>
+        </div>
+
+        <!-- Progress Tracking -->
+        <div class="training-progress">
+            <h3 style="color: #f1f5f9; margin-bottom: 10px;">Training Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="progressText">Select your role to begin training</div>
+        </div>
+
+        <!-- Role Selection -->
+        <div class="role-selection" id="roleSelection">
+            <div class="role-card" onclick="selectRole('server')" data-role="server">
+                <div class="role-icon">
+                    <i data-lucide="coffee"></i>
+                </div>
+                <div class="role-title">Server/Waitstaff</div>
+                <div class="role-description">Learn mobile dashboard, customer alerts, and service response protocols</div>
+            </div>
+
+            <div class="role-card" onclick="selectRole('manager')" data-role="manager">
+                <div class="role-icon">
+                    <i data-lucide="users"></i>
+                </div>
+                <div class="role-title">Manager/Supervisor</div>
+                <div class="role-description">Full system overview, staff coordination, and performance optimization</div>
+            </div>
+
+            <div class="role-card" onclick="selectRole('kitchen')" data-role="kitchen">
+                <div class="role-icon">
+                    <i data-lucide="chef-hat"></i>
+                </div>
+                <div class="role-title">Kitchen Staff</div>
+                <div class="role-description">Order timing alerts and kitchen coordination features</div>
+            </div>
+
+            <div class="role-card" onclick="selectRole('host')" data-role="host">
+                <div class="role-icon">
+                    <i data-lucide="door-open"></i>
+                </div>
+                <div class="role-title">Host/Reception</div>
+                <div class="role-description">Table status monitoring and customer seating optimization</div>
+            </div>
+        </div>
+
+        <!-- Server Training -->
+        <div class="training-modules" id="serverTraining">
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="smartphone"></i>
+                        Mobile Dashboard Setup
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Getting Started with Mobile Dashboard</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Access Mobile Dashboard</div>
+                                    <div class="step-description">Open table-control-center.html on your mobile device and tap "Server Mobile" mode</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Enable Push Notifications</div>
+                                    <div class="step-description">Allow notifications when prompted - this connects to our system for real-time alerts</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Register Your Device</div>
+                                    <div class="step-description">Enter your name and staff type - this stores your notification preferences</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Test Notifications</div>
+                                    <div class="step-description">Ask your manager to send a test alert to verify everything works</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="practice-section">
+                        <div class="practice-header">
+                            <div class="practice-icon">
+                                <i data-lucide="play-circle"></i>
+                            </div>
+                            <h4 style="color: #f1f5f9;">Practice Exercise</h4>
+                        </div>
+                        <p style="margin-bottom: 15px;">Set up the mobile dashboard on your phone now:</p>
+                        <button class="btn btn-success" onclick="openMobileDashboard()">
+                            <i data-lucide="smartphone"></i>
+                            Open Mobile Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="bell-ring"></i>
+                        Understanding Service Alerts
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Types of Alerts You'll Receive</h4>
+                        
+                        <div class="alert-examples">
+                            <div class="alert-example customer-request">
+                                <div class="alert-type">CUSTOMER REQUEST (Highest Priority)</div>
+                                <div class="alert-message">Table 7: Service requested</div>
+                                <div class="alert-action">Customer pressed service call button - needs immediate assistance</div>
+                                <div class="response-time">Response: Under 30 seconds</div>
+                            </div>
+
+                            <div class="alert-example behavioral">
+                                <div class="alert-type">BEHAVIORAL ALERT (High Priority)</div>
+                                <div class="alert-message">Table 3: Viewed menu 3 times in 5 minutes</div>
+                                <div class="alert-action">Customer likely ready to order - approach when convenient</div>
+                                <div class="response-time">Response: Within 2 minutes</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h4>How to Respond to Alerts</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Read the Alert Carefully</div>
+                                    <div class="step-description">Understand what the customer needs and the urgency level</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Approach the Table</div>
+                                    <div class="step-description">Go to the specified table number with appropriate materials (menu, order pad, etc.)</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Address the Need</div>
+                                    <div class="step-description">Provide the service requested or take their order if they're ready</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Mark as Resolved</div>
+                                    <div class="step-description">Tap "Resolved" in your mobile dashboard to clear the alert</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="users"></i>
+                        Table Intelligence Insights
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Understanding Customer Behavior Patterns</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Menu Scanning Patterns</div>
+                                    <div class="step-description">Multiple menu scans within 5 minutes usually means ready to order</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">WiFi Connection Timing</div>
+                                    <div class="step-description">Customers who connect to WiFi are likely staying longer - good upsell opportunity</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Session Duration</div>
+                                    <div class="step-description">Tables active over 90 minutes may need check-in for dessert or bill</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Idle Time Alerts</div>
+                                    <div class="step-description">Tables with no activity for 10+ minutes may need attention</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="clock"></i>
+                        Service Timing Optimization
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Best Practices for Service Timing</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Immediate Response to Service Calls</div>
+                                    <div class="step-description">Customer-initiated service requests should be answered within 30 seconds</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Proactive Order Taking</div>
+                                    <div class="step-description">Approach tables showing "ready to order" behavior within 2 minutes</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Check-in Timing</div>
+                                    <div class="step-description">Use system alerts for optimal check-in times rather than guessing</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Table Turnover Support</div>
+                                    <div class="step-description">System helps identify when tables are ready for bill or dessert upsell</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-section">
+                <div class="practice-header">
+                    <div class="practice-icon">
+                        <i data-lucide="target"></i>
+                    </div>
+                    <h4 style="color: #f1f5f9;">Complete Server Training</h4>
+                </div>
+                <p style="margin-bottom: 15px;">You've learned the essentials! Practice using the system during your next shift and track your response times.</p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="markTrainingComplete('server')">
+                        <i data-lucide="check-circle"></i>
+                        Mark Training Complete
+                    </button>
+                    <button class="btn btn-secondary" onclick="openLiveDashboard()">
+                        <i data-lucide="external-link"></i>
+                        Practice on Live Dashboard
+                    </button>
+                    <a href="expert-tips.html" class="btn btn-secondary">
+                        <i data-lucide="lightbulb"></i>
+                        View Expert Tips
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manager Training -->
+        <div class="training-modules" id="managerTraining">
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="layout-dashboard"></i>
+                        System Overview & Management
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Restaurant Intelligence Platform Overview</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Control Center Dashboard (Desktop View)</div>
+                                    <div class="step-description">Complete overview of all table statuses, alerts, and performance metrics</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Mobile Server Alerts</div>
+                                    <div class="step-description">Real-time notifications sent directly to staff mobile devices</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Analytics Dashboard</div>
+                                    <div class="step-description">Performance tracking, revenue optimization, and customer behavior insights</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Staff Coordination Tools</div>
+                                    <div class="step-description">Manage team notifications and track response times</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="users-cog"></i>
+                        Staff Management & Training
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Managing Your Team's System Usage</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Onboard New Staff</div>
+                                    <div class="step-description">Guide each team member through mobile dashboard setup and notification registration</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Monitor Response Times</div>
+                                    <div class="step-description">Track how quickly staff respond to customer service requests</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Optimize Alert Settings</div>
+                                    <div class="step-description">Adjust notification preferences for different staff types and shift patterns</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Performance Review Integration</div>
+                                    <div class="step-description">Use system data to provide objective feedback on service performance</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="bar-chart-3"></i>
+                        Analytics & Optimization
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Using Data to Improve Operations</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Daily Performance Reviews</div>
+                                    <div class="step-description">Check response times, customer satisfaction indicators, and table turnover metrics</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Peak Time Optimization</div>
+                                    <div class="step-description">Use customer behavior data to predict busy periods and adjust staffing</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Staff Performance Coaching</div>
+                                    <div class="step-description">Identify training opportunities based on response time patterns</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Revenue Impact Analysis</div>
+                                    <div class="step-description">Track how improved service timing affects customer satisfaction and tips</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-section">
+                <div class="practice-header">
+                    <div class="practice-icon">
+                        <i data-lucide="shield-check"></i>
+                    </div>
+                    <h4 style="color: #f1f5f9;">Manager Certification Complete</h4>
+                </div>
+                <p style="margin-bottom: 15px;">You're ready to lead your team's implementation of the restaurant intelligence system.</p>
+                <button class="btn btn-primary" onclick="markTrainingComplete('manager')">
+                    <i data-lucide="award"></i>
+                    Certify Manager Training
+                </button>
+            </div>
+        </div>
+
+        <!-- Kitchen Training -->
+        <div class="training-modules" id="kitchenTraining">
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="clock"></i>
+                        Order Timing Intelligence
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Kitchen Integration with Table Intelligence</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Ready-to-Order Alerts</div>
+                                    <div class="step-description">Receive advance notice when tables are likely to place orders</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Prep Time Optimization</div>
+                                    <div class="step-description">Use customer behavior data to anticipate order volume</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Table Session Awareness</div>
+                                    <div class="step-description">Understand table timing to prioritize order completion</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Quality Control Timing</div>
+                                    <div class="step-description">Know when customers have been waiting too long for their meals</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-section">
+                <div class="practice-header">
+                    <div class="practice-icon">
+                        <i data-lucide="chef-hat"></i>
+                    </div>
+                    <h4 style="color: #f1f5f9;">Kitchen Training Complete</h4>
+                </div>
+                <p style="margin-bottom: 15px;">You understand how table intelligence improves kitchen operations and timing.</p>
+                <button class="btn btn-primary" onclick="markTrainingComplete('kitchen')">
+                    <i data-lucide="check-circle"></i>
+                    Complete Kitchen Training
+                </button>
+            </div>
+        </div>
+
+        <!-- Host Training -->
+        <div class="training-modules" id="hostTraining">
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-title">
+                        <i data-lucide="users"></i>
+                        Table Status Management
+                    </div>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <div class="module-content">
+                    <div class="module-section">
+                        <h4>Optimizing Table Assignments</h4>
+                        <ol class="step-list">
+                            <li>
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Real-time Table Status</div>
+                                    <div class="step-description">See which tables are truly available vs. still being cleaned</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Estimated Dining Duration</div>
+                                    <div class="step-description">Use historical data to predict how long guests will stay</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Server Workload Balance</div>
+                                    <div class="step-description">Distribute tables to balance server workloads effectively</div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Wait Time Optimization</div>
+                                    <div class="step-description">Provide accurate wait time estimates based on actual table turnover</div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="practice-section">
+                        <div class="practice-header">
+                            <div class="practice-icon">
+                                <i data-lucide="door-open"></i>
+                            </div>
+                            <h4 style="color: #f1f5f9;">Host Training Complete</h4>
+                        </div>
+                        <p style="margin-bottom: 15px;">You're ready to optimize table assignments and improve guest experience.</p>
+                        <button class="btn btn-primary" onclick="markTrainingComplete('host')">
+                            <i data-lucide="check-circle"></i>
+                            Complete Host Training
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Section -->
+        <div class="practice-section" id="completionSection" style="display: none;">
+            <div class="practice-header">
+                <div class="practice-icon">
+                    <i data-lucide="trophy"></i>
+                </div>
+                <h4 style="color: #f1f5f9;">Training Complete!</h4>
+            </div>
+            <p style="margin-bottom: 20px;">Congratulations! You've completed the restaurant intelligence system training. You're now ready to use the system effectively in your role.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div style="background: rgba(34, 197, 94, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #22c55e;">
+                    <h5 style="color: #22c55e; margin-bottom: 8px;">Next Steps</h5>
+                    <ul style="color: #cbd5e1; font-size: 0.9em; list-style: none; padding: 0;">
+                        <li>✓ Practice with live system</li>
+                        <li>✓ Set up mobile notifications</li>
+                        <li>✓ Coordinate with team</li>
+                    </ul>
+                </div>
+                
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #3b82f6;">
+                    <h5 style="color: #3b82f6; margin-bottom: 8px;">Resources</h5>
+                    <ul style="color: #cbd5e1; font-size: 0.9em; list-style: none; padding: 0;">
+                        <li>📱 Mobile dashboard</li>
+                        <li>🖥️ Control center</li>
+                        <li>📊 Analytics portal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                <button class="btn btn-success" onclick="startUsingSystem()">
+                    <i data-lucide="play"></i>
+                    Start Using System
+                </button>
+                <a href="expert-tips.html" class="btn btn-secondary">
+                    <i data-lucide="lightbulb"></i>
+                    View Expert Tips
+                </a>
+                <button class="btn btn-secondary" onclick="downloadCertificate()">
+                    <i data-lucide="download"></i>
+                    Download Certificate
+                </button>
+                <button class="btn btn-secondary" onclick="restartTraining()">
+                    <i data-lucide="refresh-cw"></i>
+                    Restart Training
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        let selectedRole = null;
+        let completedModules = [];
+        let trainingProgress = 0;
+
+        // Initialize training
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadRestaurantInfo();
+            loadTrainingProgress();
+        });
+
+        // Load restaurant information
+        function loadRestaurantInfo() {
+            try {
+                const userData = JSON.parse(localStorage.getItem('qr_user_data') || '{}');
+                const restaurantName = localStorage.getItem('user_restaurant_name') || userData.companyName || 'Your Restaurant';
+                document.getElementById('restaurantNameDisplay').textContent = restaurantName;
+                document.getElementById('navRestaurantName').textContent = restaurantName;
+            } catch (error) {
+                console.error('Failed to load restaurant info:', error);
+                document.getElementById('restaurantNameDisplay').textContent = 'Your Restaurant';
+                document.getElementById('navRestaurantName').textContent = 'Demo Restaurant';
+            }
+        }
+
+        // Load training progress from localStorage
+        function loadTrainingProgress() {
+            const savedProgress = localStorage.getItem('training_progress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                selectedRole = progress.role;
+                completedModules = progress.completedModules || [];
+                trainingProgress = progress.progress || 0;
+                
+                if (selectedRole) {
+                    selectRole(selectedRole);
+                }
+                
+                updateProgressDisplay();
+            }
+        }
+
+        // Save training progress
+        function saveTrainingProgress() {
+            const progress = {
+                role: selectedRole,
+                completedModules: completedModules,
+                progress: trainingProgress,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('training_progress', JSON.stringify(progress));
+        }
+
+        // Role selection
+        function selectRole(role) {
+            selectedRole = role;
+            
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            const selectedCard = document.querySelector(`[data-role="${role}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+            
+            document.getElementById('roleSelection').style.display = 'none';
+            
+            document.querySelectorAll('.training-modules').forEach(module => {
+                module.classList.remove('active');
+            });
+            document.getElementById(`${role}Training`).classList.add('active');
+            
+            if (trainingProgress === 0) {
+                trainingProgress = 10;
+                updateProgressDisplay();
+            }
+            
+            saveTrainingProgress();
+            
+            setTimeout(() => {
+                lucide.createIcons();
+            }, 100);
+        }
+
+        // Toggle module expansion
+        function toggleModule(moduleHeader) {
+            const content = moduleHeader.nextElementSibling;
+            const chevron = moduleHeader.querySelector('[data-lucide="chevron-down"]');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                chevron.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                chevron.style.transform = 'rotate(180deg)';
+                
+                const moduleTitle = moduleHeader.querySelector('.module-title').textContent.trim();
+                if (!completedModules.includes(moduleTitle)) {
+                    completedModules.push(moduleTitle);
+                    trainingProgress = Math.min(90, trainingProgress + 15);
+                    updateProgressDisplay();
+                    saveTrainingProgress();
+                }
+            }
+        }
+
+        // Update progress display
+        function updateProgressDisplay() {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.width = `${trainingProgress}%`;
+            
+            if (trainingProgress === 0) {
+                progressText.textContent = 'Select your role to begin training';
+            } else if (trainingProgress < 100) {
+                progressText.textContent = `Training in progress: ${trainingProgress}% complete`;
+            } else {
+                progressText.textContent = 'Training completed! You\'re ready to use the system.';
+            }
+        }
+
+        // Mark training as complete for role
+        function markTrainingComplete(role) {
+            trainingProgress = 100;
+            updateProgressDisplay();
+            
+            document.getElementById('completionSection').style.display = 'block';
+            document.getElementById('completionSection').scrollIntoView({ behavior: 'smooth' });
+            
+            localStorage.setItem(`${role}_training_completed`, 'true');
+            localStorage.setItem('staff_training_completed', 'true');
+            
+            saveTrainingProgress();
+            
+            alert(`Congratulations! You've completed the ${role} training for the restaurant intelligence system. You're now ready to use the system effectively in your role.`);
+        }
+
+        // Action functions
+        function openMobileDashboard() {
+            window.open('table-control-center.html?mobile=true', '_blank');
+        }
+
+        function openLiveDashboard() {
+            window.open('table-control-center.html', '_blank');
+        }
+
+        function startUsingSystem() {
+            if (selectedRole === 'server') {
+                window.open('table-control-center.html?mobile=true', '_blank');
+            } else if (selectedRole === 'manager') {
+                window.open('dashboard.html', '_blank');
+            } else {
+                window.open('table-control-center.html', '_blank');
+            }
+        }
+
+        function downloadCertificate() {
+            const restaurantName = document.getElementById('restaurantNameDisplay').textContent;
+            const completionDate = new Date().toLocaleDateString();
+            
+            alert(`Training Certificate
+
+Restaurant: ${restaurantName}
+Role: ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}
+Completed: ${completionDate}
+Status: Certified
+
+This certificate validates completion of restaurant intelligence system training.`);
+        }
+
+        function restartTraining() {
+            if (confirm('Are you sure you want to restart your training? This will clear all progress.')) {
+                localStorage.removeItem('training_progress');
+                localStorage.removeItem('staff_training_completed');
+                localStorage.removeItem(`${selectedRole}_training_completed`);
+                
+                selectedRole = null;
+                completedModules = [];
+                trainingProgress = 0;
+                
+                document.getElementById('roleSelection').style.display = 'grid';
+                document.querySelectorAll('.training-modules').forEach(module => {
+                    module.classList.remove('active');
+                });
+                document.querySelectorAll('.role-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                document.getElementById('completionSection').style.display = 'none';
+                
+                updateProgressDisplay();
+            }
+        }
+
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 100);
+    </script>
+</body>
+</html>

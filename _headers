@@ -1,0 +1,5 @@
+/*
+  Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' https://qr.insane.marketing https://cdn.jsdelivr.net https://unpkg.com data: blob:; connect-src 'self' https://qr-tracking-backend-production.up.railway.app https://qr.insane.marketing https://cdn.jsdelivr.net https://unpkg.com
+  Access-Control-Allow-Origin: *
+  X-Frame-Options: SAMEORIGIN
+
