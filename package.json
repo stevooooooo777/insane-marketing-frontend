@@ -1,0 +1,24 @@
+{
+  "name": "insane-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "config-client.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "echo \"No tests yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevooooooo777/insane-marketing-frontend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stevooooooo777/insane-marketing-frontend/issues"
+  },
+  "homepage": "https://github.com/stevooooooo777/insane-marketing-frontend#readme",
+  "devDependencies": {
+    "javascript-obfuscator": "^4.0.0"
+  }
+}
