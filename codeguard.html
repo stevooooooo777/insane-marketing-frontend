@@ -525,27 +525,17 @@
             const issuesList = document.getElementById('issuesList');
             const emptyState = document.getElementById('emptyState');
 
-            const allIssues = [];
+         const allIssues = [];
 
-            // Collect API mismatches
-            if (data.checks?.apiConsistency?.mismatches) {
-                allIssues.push(...data.checks.apiConsistency.mismatches.map(m => ({
-                    ...m,
-                    category: 'API Consistency'
-                })));
-            }
+// Collect all issues from codeAnalysis
+if (data.checks?.codeAnalysis?.issues) {
+    allIssues.push(...data.checks.codeAnalysis.issues);
+}
 
-            // Collect dependency issues
-            if (data.checks?.dependencies?.dependencies) {
-                allIssues.push(...data.checks.dependencies.dependencies.map(d => ({
-                    type: 'dependency',
-                    severity: 'low',
-                    message: d.message,
-                    name: d.name,
-                    current: d.current,
-                    category: 'Dependencies'
-                })));
-            }
+// Store issues globally for fix generation
+currentIssues = allIssues;
+
+console.log('Total issues found:', allIssues.length); // Debug log
 
             if (allIssues.length > 0) {
                 issuesSection.style.display = 'block';
