@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Pro - Enterprise QR Technology for Small Business</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), 
+                        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 4.5em;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            background: linear-gradient(45deg, #ffffff, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+            to { text-shadow: 0 0 40px rgba(139, 92, 246, 0.8); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8em;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 18px 35px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            transform: translateY(-5px);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-showcase {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .enterprise-qr {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 50px rgba(59, 130, 246, 0.5);
+        }
+
+        .floating-features {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .feature-bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: orbit 8s linear infinite;
+        }
+
+        .feature-bubble:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .feature-bubble:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: -2s;
+        }
+
+        .feature-bubble:nth-child(3) {
+            bottom: 20%;
+            right: 20%;
+            animation-delay: -4s;
+        }
+
+        .feature-bubble:nth-child(4) {
+            bottom: 10%;
+            left: 20%;
+            animation-delay: -6s;
+        }
+
+        @keyframes orbit {
+            0% { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        /* Social Proof Section */
+        .social-proof {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .trusted-by {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Problem/Solution Section */
+        .problem-solution {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        .section-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .before-after {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .before {
+            border-left: 4px solid #ef4444;
+        }
+
+        .after {
+            border-left: 4px solid #22c55e;
+        }
+
+        .pain-points {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pain-points li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f87171;
+        }
+
+        .pain-points li::before {
+            content: '❌ ';
+            margin-right: 10px;
+        }
+
+        .benefits {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #4ade80;
+        }
+
+        .benefits li::before {
+            content: '✅ ';
+            margin-right: 10px;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 20px;
+            background: #0f172a;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 35px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .feature-description {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-benefit {
+            background: rgba(34, 197, 94, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid #22c55e;
+            font-weight: bold;
+            color: #86efac;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 50px auto 0;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+        }
+
+        .pricing-card.featured {
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .pricing-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .price {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #fbbf24;
+            margin: 20px 0;
+        }
+
+        .price-period {
+            font-size: 0.4em;
+            color: #94a3b8;
+        }
+
+        .plan-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .plan-description {
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+        }
+
+        .plan-features li::before {
+            content: '✅ ';
+            margin-right: 10px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 50px auto 0;
+        }
+
+        .testimonial {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 35px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '"';
+            font-size: 4em;
+            color: rgba(59, 130, 246, 0.3);
+            position: absolute;
+            top: -10px;
+            left: 20px;
+        }
+
+        .testimonial-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .author-info h4 {
+            color: #fbbf24;
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        /* CTA Section */
+        .final-cta {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+            text-align: center;
+            position: relative;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 25px;
+            background: linear-gradient(45deg, #ffffff, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-subtitle {
+            font-size: 1.4em;
+            color: #e2e8f0;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .guarantee {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px auto;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+            
+            .hero-text h1 {
+                font-size: 3em;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-title {
+                font-size: 2.5em;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Fortune 500 QR Technology<br>for Your Small Business</h1>
+                <p class="hero-subtitle">
+                    Stop using basic QR codes. Get enterprise-grade analytics, AI insights, and professional features that big companies use - at small business prices.
+                </p>
+                <div class="hero-cta">
+                    <a href="#" class="btn-primary" onclick="startFreeTrial()">Start Free Trial</a>
+                    <a href="#features" class="btn-secondary">See How It Works</a>
+                </div>
+                <p style="margin-top: 20px; color: #94a3b8; font-size: 0.9em;">
+                    ⚡ Set up in 5 minutes • 🚀 No technical skills needed • 💡 AI does the heavy lifting
+                </p>
+            </div>
+            <div class="hero-visual">
+                <div class="qr-showcase">
+                    <div class="enterprise-qr"></div>
+                    <div class="floating-features">
+                        <div class="feature-bubble">AI Analytics</div>
+                        <div class="feature-bubble">Real-time Updates</div>
+                        <div class="feature-bubble">Custom Branding</div>
+                        <div class="feature-bubble">Smart Insights</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="trusted-by fade-up">
+            <h2 style="color: #94a3b8; margin-bottom: 40px;">Trusted by thousands of businesses worldwide</h2>
+            <div class="stats-grid">
+                <div class="stat">
+                    <span class="stat-number">10M+</span>
+                    <p class="stat-label">QR Codes Created</p>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">500M+</span>
+                    <p class="stat-label">Scans Analyzed</p>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">98%</span>
+                    <p class="stat-label">Customer Satisfaction</p>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">15x</span>
+                    <p class="stat-label">Better Performance vs Basic QR</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem/Solution -->
+    <section class="problem-solution">
+        <div class="section-content">
+            <h2 class="section-title fade-up">Stop Losing Customers to Basic QR Codes</h2>
+            <div class="comparison-grid">
+                <div class="before-after before fade-up">
+                    <h3 style="color: #ef4444; font-size: 1.8em; margin-bottom: 25px;">😤 Your Current QR Frustrations</h3>
+                    <ul class="pain-points">
+                        <li>Can't track who scans or when</li>
+                        <li>Must reprint everything to change content</li>
+                        <li>No idea which campaigns work</li>
+                        <li>Looks unprofessional and generic</li>
+                        <li>No integration with your business tools</li>
+                        <li>Competitors seem more sophisticated</li>
+                    </ul>
+                </div>
+                <div class="before-after after fade-up">
+                    <h3 style="color: #22c55e; font-size: 1.8em; margin-bottom: 25px;">🚀 With Our Platform</h3>
+                    <ul class="benefits">
+                        <li>See exactly who scans, when, and where</li>
+                        <li>Update content instantly without reprinting</li>
+                        <li>AI tells you what's working and why</li>
+                        <li>Custom branded QR codes with your logo</li>
+                        <li>Connects to your POS, email, social media</li>
+                        <li>Look as professional as Fortune 500 companies</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 50px;">
+                <a href="#" class="btn-primary" onclick="startFreeTrial()">Transform Your QR Strategy Today</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="section-content">
+            <h2 class="section-title fade-up">Enterprise Features, Small Business Simplicity</h2>
+            <div class="features-grid">
+                <div class="feature-card fade-up">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">AI-Powered Insights</h3>
+                    <p class="feature-description">
+                        Our AI analyzes your QR performance and tells you exactly what to do next in plain English. No technical jargon, just actionable recommendations.
+                    </p>
+                    <div class="feature-benefit">
+                        Increase conversions by 3x with smart optimization
+                    </div>
+                </div>
+
+                <div class="feature-card fade-up">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Instant Updates</h3>
+                    <p class="feature-description">
+                        Change your QR destination anytime without reprinting. Update menus, promotions, or content in seconds from your phone or computer.
+                    </p>
+                    <div class="feature-benefit">
+                        Save thousands on reprinting costs
+                    </div>
+                </div>
+
+                <div class="feature-card fade-up">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Professional Branding</h3>
+                    <p class="feature-description">
+                        Custom QR codes with your logo, colors, and style. Look as professional as big chains while maintaining perfect scanning reliability.
+                    </p>
+                    <div class="feature-benefit">
+                        Build trust and brand recognition instantly
+                    </div>
+                </div>
+
+                <div class="feature-card fade-up">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Deep Analytics</h3>
+                    <p class="feature-description">
+                        See who's scanning, when they scan, what devices they use, and what actions they take. Turn data into dollars with actionable insights.
+                    </p>
+                    <div class="feature-benefit">
+                        Make data-driven decisions like big companies
+                    </div>
+                </div>
+
+                <div class="feature-card fade-up">
+                    <div class="feature-icon">🔗</div>
+                    <h3 class="feature-title">Smart Integrations</h3>
+                    <p class="feature-description">
+                        Connect to your existing tools - POS systems, email marketing, social media, calendars. Everything works together automatically.
+                    </p>
+                    <div class="feature-benefit">
+                        Automate follow-ups and boost customer retention
+                    </div>
+                </div>
+
+                <div class="feature-card fade-up">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Location Intelligence</h3>
+                    <p class="feature-description">
+                        Show different content based on location, time of day, or customer type. Personalize experiences like enterprise companies do.
+                    </p>
+                    <div class="feature-benefit">
+                        Deliver the right message at the right time
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+        <div class="section-content">
+            <h2 class="section-title fade-up">Simple Pricing, Powerful Results</h2>
+            <p style="text-align: center; color: #94a3b8; font-size: 1.2em; margin-bottom: 20px;">
+                Start free, upgrade as you grow. No contracts, cancel anytime.
+            </p>
+            <div class="pricing-grid">
+                <div class="pricing-card fade-up">
+                    <h3 class="plan-name">Starter</h3>
+                    <div class="price">Free<span class="price-period">/forever</span></div>
+                    <p class="plan-description">Perfect for testing the waters</p>
+                    <ul class="plan-features">
+                        <li>3 dynamic QR codes</li>
+                        <li>Basic analytics dashboard</li>
+                        <li>Standard templates</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="#" class="btn-secondary" onclick="startFreeTrial()">Start Free</a>
+                </div>
+
+                <div class="pricing-card featured fade-up">
+                    <h3 class="plan-name">Professional</h3>
+                    <div class="price">$29<span class="price-period">/month</span></div>
+                    <p class="plan-description">Everything most businesses need</p>
+                    <ul class="plan-features">
+                        <li>Unlimited QR codes</li>
+                        <li>AI-powered insights</li>
+                        <li>Custom branding & logos</li>
+                        <li>Advanced analytics</li>
+                        <li>API access</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="startFreeTrial()">Start 14-Day Trial</a>
+                </div>
+
+                <div class="pricing-card fade-up">
+                    <h3 class="plan-name">Growth</h3>
+                    <div class="price">$79<span class="price-period">/month</span></div>
+                    <p class="plan-description">For growing businesses</p>
+                    <ul class="plan-features">
+                        <li>Everything in Professional</li>
+                        <li>Multi-location support</li>
+                        <li>Team collaboration</li>
+                        <li>White-label options</li>
+
+<li>Advanced integrations</li>
+                        <li>Dedicated account manager</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="startFreeTrial()">Start 14-Day Trial</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="section-content">
+            <h2 class="section-title fade-up">Real Results from Real Businesses</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial fade-up">
+                    <p class="testimonial-text">
+                        "We went from basic QR codes to enterprise-level insights in one day. Our customer engagement increased 340% and we finally understand what's working."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MR</div>
+                        <div class="author-info">
+                            <h4>Maria Rodriguez</h4>
+                            <p>Owner, Casa Maria Restaurant</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial fade-up">
+                    <p class="testimonial-text">
+                        "The AI insights are incredible. It told us exactly when to run promotions and which locations needed attention. Revenue up 45% in 3 months."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">DT</div>
+                        <div class="author-info">
+                            <h4>David Thompson</h4>
+                            <p>CEO, Thompson Auto Group</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial fade-up">
+                    <p class="testimonial-text">
+                        "Finally, QR codes that make us look as professional as the big chains. Customers trust us more and our conversion rates doubled."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SL</div>
+                        <div class="author-info">
+                            <h4>Sarah Lee</h4>
+                            <p>Marketing Director, Urban Fitness</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Compete Like the Big Guys?</h2>
+            <p class="cta-subtitle">
+                Join thousands of small businesses using enterprise QR technology to level the playing field. Start free, upgrade when you see results.
+            </p>
+            <div style="margin: 40px 0;">
+                <a href="#" class="btn-primary" onclick="startFreeTrial()" style="font-size: 1.3em; padding: 25px 50px;">Start Your Free Trial Now</a>
+            </div>
+            <div class="guarantee">
+                <h4 style="color: #fbbf24; margin-bottom: 10px;">🛡️ 30-Day Money-Back Guarantee</h4>
+                <p>Try it risk-free. If you don't see better results in 30 days, we'll refund every penny.</p>
+            </div>
+            <p style="margin-top: 30px; color: #cbd5e1;">
+                ✨ No setup fees • 🔄 Cancel anytime • 🚀 Instant activation
+            </p>
+        </div>
+    </section>
+
+    <script>
+        function startFreeTrial() {
+            alert('Free trial signup would redirect to registration page');
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElements = document.querySelectorAll('.fade-up');
+            fadeElements.forEach(el => observer.observe(el));
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>insane.marketing - SME Business Intelligence + Smart Marketing Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            overflow: hidden;
+        }
+
+        /* Trust indicators */
+        .trust-bar {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .trust-content {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trust-icon {
+            color: #ff6b35;
+        }
+
+        .main-headline {
+            text-align: center;
+            z-index: 20;
+            width: 100%;
+            padding: 80px 40px 60px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.03) 0%, rgba(102, 126, 234, 0.03) 100%);
+            position: relative;
+        }
+
+        .main-headline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            pointer-events: none;
+        }
+
+        .main-title {
+            font-size: 3.8em;
+            font-weight: 300;
+            color: white;
+            margin-bottom: 30px;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .title-highlight {
+            color: #ff6b35;
+            font-weight: 400;
+        }
+
+        .main-subtitle {
+            font-size: 1.3em;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 750px;
+            margin: 0 auto 50px;
+            line-height: 1.7;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-primary:hover::before {
+            left: 100%;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            padding: 20px 40px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .social-proof {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            opacity: 0.7;
+        }
+
+        .proof-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+        }
+
+        .proof-stars {
+            color: #ffd700;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            gap: 0;
+        }
+
+        .hero-left {
+            padding: 70px 60px 80px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            border-right: 2px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .hero-right {
+            padding: 70px 60px 80px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, rgba(247, 148, 29, 0.08) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        .section-label {
+            color: #ff6b35;
+            font-size: 0.95em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .section-label::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: #ff6b35;
+        }
+
+        .side-title {
+            font-size: 2.2em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .left-title {
+            color: #667eea;
+        }
+
+        .right-title {
+            color: #ff6b35;
+        }
+
+        .side-subtitle {
+            font-size: 1.15em;
+            margin-bottom: 35px;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        .left-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .right-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 45px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            color: white;
+            font-size: 1.05em;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .feature-icon {
+            font-size: 1.4em;
+            margin-right: 15px;
+            width: 30px;
+        }
+
+        .left-icon {
+            color: #667eea;
+        }
+
+        .right-icon {
+            color: #ff6b35;
+        }
+
+        .dashboard-preview, .solutions-showcase {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-preview:hover, .solutions-showcase:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .preview-title, .showcase-title {
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .preview-title {
+            color: #667eea;
+        }
+
+        .showcase-title {
+            color: #ff6b35;
+        }
+
+        .preview-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .metric-item {
+            background: rgba(102, 126, 234, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-item:hover {
+            background: rgba(102, 126, 234, 0.25);
+            transform: scale(1.05);
+        }
+
+        .metric-value {
+            font-size: 1.9em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .solution-item {
+            background: rgba(255, 107, 53, 0.15);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .solution-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 107, 53, 0.25);
+        }
+
+        .solution-icon {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+        }
+
+        .solution-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .solution-desc {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .connection-arrow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            color: white;
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+            animation: pulse 3s ease-in-out infinite;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.08);
+                box-shadow: 0 20px 50px rgba(255, 107, 53, 0.6);
+            }
+        }
+
+        .stats-bar {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
+            backdrop-filter: blur(15px);
+            padding: 35px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: white;
+            transition: all 0.3s ease;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 2.3em;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-qr {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 107, 53, 0.08);
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            border-radius: 12px;
+            animation: float 8s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+        }
+
+        .floating-qr:nth-child(1) {
+            top: 15%;
+            right: 8%;
+            animation-delay: 0s;
+        }
+
+        .floating-qr:nth-child(2) {
+            top: 65%;
+            right: 3%;
+            animation-delay: 2.5s;
+        }
+
+        .floating-qr:nth-child(3) {
+            top: 35%;
+            left: 5%;
+            animation-delay: 5s;
+        }
+
+        .floating-qr:nth-child(4) {
+            top: 80%;
+            left: 15%;
+            animation-delay: 7s;
+            width: 50px;
+            height: 50px;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.2;
+            }
+            25% {
+                transform: translateY(-15px) rotate(2deg);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateY(-25px) rotate(-2deg);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(-10px) rotate(1deg);
+                opacity: 0.4;
+            }
+        }
+
+        /* New feature callout */
+        .feature-callout {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+            z-index: 1000;
+            font-weight: 600;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: slideIn 1s ease-out 2s both;
+        }
+
+        .feature-callout:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .main-title {
+                font-size: 2.5em;
+            }
+
+            .main-headline {
+                padding: 50px 20px 40px;
+            }
+
+            .hero-left,
+            .hero-right {
+                padding: 50px 30px;
+                border-right: none;
+            }
+
+            .connection-arrow {
+                display: none;
+            }
+
+            .side-title {
+                font-size: 1.8em;
+            }
+
+            .preview-metrics,
+            .solutions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 25px;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .trust-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .social-proof {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .feature-callout {
+                bottom: 20px;
+                right: 20px;
+                font-size: 0.8em;
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2.1em;
+            }
+            
+            .main-subtitle {
+                font-size: 1.1em;
+            }
+            
+            .cta-primary, .cta-secondary {
+                padding: 16px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+
+        <div class="floating-elements">
+            <div class="floating-qr"></div>
+            <div class="floating-qr"></div>
+            <div class="floating-qr"></div>
+            <div class="floating-qr"></div>
+        </div>
+
+        <div class="main-headline">
+            <h1 class="main-title">Insanely Smart AI Marketing - <span class="title-highlight">for SME's</span> to compete with the big guys</h1>
+            
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-left">
+                <div class="section-label">Business Intelligence</div>
+                <h2 class="side-title left-title">Know Exactly What Works</h2>
+                <p class="side-subtitle left-subtitle">Stop guessing with your marketing budget. Get industry-specific insights, ROI calculations, and competitive intelligence that Fortune 500 companies use.</p>
+               
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <span class="feature-icon left-icon">⚡</span>
+                        Instant business health scanning
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon left-icon">📊</span>
+                        Industry-specific benchmarking
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon left-icon">💰</span>
+                        Marketing ROI calculations
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon left-icon">🎯</span>
+                        Channel comparison analysis
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon left-icon">🔍</span>
+                        Competitor intelligence tracking
+                    </li>
+                </ul>
+
+                <div class="dashboard-preview">
+                    <div class="preview-title">📈 Live Dashboard Preview</div>
+                    <div class="preview-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">87%</div>
+                            <div class="metric-label">Health Score</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">340%</div>
+                            <div class="metric-label">ROI Potential</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">£2,847</div>
+                            <div class="metric-label">Monthly Waste</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">Top 15%</div>
+                            <div class="metric-label">Industry Rank</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <div class="section-label">Smart Solutions</div>
+                <h2 class="side-title right-title">Then Make It Happen</h2>
+                <p class="side-subtitle right-subtitle">Turn insights into results with cutting-edge QR campaigns, smart business cards, and viral marketing materials. All tracked, measured, and optimized.</p>
+               
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <span class="feature-icon right-icon">📱</span>
+                        Dynamic QR code campaigns
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon right-icon">💳</span>
+                        Smart business cards
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon right-icon">🎨</span>
+                        Branded temporary tattoos
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon right-icon">🚀</span>
+                        Complete campaign execution
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon right-icon">📊</span>
+                        Real-time performance tracking
+                    </li>
+                </ul>
+
+                <div class="solutions-showcase">
+                    <div class="showcase-title">🛠️ Our Smart Solutions</div>
+                    <div class="solutions-grid">
+                        <div class="solution-item">
+                            <div class="solution-icon">📱</div>
+                            <div class="solution-name">QR Campaigns</div>
+                            <div class="solution-desc">Bridge offline to online</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-icon">💳</div>
+                            <div class="solution-name">Smart Cards</div>
+                            <div class="solution-desc">Networking revolution</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-icon">🎨</div>
+                            <div class="solution-name">Temp Tattoos</div>
+                            <div class="solution-desc">Viral event marketing</div>
+                        </div>
+                        <div class="solution-item">
+                            <div class="solution-icon">📊</div>
+                            <div class="solution-name">Analytics</div>
+                            <div class="solution-desc">Track everything</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="connection-arrow">
+            →
+        </div>
+
+        <div class="stats-bar">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number">2,847</div>
+                    <div class="stat-label">SMEs Analyzed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">£127M</div>
+                    <div class="stat-label">Growth Identified</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">340%</div>
+                    <div class="stat-label">Average ROI Increase</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Industries Covered</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="feature-callout">
+        🎯 Free Business Analysis Ready!
+    </div>
+</body>
+</html>

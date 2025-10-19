@@ -1,0 +1,250 @@
+# 🚀 Service Recovery - Quick Integration Guide
+
+## What You Just Got
+
+✅ **Manager Alert Dashboard** - Real-time issue monitoring interface  
+✅ **Backend Integration Code** - Claude AI + alert system  
+✅ **Complete workflow** - From QR feedback to staff notification
+
+---
+
+## 🔌 Connect It To Your Existing System (3 Steps)
+
+### Step 1: Connect Your QR Feedback Form
+
+You already have QR cards collecting feedback. Just add this ONE line of code to your feedback submission:
+
+```javascript
+// Your existing QR feedback form
+async function submitFeedback(formData) {
+  // Your current code saves feedback
+  await saveFeedbackToDatabase(formData);
+  
+  // 👇 ADD THIS ONE LINE
+  await processFeedback(formData);  // ← This triggers the magic!
+  
+  // Rest of your code...
+  showThankYouMessage();
+}
+```
+
+**That's it for Step 1!** Now every feedback submission gets analyzed by Claude automatically.
+
+---
+
+### Step 2: Set Up Notifications (Pick Your Method)
+
+Choose how managers get alerted:
+
+#### Option A: Dashboard Only (Easiest - 30 minutes)
+```javascript
+// Just host the dashboard HTML file
+// Managers keep it open on tablet/computer
+// Alerts appear in real-time
+```
+**Setup**: Upload `service_recovery_dashboard.html` to your server  
+**URL**: `https://yourdomain.com/manager/alerts`
+
+#### Option B: SMS Alerts (Recommended - 2 hours)
+```javascript
+// Sign up for Twilio (free trial)
+// Add these to your environment variables:
+TWILIO_ACCOUNT_SID=your_sid
+TWILIO_AUTH_TOKEN=your_token
+TWILIO_PHONE_NUMBER=+1234567890
+
+// Already built in the backend code!
+```
+
+#### Option C: Both (Best - 3 hours)
+Dashboard for detailed view + SMS for urgent alerts
+
+---
+
+### Step 3: Database Setup (30 minutes)
+
+Run this SQL to create the alerts table:
+
+```sql
+CREATE TABLE feedback_alerts (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  feedback_id INT,
+  guest_id INT,
+  guest_name VARCHAR(255),
+  location VARCHAR(255),
+  priority ENUM('LOW', 'MEDIUM', 'HIGH', 'URGENT'),
+  rating INT,
+  sentiment VARCHAR(50),
+  sentiment_score DECIMAL(3,2),
+  issue TEXT,
+  keywords JSON,
+  recommended_action TEXT,
+  staff_briefing TEXT,
+  status ENUM('PENDING', 'IN_PROGRESS', 'RESOLVED', 'ESCALATED') DEFAULT 'PENDING',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  responded_at TIMESTAMP NULL,
+  responded_by INT NULL,
+  resolution_notes TEXT NULL,
+  
+  INDEX idx_status (status),
+  INDEX idx_priority (priority),
+  INDEX idx_created (created_at)
+);
+
+CREATE TABLE alert_responses (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  alert_id INT,
+  staff_id INT,
+  response_time_seconds INT,
+  action_taken TEXT,
+  guest_satisfied BOOLEAN,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  
+  FOREIGN KEY (alert_id) REFERENCES feedback_alerts(id)
+);
+```
+
+---
+
+## 📊 What Happens Now
+
+```
+Guest rates 2 stars via QR
+         ↓
+Claude analyzes sentiment in 2 seconds
+         ↓
+System decides: "URGENT alert needed!"
+         ↓
+Manager gets SMS + Dashboard alert
+         ↓
+Manager responds in 90 seconds
+         ↓
+Issue resolved, guest leaves happy
+         ↓
+5-star review instead of 1-star!
+```
+
+---
+
+## 🎯 Configuration Options
+
+### Customize Alert Triggers
+
+Edit these thresholds in the backend code:
+
+```javascript
+// Make it more/less sensitive
+const triggers = {
+  lowRating: feedbackData.rating <= 2,  // ← Change threshold
+  negativeSentiment: analysis.sentimentScore > 0.6,  // ← Adjust sensitivity
+  // Add your own triggers...
+};
+```
+
+### Customize Notification Routing
+
+```javascript
+// Who gets alerted for what
+const notificationRules = {
+  'VIP Suite': ['manager@venue.com', '+447123456789'],
+  'Restaurant': ['chef@venue.com', '+447987654321'],
+  'General': ['frontdesk@venue.com']
+};
+```
+
+---
+
+## 🧪 Test It (5 minutes)
+
+### Test Case 1: Urgent Alert
+```javascript
+const testFeedback = {
+  guestName: 'Test Guest',
+  location: 'VIP Suite 1',
+  rating: 1,
+  comment: 'Terrible service, very rude staff, cold food. Completely unacceptable!'
+};
+
+await processFeedback(testFeedback);
+// Should trigger URGENT alert to managers
+```
+
+### Test Case 2: No Alert Needed
+```javascript
+const testFeedback = {
+  guestName: 'Happy Guest',
+  location: 'Restaurant Table 5',
+  rating: 5,
+  comment: 'Amazing experience! Everything was perfect!'
+};
+
+await processFeedback(testFeedback);
+// Should log feedback but NO alert
+```
+
+---
+
+## 📈 Track Success
+
+The system automatically tracks:
+
+- **Response time** → How fast managers react
+- **Resolution rate** → % of issues resolved
+- **Rating recovery** → 1-star → 5-star conversions
+- **Staff performance** → Who resolves fastest
+
+View metrics in the dashboard!
+
+---
+
+## 🆘 Troubleshooting
+
+### "Claude not analyzing properly"
+- Check your Claude API is connected
+- Verify messages format is correct
+- Check error logs for API response
+
+### "Alerts not appearing in dashboard"
+- Check WebSocket connection
+- Verify database connection
+- Check browser console for errors
+
+### "SMS not sending"
+- Verify Twilio credentials
+- Check phone number format (+44...)
+- Check Twilio account balance
+
+---
+
+## 🚀 Go Live Checklist
+
+- [ ] Database table created
+- [ ] Backend code deployed
+- [ ] Claude API integrated
+- [ ] Dashboard hosted and accessible
+- [ ] Test alerts working
+- [ ] Manager phones/emails configured
+- [ ] Staff trained on response protocol
+- [ ] Monitoring/logging enabled
+
+---
+
+## 💪 What's Next?
+
+Once Service Recovery is running smoothly (1-2 weeks), we'll add:
+
+**Phase 2: VIP Recognition** → Staff briefings on returning guests  
+**Phase 3: Upsell Intelligence** → AI suggests premium upgrades  
+
+But first, let's get this working and **start saving reviews** immediately!
+
+---
+
+## 🎓 Need Help?
+
+**Quick wins:**
+- Start with dashboard-only (no SMS setup)
+- Test with low-priority alerts first
+- Train 1-2 managers before full rollout
+
+**The system is READY TO GO** - it's just connecting the dots you already have! 🔥

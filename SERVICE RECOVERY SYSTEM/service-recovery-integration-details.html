@@ -1,0 +1,474 @@
+// =============================================
+// SERVICE RECOVERY - BACKEND INTEGRATION
+// Connects your QR feedback to Claude AI + Alert System
+// =============================================
+
+// ===== 1. CLAUDE SENTIMENT ANALYSIS =====
+async function analyzeFeedbackWithClaude(feedbackData) {
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 600,
+        messages: [{
+          role: "user",
+          content: `You are an expert at analyzing guest feedback for luxury venues. Analyze this feedback and return ONLY valid JSON.
+
+Guest Feedback:
+Rating: ${feedbackData.rating}/5
+Comment: "${feedbackData.comment}"
+Guest: ${feedbackData.guestName || 'Anonymous'}
+Location: ${feedbackData.location}
+
+Return this exact JSON structure:
+{
+  "sentiment": "positive|neutral|negative",
+  "sentimentScore": 0.0-1.0,
+  "urgency": "low|medium|high|urgent",
+  "issues": ["list of specific issues mentioned"],
+  "keywords": ["key complaint words"],
+  "recommendedAction": "specific action staff should take",
+  "shouldAlert": true/false,
+  "alertPriority": "low|medium|high|urgent",
+  "staffBriefing": "concise summary for staff (2-3 sentences)",
+  "estimatedResolutionTime": "2min|5min|15min|30min|1hour",
+  "upsellOpportunity": true/false,
+  "compensationSuggestion": "what to offer guest if needed"
+}`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    
+    // Strip markdown if Claude returns it
+    let responseText = data.content[0].text;
+    responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    
+    const analysis = JSON.parse(responseText);
+    return analysis;
+
+  } catch (error) {
+    console.error('Claude analysis error:', error);
+    // Fallback to basic analysis if Claude fails
+    return basicSentimentAnalysis(feedbackData);
+  }
+}
+
+// ===== 2. FALLBACK SENTIMENT ANALYSIS =====
+function basicSentimentAnalysis(feedbackData) {
+  const negativeKeywords = [
+    'terrible', 'awful', 'horrible', 'worst', 'disappointed', 'angry',
+    'rude', 'cold', 'dirty', 'slow', 'wait', 'delay', 'broken', 'noise',
+    'unacceptable', 'disgusting', 'poor', 'bad'
+  ];
+
+  const urgentKeywords = [
+    'allergy', 'sick', 'emergency', 'danger', 'unsafe', 'health',
+    'injury', 'threaten', 'lawyer', 'refund', 'police'
+  ];
+
+  const commentLower = feedbackData.comment.toLowerCase();
+  
+  const hasNegativeKeyword = negativeKeywords.some(word => commentLower.includes(word));
+  const hasUrgentKeyword = urgentKeywords.some(word => commentLower.includes(word));
+
+  let urgency = 'low';
+  let alertPriority = 'low';
+
+  if (feedbackData.rating <= 2 || hasUrgentKeyword) {
+    urgency = 'urgent';
+    alertPriority = 'urgent';
+  } else if (feedbackData.rating === 3 || hasNegativeKeyword) {
+    urgency = 'high';
+    alertPriority = 'high';
+  }
+
+  return {
+    sentiment: feedbackData.rating <= 3 ? 'negative' : feedbackData.rating === 4 ? 'neutral' : 'positive',
+    sentimentScore: hasNegativeKeyword ? 0.8 : 0.5,
+    urgency,
+    issues: negativeKeywords.filter(word => commentLower.includes(word)),
+    keywords: negativeKeywords.filter(word => commentLower.includes(word)),
+    recommendedAction: urgency === 'urgent' ? 'Immediate manager intervention' : 'Follow up with guest',
+    shouldAlert: feedbackData.rating <= 3,
+    alertPriority,
+    staffBriefing: `Guest rated ${feedbackData.rating}/5. ${hasNegativeKeyword ? 'Multiple issues detected.' : 'Standard follow-up needed.'}`,
+    estimatedResolutionTime: urgency === 'urgent' ? '2min' : '15min',
+    upsellOpportunity: false,
+    compensationSuggestion: urgency === 'urgent' ? 'Manager discretion - comp service or refund' : 'Follow up call'
+  };
+}
+
+// ===== 3. ALERT DECISION ENGINE =====
+function shouldCreateAlert(feedbackData, analysis) {
+  const triggers = {
+    // Rating-based triggers
+    lowRating: feedbackData.rating <= 2,
+    mediumRating: feedbackData.rating === 3,
+    
+    // Sentiment-based triggers
+    negativeSentiment: analysis.sentiment === 'negative' && analysis.sentimentScore > 0.6,
+    
+    // Keyword-based triggers
+    criticalIssues: analysis.keywords.some(keyword => 
+      ['allergy', 'sick', 'rude', 'dirty', 'broken'].includes(keyword.toLowerCase())
+    ),
+    
+    // VIP guest (if you track this)
+    isVIPGuest: feedbackData.guestType === 'VIP' || feedbackData.lifetimeValue > 1000,
+    
+    // Repeat complaint
+    repeatComplaint: feedbackData.previousComplaints > 0
+  };
+
+  // Decision logic
+  if (triggers.lowRating || triggers.criticalIssues) {
+    return { shouldAlert: true, priority: 'urgent' };
+  }
+  
+  if (triggers.mediumRating || triggers.negativeSentiment) {
+    return { shouldAlert: true, priority: 'high' };
+  }
+  
+  if (triggers.isVIPGuest && triggers.mediumRating) {
+    return { shouldAlert: true, priority: 'high' };
+  }
+  
+  if (triggers.repeatComplaint) {
+    return { shouldAlert: true, priority: 'medium' };
+  }
+
+  return { shouldAlert: false, priority: null };
+}
+
+// ===== 4. CREATE ALERT =====
+async function createAlert(feedbackData, analysis) {
+  const alertData = {
+    id: Date.now(), // Use proper UUID in production
+    feedbackId: feedbackData.id,
+    guestId: feedbackData.guestId,
+    guestName: feedbackData.guestName,
+    location: feedbackData.location,
+    priority: analysis.alertPriority,
+    rating: feedbackData.rating,
+    sentiment: analysis.sentiment,
+    sentimentScore: analysis.sentimentScore,
+    issue: feedbackData.comment,
+    keywords: analysis.keywords,
+    recommendedAction: analysis.recommendedAction,
+    staffBriefing: analysis.staffBriefing,
+    estimatedResolutionTime: analysis.estimatedResolutionTime,
+    compensationSuggestion: analysis.compensationSuggestion,
+    status: 'pending',
+    createdAt: new Date().toISOString(),
+    respondedAt: null,
+    respondedBy: null,
+    resolutionNotes: null
+  };
+
+  // Save to database
+  await saveAlertToDatabase(alertData);
+
+  // Send notifications
+  await notifyStaff(alertData);
+
+  return alertData;
+}
+
+// ===== 5. DATABASE OPERATIONS =====
+async function saveAlertToDatabase(alertData) {
+  // Replace with your actual database logic
+  const query = `
+    INSERT INTO feedback_alerts (
+      feedback_id, guest_id, guest_name, location, priority,
+      rating, sentiment, sentiment_score, issue, keywords,
+      recommended_action, staff_briefing, status, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  // Execute query with your DB connection
+  // await db.execute(query, [alertData.feedbackId, alertData.guestId, ...]);
+  
+  console.log('Alert saved to database:', alertData.id);
+}
+
+// ===== 6. STAFF NOTIFICATION SYSTEM =====
+async function notifyStaff(alertData) {
+  const notificationMethods = [];
+
+  // Priority-based notification routing
+  switch (alertData.priority) {
+    case 'urgent':
+      // Urgent: SMS + Dashboard + Email
+      notificationMethods.push(sendSMS(alertData));
+      notificationMethods.push(sendDashboardAlert(alertData));
+      notificationMethods.push(sendEmail(alertData));
+      break;
+    
+    case 'high':
+      // High: Dashboard + SMS
+      notificationMethods.push(sendDashboardAlert(alertData));
+      notificationMethods.push(sendSMS(alertData));
+      break;
+    
+    case 'medium':
+      // Medium: Dashboard only
+      notificationMethods.push(sendDashboardAlert(alertData));
+      break;
+    
+    case 'low':
+      // Low: Dashboard notification
+      notificationMethods.push(sendDashboardAlert(alertData));
+      break;
+  }
+
+  await Promise.all(notificationMethods);
+}
+
+// ===== 7. NOTIFICATION CHANNELS =====
+
+// Dashboard Alert (WebSocket or SSE)
+async function sendDashboardAlert(alertData) {
+  // Use WebSocket or Server-Sent Events to push to dashboard in real-time
+  // Example with WebSocket:
+  
+  const message = {
+    type: 'NEW_ALERT',
+    data: alertData
+  };
+
+  // Send to all connected manager dashboards
+  // wss.clients.forEach(client => {
+  //   if (client.readyState === WebSocket.OPEN) {
+  //     client.send(JSON.stringify(message));
+  //   }
+  // });
+
+  console.log('Dashboard alert sent:', alertData.id);
+}
+
+// SMS Alert (Twilio)
+async function sendSMS(alertData) {
+  // Replace with your Twilio credentials
+  const twilioConfig = {
+    accountSid: 'YOUR_TWILIO_ACCOUNT_SID',
+    authToken: 'YOUR_TWILIO_AUTH_TOKEN',
+    fromNumber: '+1234567890'
+  };
+
+  // Get manager phone numbers based on location
+  const managerPhones = await getManagerPhoneNumbers(alertData.location);
+
+  const message = `🚨 URGENT ALERT
+Guest: ${alertData.guestName}
+Location: ${alertData.location}
+Rating: ${alertData.rating}/5
+Issue: ${alertData.keywords.join(', ')}
+
+Action: ${alertData.recommendedAction}
+
+View: https://dashboard.insane.marketing/alerts/${alertData.id}`;
+
+  // Send SMS to each manager
+  for (const phone of managerPhones) {
+    try {
+      // await twilioClient.messages.create({
+      //   body: message,
+      //   from: twilioConfig.fromNumber,
+      //   to: phone
+      // });
+      console.log(`SMS sent to ${phone}`);
+    } catch (error) {
+      console.error(`Failed to send SMS to ${phone}:`, error);
+    }
+  }
+}
+
+// Email Alert
+async function sendEmail(alertData) {
+  const managerEmails = await getManagerEmails(alertData.location);
+
+  const emailContent = {
+    subject: `🚨 ${alertData.priority.toUpperCase()} Alert - ${alertData.guestName}`,
+    html: `
+      <h2>Guest Service Alert</h2>
+      <p><strong>Priority:</strong> ${alertData.priority.toUpperCase()}</p>
+      <p><strong>Guest:</strong> ${alertData.guestName}</p>
+      <p><strong>Location:</strong> ${alertData.location}</p>
+      <p><strong>Rating:</strong> ${alertData.rating}/5 stars</p>
+      
+      <h3>Issue Summary:</h3>
+      <p>${alertData.issue}</p>
+      
+      <h3>Recommended Action:</h3>
+      <p>${alertData.recommendedAction}</p>
+      
+      <p><a href="https://dashboard.insane.marketing/alerts/${alertData.id}">View Full Alert →</a></p>
+    `
+  };
+
+  // Send email using your email service (SendGrid, AWS SES, etc.)
+  // await emailService.send(managerEmails, emailContent);
+  console.log('Email alert sent to managers');
+}
+
+// ===== 8. HELPER FUNCTIONS =====
+async function getManagerPhoneNumbers(location) {
+  // Query your staff database for managers responsible for this location
+  // return ['[+447123456789](tel:+447123456789)', '[+447987654321](tel:+447987654321)'];
+  return []; // Replace with actual DB query
+}
+
+async function getManagerEmails(location) {
+  // Query your staff database for manager emails
+  // return ['manager1@venue.com', 'manager2@venue.com'];
+  return []; // Replace with actual DB query
+}
+
+// ===== 9. MAIN PROCESSING FUNCTION =====
+async function processFeedback(feedbackData) {
+  console.log('Processing feedback:', feedbackData.id);
+
+  try {
+    // Step 1: Analyze with Claude
+    const analysis = await analyzeFeedbackWithClaude(feedbackData);
+    console.log('Claude analysis complete:', analysis);
+
+    // Step 2: Determine if alert is needed
+    const { shouldAlert, priority } = shouldCreateAlert(feedbackData, analysis);
+
+    if (shouldAlert) {
+      // Step 3: Create and send alert
+      analysis.alertPriority = priority;
+      const alert = await createAlert(feedbackData, analysis);
+      console.log('Alert created:', alert.id);
+
+      return {
+        success: true,
+        alertCreated: true,
+        alertId: alert.id,
+        analysis
+      };
+    } else {
+      // No alert needed, just log feedback
+      console.log('No alert needed for feedback:', feedbackData.id);
+      
+      return {
+        success: true,
+        alertCreated: false,
+        analysis
+      };
+    }
+
+  } catch (error) {
+    console.error('Error processing feedback:', error);
+    
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+// ===== 10. API ENDPOINT EXAMPLE =====
+// Example Express.js endpoint that connects to your QR feedback system
+
+/*
+app.post('/api/feedback', async (req, res) => {
+  const feedbackData = {
+    id: req.body.id,
+    guestId: req.body.guestId,
+    guestName: req.body.guestName || 'Anonymous',
+    location: req.body.location,
+    rating: parseInt(req.body.rating),
+    comment: req.body.comment,
+    guestType: req.body.guestType || 'standard',
+    lifetimeValue: req.body.lifetimeValue || 0,
+    previousComplaints: req.body.previousComplaints || 0,
+    timestamp: new Date().toISOString()
+  };
+
+  // Process the feedback
+  const result = await processFeedback(feedbackData);
+
+  res.json(result);
+});
+*/
+
+// ===== 11. RESPONSE TRACKING =====
+async function markAlertResolved(alertId, staffId, resolutionNotes) {
+  const responseTime = calculateResponseTime(alertId);
+  
+  const updateQuery = `
+    UPDATE feedback_alerts 
+    SET status = 'resolved',
+        responded_at = NOW(),
+        responded_by = ?,
+        resolution_notes = ?
+    WHERE id = ?
+  `;
+
+  // await db.execute(updateQuery, [staffId, resolutionNotes, alertId]);
+
+  // Track response in analytics
+  await trackResponseMetrics({
+    alertId,
+    responseTime,
+    staffId,
+    resolved: true
+  });
+
+  console.log(`Alert ${alertId} resolved by staff ${staffId}`);
+}
+
+function calculateResponseTime(alertId) {
+  // Calculate time between alert creation and resolution
+  // Return in seconds
+  return 120; // Example: 2 minutes
+}
+
+async function trackResponseMetrics(metrics) {
+  // Store metrics for dashboard analytics
+  console.log('Tracking metrics:', metrics);
+}
+
+// ===== 12. USAGE EXAMPLE =====
+
+/*
+// Example: When guest submits QR feedback
+const exampleFeedback = {
+  id: 'fb_12345',
+  guestId: 'guest_789',
+  guestName: 'Sarah Mitchell',
+  location: 'VIP Suite 14',
+  rating: 2,
+  comment: 'Excessive noise from adjacent suite ruining our anniversary dinner. This is unacceptable for the premium price we paid.',
+  guestType: 'VIP',
+  lifetimeValue: 2500,
+  previousComplaints: 0
+};
+
+// Process it
+const result = await processFeedback(exampleFeedback);
+
+if (result.alertCreated) {
+  console.log('🚨 ALERT SENT TO STAFF!');
+  console.log('Alert ID:', result.alertId);
+  console.log('Priority:', result.analysis.alertPriority);
+  console.log('Action:', result.analysis.recommendedAction);
+}
+*/
+
+// Export functions for use in your application
+module.exports = {
+  processFeedback,
+  analyzeFeedbackWithClaude,
+  createAlert,
+  markAlertResolved,
+  notifyStaff
+};

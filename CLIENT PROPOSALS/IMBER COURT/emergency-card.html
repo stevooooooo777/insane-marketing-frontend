@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Emergency Response Card</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1e293b;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .page-title {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+
+        /* Card container - simulates credit card size */
+        .card-container {
+            width: 340px;
+            height: 214px;
+            perspective: 1000px;
+            margin: 20px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-logo {
+            font-size: 2rem;
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #dc2626;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .card-main {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-emergency {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card-qr {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #dc2626;
+            font-weight: 700;
+            padding: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-instructions {
+            font-size: 0.7rem;
+            line-height: 1.4;
+            margin-top: 8px;
+        }
+
+        .card-footer {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            font-size: 0.65rem;
+            opacity: 0.9;
+        }
+
+        /* Different card types */
+        .card.sports {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+
+        .card.sports .card-title {
+            color: #16a34a;
+        }
+
+        .card.sports .card-qr {
+            color: #16a34a;
+        }
+
+        .card.kids {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .card.kids .card-title {
+            color: #d97706;
+        }
+
+        .card.kids .card-qr {
+            color: #d97706;
+        }
+
+        .card.general {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        }
+
+        .card.general .card-title {
+            color: #1e40af;
+        }
+
+        .card.general .card-qr {
+            color: #1e40af;
+        }
+
+        /* Print instructions */
+        .print-instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #475569;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            color: #ffffff;
+        }
+
+        .print-instructions h2 {
+            color: #fbbf24;
+            margin-bottom: 20px;
+        }
+
+        .print-instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .print-instructions li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .print-instructions li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Use cases section */
+        .use-cases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .use-case {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #475569;
+            border-radius: 12px;
+            padding: 25px;
+            color: #ffffff;
+        }
+
+        .use-case-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .use-case h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        .use-case ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+
+        .use-case li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .use-case li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .page-title, .print-instructions, .use-cases {
+                display: none;
+            }
+            .card-container {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-title">
+        <h1>🚨 Supervisor Emergency Response Cards</h1>
+        <p>Laminated pocket cards for instant emergency response</p>
+    </div>
+
+    <div class="cards-grid">
+        <!-- Emergency Card -->
+        <div class="card-container">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-logo">🚨</div>
+                    <div class="card-title">Emergency Response</div>
+                </div>
+                <div class="card-main">
+                    <div class="card-emergency">EMERGENCY ALERT</div>
+                    <div class="card-name">IMBER COURT</div>
+                    <div class="card-instructions">
+                        Hold QR to guest's phone<br>
+                        Instant alert to Mission Control<br>
+                        Response time tracked
+                    </div>
+                </div>
+                <div class="card-qr">
+                    SCAN FOR<br>EMERGENCY<br>ALERT
+                </div>
+                <div class="card-footer">
+                    For: Injuries, Accidents, Medical
+                </div>
+            </div>
+        </div>
+
+        <!-- Sports Supervisor Card -->
+        <div class="card-container">
+            <div class="card sports">
+                <div class="card-header">
+                    <div class="card-logo">⚽</div>
+                    <div class="card-title">Sports Supervisor</div>
+                </div>
+                <div class="card-main">
+                    <div class="card-emergency">INCIDENT REPORT</div>
+                    <div class="card-name">IMBER COURT</div>
+                    <div class="card-instructions">
+                        Player injury or incident<br>
+                        Scan to log and notify<br>
+                        Auto-records time & location
+                    </div>
+                </div>
+                <div class="card-qr">
+                    SCAN FOR<br>SPORTS<br>INCIDENT
+                </div>
+                <div class="card-footer">
+                    For: Sports facilities, Fields, Courts
+                </div>
+            </div>
+        </div>
+
+        <!-- Kids Camp Card -->
+        <div class="card-container">
+            <div class="card kids">
+                <div class="card-header">
+                    <div class="card-logo">👶</div>
+                    <div class="card-title">Kids Camp Leader</div>
+                </div>
+                <div class="card-main">
+                    <div class="card-emergency">CHILD SAFETY ALERT</div>
+                    <div class="card-name">IMBER COURT</div>
+                    <div class="card-instructions">
+                        Minor injury, lost child, concern<br>
+                        Instant notification to managers<br>
+                        Parent contact logged
+                    </div>
+                </div>
+                <div class="card-qr">
+                    SCAN FOR<br>CHILD<br>INCIDENT
+                </div>
+                <div class="card-footer">
+                    For: Kids camps, Activities, Events
+                </div>
+            </div>
+        </div>
+
+        <!-- General Supervisor Card -->
+        <div class="card-container">
+            <div class="card general">
+                <div class="card-header">
+                    <div class="card-logo">👤</div>
+                    <div class="card-title">Venue Supervisor</div>
+                </div>
+                <div class="card-main">
+                    <div class="card-emergency">SERVICE REQUEST</div>
+                    <div class="card-name">IMBER COURT</div>
+                    <div class="card-instructions">
+                        Guest assistance needed<br>
+                        Maintenance issue alert<br>
+                        Security notification
+                    </div>
+                </div>
+                <div class="card-qr">
+                    SCAN FOR<br>ASSISTANCE<br>REQUEST
+                </div>
+                <div class="card-footer">
+                    For: General venue operations
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="print-instructions">
+        <h2>📋 How to Use These Cards</h2>
+        <ul>
+            <li><strong>Print on cardstock</strong> - Use heavy paper (200gsm+) for durability</li>
+            <li><strong>Laminate</strong> - Waterproof and protect from damage (credit card thickness)</li>
+            <li><strong>Punch hole & lanyard</strong> - Supervisors wear on neck or clip to belt</li>
+            <li><strong>Always accessible</strong> - Must be on supervisor at all times during shift</li>
+            <li><strong>Train all staff</strong> - 5-minute training: "See incident → Hold card → Guest scans → Help arrives"</li>
+            <li><strong>Track response times</strong> - System automatically logs every incident and response</li>
+        </ul>
+    </div>
+
+    <div class="use-cases">
+        <div class="use-case">
+            <div class="use-case-icon">🚑</div>
+            <h3>Medical Emergencies</h3>
+            <p>Guest has accident during sports activity</p>
+            <ul>
+                <li>Supervisor holds emergency card to guest's phone</li>
+                <li>QR scan sends instant alert to Mission Control</li>
+                <li>First aid team dispatched immediately</li>
+                <li>Incident logged with timestamp</li>
+                <li>Parents/guardians notified automatically</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <div class="use-case-icon">👦</div>
+            <h3>Kids Camp Safety</h3>
+            <p>Child has minor injury at summer camp</p>
+            <ul>
+                <li>Camp leader scans kids camp card</li>
+                <li>Alert sent to camp coordinator + first aid</li>
+                <li>Parent contact details pulled automatically</li>
+                <li>Incident report started in real-time</li>
+                <li>Meets safeguarding requirements</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <div class="use-case-icon">⚽</div>
+            <h3>Sports Incidents</h3>
+            <p>Player collision on football pitch</p>
+            <ul>
+                <li>Coach uses sports supervisor card</li>
+                <li>Exact location logged (which field/court)</li>
+                <li>Medical team alerted with injury type</li>
+                <li>Session paused, other supervisors notified</li>
+                <li>Liability documentation automatic</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <div class="use-case-icon">🛡️</div>
+            <h3>Safeguarding & Liability</h3>
+            <p>Complete audit trail for insurance</p>
+            <ul>
+                <li>Every incident timestamped and logged</li>
+                <li>Response times recorded automatically</li>
+                <li>Action taken documented in real-time</li>
+                <li>Meets insurance requirements</li>
+                <li>Reduces liability exposure significantly</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="print-instructions" style="margin-top: 40px; background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+        <h2>🎯 Why This Is Critical for Imber Court</h2>
+        <ul>
+            <li><strong>Massive venue spread</strong> - Sports facilities can be 100m+ from main building</li>
+            <li><strong>Multiple simultaneous activities</strong> - Camps, sports, events all happening at once</li>
+            <li><strong>Supervisor isolation</strong> - Single supervisor managing 20+ kids on far field</li>
+            <li><strong>Response time = liability</strong> - Fast documented response protects you legally</li>
+            <li><strong>Parent expectations</strong> - Modern parents expect instant communication about their children</li>
+            <li><strong>Insurance requirements</strong> - Many insurers now require incident tracking systems</li>
+            <li><strong>Ofsted/Inspections</strong> - For camps, showing professional safety systems is essential</li>
+        </ul>
+    </div>
+
+    <div class="print-instructions" style="margin-top: 40px; background: rgba(34, 197, 94, 0.1); border-color: #22c55e;">
+        <h2>💰 Additional Revenue Opportunity</h2>
+        <ul>
+            <li><strong>Premium peace of mind</strong> - Market camps as "advanced safety monitoring"</li>
+            <li><strong>Higher enrollment</strong> - Parents pay more for venues with safety tech</li>
+            <li><strong>Insurance savings</strong> - Lower premiums with documented safety system</li>
+            <li><strong>Attract events</strong> - Schools/clubs want venues with professional safety</li>
+            <li><strong>Competitive advantage</strong> - Only venue in area with this capability</li>
+        </ul>
+    </div>
+
+</body>
+</html>

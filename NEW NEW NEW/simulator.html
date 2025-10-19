@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Restaurant Comparison Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: white;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 50px;
+            color: #64ffda;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #b0b8c1;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        #startBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        #startBtn.running {
+            background: rgba(255, 59, 48, 0.2);
+            border: 2px solid #ff3b30;
+        }
+        
+        #resetBtn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .time-display {
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        
+        .gap-alert {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 149, 0, 0.2) 100%);
+            border: 2px solid rgba(255, 59, 48, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .column {
+            border-radius: 20px;
+            padding: 25px;
+            height: fit-content;
+        }
+        
+        .column.stage1 {
+            background: rgba(255, 59, 48, 0.05);
+            border: 2px solid rgba(255, 59, 48, 0.3);
+        }
+        
+        .column.reasoning {
+            background: rgba(100, 255, 218, 0.05);
+            border: 2px solid rgba(100, 255, 218, 0.3);
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        
+        .column.stage3 {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.5);
+        }
+        
+        .column-header {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .stage1 .column-header {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+        
+        .stage3 .column-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .restaurant-icon {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .restaurant-desc {
+            text-align: center;
+            font-size: 0.9em;
+            color: #b0b8c1;
+            margin-bottom: 25px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stage3 .metric {
+            background: rgba(102, 126, 234, 0.2);
+        }
+        
+        .metric-icon {
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.8em;
+            color: #8892b0;
+        }
+        
+        .upsell-box {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stage3 .upsell-box {
+            background: rgba(102, 126, 234, 0.2);
+        }
+        
+        .upsell-label {
+            font-size: 0.8em;
+            color: #b0b8c1;
+            margin-bottom: 8px;
+        }
+        
+        .upsell-value {
+            font-size: 2em;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .upsell-detail {
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        
+        .reasoning-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background: rgba(100, 255, 218, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #64ffda;
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(100, 255, 218, 0.6);
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        
+        .reasoning-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #64ffda;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8892b0;
+        }
+        
+        .event {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .event-customer {
+            font-size: 1em;
+            font-weight: 700;
+            color: #64ffda;
+            margin-bottom: 15px;
+        }
+        
+        .event-flow {
+            background: rgba(255, 59, 48, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #ff3b30;
+        }
+        
+        .event-flow.solution {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+        }
+        
+        .flow-label {
+            font-size: 0.75em;
+            color: #ff9500;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .flow-label.solution {
+            color: #64ffda;
+        }
+        
+        .flow-action {
+            font-size: 0.9em;
+            color: #b0b8c1;
+            margin-bottom: 5px;
+        }
+        
+        .flow-result {
+            font-size: 0.85em;
+            color: #ff9500;
+            font-style: italic;
+        }
+        
+        .flow-result.solution {
+            color: #4ade80;
+        }
+        
+        .event-divider {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 10px 0;
+            color: #64ffda;
+        }
+        
+        .event-impact {
+            background: rgba(100, 255, 218, 0.15);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #64ffda;
+            text-align: center;
+        }
+        
+        .summary {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            display: none;
+        }
+        
+        .summary.visible {
+            display: block;
+        }
+        
+        .summary h3 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto 30px;
+        }
+        
+        .summary-stat-label {
+            font-size: 0.9em;
+            color: #8892b0;
+            margin-bottom: 10px;
+        }
+        
+        .summary-stat-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #64ffda;
+        }
+        
+        .summary-projection {
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-radius: 15px;
+            border: 2px solid #667eea;
+        }
+        
+        @media (max-width: 1024px) {
+            .three-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="badge">Live Observation Deck</div>
+            <h1>Friday Night Rush: Real-Time Comparison</h1>
+            <p class="subtitle">Same customers. Same dinner rush. Different technology. Watch the mechanics unfold.</p>
+            
+            <div class="controls">
+                <button id="startBtn" onclick="toggleSimulation()">
+                    <span id="btnIcon">▶</span>
+                    <span id="btnText">Start Rush</span>
+                </button>
+                <button id="resetBtn" onclick="reset()">
+                    <span>↻</span>
+                    <span>Reset</span>
+                </button>
+                <div class="time-display">
+                    <span>⏱</span>
+                    <span id="timeDisplay">0 min into rush</span>
+                </div>
+            </div>
+            
+            <div id="gapAlert" style="display: none;">
+                <div class="gap-alert">
+                    <span style="font-size: 1.3em; font-weight: 700;">
+                        Stage 3 ahead by <span style="color: #64ffda;" id="gapAmount">$0</span>
+                    </span>
+                    <span style="color: #ffcc00; margin-left: 15px;" id="gapMonthly">($0/month at this pace)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="three-column">
+            <!-- Stage 1 Column -->
+            <div class="column stage1">
+                <div class="column-header">STAGE 1: BASIC QR</div>
+                <div class="restaurant-icon">😰</div>
+                <div class="restaurant-desc">Static menu, manual process</div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-icon">💵</div>
+                        <div class="metric-value" style="color: #ff3b30;" id="s1Revenue">$0</div>
+                        <div class="metric-label">Revenue</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-icon">👥</div>
+                        <div class="metric-value" id="s1Orders">0</div>
+                        <div class="metric-label">Orders</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-icon">📉</div>
+                        <div class="metric-value" style="color: #ff9500;" id="s1Satisfaction">70%</div>
+                        <div class="metric-label">Satisfaction</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-icon">⏱</div>
+                        <div class="metric-value" style="color: #ff9500;" id="s1Wait">0m</div>
+                        <div class="metric-label">Avg Wait</div>
+                    </div>
+                </div>
+                
+                <div class="upsell-box">
+                    <div class="upsell-label">Upsell Conversion</div>
+                    <div class="upsell-value" style="color: #ff3b30;" id="s1Conversion">0%</div>
+                    <div class="upsell-detail" style="color: #ff9500;">
+                        <span id="s1Upsells">0</span> / <span id="s1OrdersUpsell">0</span> captured
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reasoning Column -->
+            <div class="column reasoning">
+                <div class="reasoning-header">
+                    <div class="status-dot"></div>
+                    <div class="reasoning-title">LIVE MECHANICS</div>
+                    <div style="margin-left: auto; font-size: 0.9em; color: #b0b8c1;">Why the gap exists</div>
+                </div>
+                
+                <div id="reasoningFeed">
+                    <div class="empty-state">
+                        <div style="font-size: 4em; margin-bottom: 20px; opacity: 0.3;">⚡</div>
+                        <div style="font-size: 1.1em;">Press "Start Rush" to see<br>real-time comparison</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 3 Column -->
+            <div class="column stage3">
+                <div class="column-header">STAGE 3: AI-POWERED HUB</div>
+                <div class="restaurant-icon">🚀</div>
+                <div class="restaurant-desc">AI-driven, instant service</div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-icon">💵</div>
+                        <div class="metric-value" style="color: #64ffda;" id="s3Revenue">$0</div>
+                        <div class="metric-label">Revenue</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-icon">👥</div>
+                        <div class="metric-value" style="color: #64ffda;" id="s3Orders">0</div>
+                        <div class="metric-label">Orders</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-icon">📈</div>
+                        <div class="metric-value" style="color: #4ade80;" id="s3Satisfaction">95%</div>
+                        <div class="metric-label">Satisfaction</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-icon">⏱</div>
+                        <div class="metric-value" style="color: #4ade80;" id="s3Wait">0m</div>
+                        <div class="metric-label">Avg Wait</div>
+                    </div>
+                </div>
+                
+                <div class="upsell-box">
+                    <div class="upsell-label">Upsell Conversion</div>
+                    <div class="upsell-value" style="color: #64ffda;" id="s3Conversion">0%</div>
+                    <div class="upsell-detail" style="color: #4ade80;">
+                        <span id="s3Upsells">0</span> / <span id="s3OrdersUpsell">0</span> captured
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary" id="summary">
+            <h3>After <span id="summaryTime">0</span> Minutes</h3>
+            <div class="summary-grid">
+                <div>
+                    <div class="summary-stat-label">Revenue Gap</div>
+                    <div class="summary-stat-value" id="summaryGap">$0</div>
+                </div>
+                <div>
+                    <div class="summary-stat-label">More Orders</div>
+                    <div class="summary-stat-value" id="summaryOrders">+0</div>
+                </div>
+                <div>
+                    <div class="summary-stat-label">Satisfaction</div>
+                    <div class="summary-stat-value" style="color: #4ade80;" id="summarySat">+0%</div>
+                </div>
+            </div>
+            <div class="summary-projection">
+                <p style="font-size: 1.2em; color: #b0b8c1; margin-bottom: 10px;">Every Friday at this pace:</p>
+                <p style="font-size: 2em; font-weight: 800; color: #64ffda;" id="summaryMonthly">$0 more per month</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isRunning = false;
+        let time = 0;
+        let interval = null;
+        
+        let s1Revenue = 0, s1Orders = 0, s1Satisfaction = 70, s1Wait = 0, s1Upsells = 0;
+        let s3Revenue = 0, s3Orders = 0, s3Satisfaction = 95, s3Wait = 0, s3Upsells = 0;
+        
+        const scenarios = [
+            {
+                customer: 'Table 7 arrives',
+                s1Action: 'Waits 3 minutes for server to notice',
+                s1Result: 'Orders water only, frustrated',
+                s3Action: 'AI greets instantly by name',
+                s3Result: 'Sees personalized menu, orders appetizer',
+                impact: '+$18 revenue'
+            },
+            {
+                customer: 'Table 12 viewing menu',
+                s1Action: 'PDF loads slowly, no images',
+                s1Result: 'Confused, calls server for help',
+                s3Action: 'Interactive 3D menu with photos',
+                s3Result: 'AI suggests wine pairing, accepted',
+                impact: '+$22 upsell captured'
+            },
+            {
+                customer: 'Table 3 ready to order',
+                s1Action: 'Server busy with another table',
+                s1Result: '5 minute wait, customer impatient',
+                s3Action: 'Orders immediately via hub',
+                s3Result: 'Customizes order, adds dessert',
+                impact: '+$12 + satisfaction boost'
+            },
+            {
+                customer: 'Table 15 has dietary question',
+                s1Action: 'Server doesn\'t know allergen info',
+                s1Result: 'Goes to kitchen, 8 minute delay',
+                s3Action: 'AI provides instant allergen details',
+                s3Result: 'Suggests safe alternatives, orders confidently',
+                impact: 'Zero delay, trust built'
+            },
+            {
+                customer: 'Table 9 finishing meal',
+                s1Action: 'Server forgets dessert menu',
+                s1Result: 'Customer asks for check, leaves',
+                s3Action: 'AI suggests dessert + coffee combo',
+                s3Result: 'Customer accepts both items',
+                impact: '+$16 missed opportunity recovered'
+            },
+            {
+                customer: 'Table 5 ready to pay',
+                s1Action: 'Waits for server, waits for card machine',
+                s1Result: '12 minutes to checkout, annoyed',
+                s3Action: 'Scans QR, pays instantly',
+                s3Result: 'Tips 22%, leaves 5-star review',
+                impact: 'Faster turnover + loyalty'
+            }
+        ];
+        
+        function toggleSimulation() {
+            if (isRunning) {
+                pause();
+            } else {
+                start();
+            }
+        }
+        
+        function start() {
+            isRunning = true;
+            document.getElementById('startBtn').classList.add('running');
+            document.getElementById('btnIcon').textContent = '⏸';
+            document.getElementById('btnText').textContent = 'Pause';
+            
+            interval = setInterval(updateSimulation, 600);
+        }
+        
+        function pause() {
+            isRunning = false;
+            document.getElementById('startBtn').classList.remove('running');
+            document.getElementById('btnIcon').textContent = '▶';
+            document.getElementById('btnText').textContent = 'Start Rush';
+            clearInterval(interval);
+        }
+        
+        function reset() {
+            pause();
+            time = 0;
+            s1Revenue = s1Orders = s1Upsells = s1Wait = 0;
+            s1Satisfaction = 70;
+            s3Revenue = s3Orders = s3Upsells = s3Wait = 0;
+            s3Satisfaction = 95;
+            
+            document.getElementById('reasoningFeed').innerHTML = `
+                <div class="empty-state">
+                    <div style="font-size: 4em; margin-bottom: 20px; opacity: 0.3;">⚡</div>
+                    <div style="font-size: 1.1em;">Press "Start Rush" to see<br>real-time comparison</div>
+                </div>
+            `;
+            
+            document.getElementById('gapAlert').style.display = 'none';
+            document.getElementById('summary').classList.remove('visible');
+            updateDisplay();
+        }
+        
+        function updateSimulation() {
+            time++;
+            
+            // Stage 1 updates (slower)
+            if (Math.random() > 0.3) {
+                s1Revenue += 35 + Math.random() * 20;
+                s1Orders++;
+                s1Wait = Math.min(s1Wait + 2, 25);
+                if (Math.random() > 0.92) s1Upsells++;
+                s1Satisfaction = Math.max(s1Satisfaction - 0.3, 45);
+            }
+            
+            // Stage 3 updates (faster, better)
+            if (Math.random() > 0.15) {
+                const base = 35 + Math.random() * 20;
+                const upsell = Math.random() > 0.4 ? 15 + Math.random() * 10 : 0;
+                s3Revenue += base + upsell;
+                s3Orders++;
+                s3Wait = Math.max(s3Wait - 1, 2);
+                if (upsell > 0) s3Upsells++;
+                s3Satisfaction = Math.min(s3Satisfaction + 0.1, 98);
+            }
+            
+            // Add reasoning event
+            if (Math.random() > 0.7) {
+                addReasoningEvent();
+            }
+            
+            updateDisplay();
+        }
+        
+        function addReasoningEvent() {
+            const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            const feed = document.getElementById('reasoningFeed');
+            
+            const emptyState = feed.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+            
+            const eventEl = document.createElement('div');
+            eventEl.className = 'event';
+            eventEl.innerHTML = `
+                <div class="event-customer">👥 ${scenario.customer}</div>
+                <div class="event-flow">
+                    <div class="flow-label">STAGE 1 →</div>
+                    <div class="flow-action">${scenario.s1Action}</div>
+                    <div class="flow-result">Result: ${scenario.s1Result}</div>
+                </div>
+                <div class="event-divider">⚡</div>
+                <div class="event-flow solution">
+                    <div class="flow-label solution">STAGE 3 →</div>
+                    <div class="flow-action">${scenario.s3Action}</div>
+                    <div class="flow-result solution">Result: ${scenario.s3Result}</div>
+                </div>
+                <div class="event-impact">💡 ${scenario.impact}</div>
+            `;
+            
+            feed.insertBefore(eventEl, feed.firstChild);
+            
+            // Keep only last 4 events
+            while (feed.children.length > 4) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+        
+        function updateDisplay() {
+            const minutes = Math.floor(time / 2);
+            document.getElementById('timeDisplay').textContent = `${minutes} min into rush`;
+            
+            // Stage 1
+            document.getElementById('s1Revenue').textContent = `$${Math.round(s1Revenue)}`;
+            document.getElementById('s1Orders').textContent = s1Orders;
+            document.getElementById('s1Satisfaction').textContent = `${Math.round(s1Satisfaction)}%`;
+            document.getElementById('s1Wait').textContent = `${Math.round(s1Wait)}m`;
+            document.getElementById('s1Upsells').textContent = s1Upsells;
+            document.getElementById('s1OrdersUpsell').textContent = s1Orders;
+            document.getElementById('s1Conversion').textContent = s1Orders > 0 ? `${Math.round((s1Upsells / s1Orders) * 100)}%` : '0%';
+            
+            // Stage 3
+            document.getElementById('s3Revenue').textContent = `$${Math.round(s3Revenue)}`;
+            document.getElementById('s3Orders').textContent = s3Orders;
+            document.getElementById('s3Satisfaction').textContent = `${Math.round(s3Satisfaction)}%`;
+            document.getElementById('s3Wait').textContent = `${Math.round(s3Wait)}m`;
+            document.getElementById('s3Upsells').textContent = s3Upsells;
+            document.getElementById('s3OrdersUpsell').textContent = s3Orders;
+            document.getElementById('s3Conversion').textContent = s3Orders > 0 ? `${Math.round((s3Upsells / s3Orders) * 100)}%` : '0%';
+            
+            // Gap
+            const gap = s3Revenue - s1Revenue;
+            if (gap > 100) {
+                document.getElementById('gapAlert').style.display = 'block';
+                document.getElementById('gapAmount').textContent = `$${Math.round(gap)}`;
+                document.getElementById('gapMonthly').textContent = `($${Math.round(gap * 30)}/month at this pace)`;
+            }
+            
+            // Summary
+            if (time > 20) {
+                document.getElementById('summary').classList.add('visible');
+                document.getElementById('summaryTime').textContent = minutes;
+                document.getElementById('summaryGap').textContent = `$${Math.round(Math.abs(gap))}`;
+                document.getElementById('summaryOrders').textContent = `+${s3Orders - s1Orders}`;
+                document.getElementById('summarySat').textContent = `+${Math.round(s3Satisfaction - s1Satisfaction)}%`;
+                document.getElementById('summaryMonthly').textContent = `$${Math.round(gap * 4)} more per month`;
+            }
+        }
+    </script>
+</body>
+</html>

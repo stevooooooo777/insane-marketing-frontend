@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario's Pizzeria - AR Menu Experience</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .ar-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Restaurant Branding */
+        .restaurant-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            pointer-events: all;
+            border: 2px solid rgba(255,107,53,0.3);
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-50px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .restaurant-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255,107,53,0.5);
+        }
+
+        .restaurant-tagline {
+            font-size: 12px;
+            opacity: 0.8;
+            color: #fff;
+        }
+
+        .ar-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(76, 175, 80, 0.9);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            pointer-events: all;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        /* Welcome Animation */
+        .welcome-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: all;
+            z-index: 50;
+            animation: fadeOut 4s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            0%, 70% { opacity: 1; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+
+        .welcome-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b35;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255,107,53,0.3); }
+            to { text-shadow: 0 0 40px rgba(255,107,53,0.8); }
+        }
+
+        .welcome-instruction {
+            font-size: 1.2rem;
+            text-align: center;
+            opacity: 0.9;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        /* Menu Categories */
+        .menu-categories {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            pointer-events: all;
+            opacity: 0;
+            animation: slideUp 1s ease-out 2s forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .category-btn {
+            padding: 12px 20px;
+            background: rgba(255,107,53,0.1);
+            border: 2px solid rgba(255,107,53,0.3);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .category-btn.active {
+            background: rgba(255,107,53,0.8);
+            border-color: #ff6b35;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,107,53,0.4);
+        }
+
+        .category-btn:hover {
+            background: rgba(255,107,53,0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Surface Detection */
+        .surface-detection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border: 3px dashed rgba(255,107,53,0.5);
+            border-radius: 15px;
+            animation: surfaceScan 3s ease-in-out infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .surface-detection.active {
+            opacity: 1;
+            animation: surfaceScan 3s ease-in-out infinite, fadeInOut 6s ease-in-out;
+        }
+
+        @keyframes surfaceScan {
+            0%, 100% { 
+                border-color: rgba(255,107,53,0.3);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                border-color: rgba(255,107,53,0.8);
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        @keyframes fadeInOut {
+            0%, 20% { opacity: 1; }
+            80%, 100% { opacity: 0; }
+        }
+
+        .surface-text {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Menu Items Slider */
+        .menu-items-container {
+            position: absolute;
+            bottom: 150px;
+            left: 0;
+            right: 0;
+            pointer-events: all;
+            opacity: 0;
+            animation: slideUp 1s ease-out 3s forwards;
+        }
+
+        .menu-items-slider {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .menu-items-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-item {
+            min-width: 200px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid rgba(255,107,53,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-item:hover {
+            border-color: rgba(255,107,53,0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.2);
+        }
+
+        .menu-item.active {
+            border-color: #ff6b35;
+            background: rgba(255,107,53,0.1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255,107,53,0.3);
+        }
+
+        .item-icon {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .item-description {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .item-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4CAF50;
+            text-align: center;
+        }
+
+        /* Item Info Panel */
+        .item-info-panel {
+            position: absolute;
+            top: 160px;
+            right: 20px;
+            width: 200px;
+            background: rgba(0,0,0,0.9);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,107,53,0.3);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+            pointer-events: all;
+        }
+
+        .item-info-panel.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .info-name {
+            color: #ff6b35;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .info-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .info-nutrition {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-bottom: 15px;
+        }
+
+        .add-to-order-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .add-to-order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            pointer-events: all;
+            opacity: 0;
+            animation: slideUp 1s ease-out 4s forwards;
+        }
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .share-btn {
+            background: rgba(255,107,53,0.9);
+        }
+
+        .photo-btn {
+            background: rgba(76, 175, 80, 0.9);
+        }
+
+        .menu-btn {
+            background: rgba(33, 150, 243, 0.9);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+            pointer-events: all;
+            font-size: 14px;
+            opacity: 0;
+            animation: slideUp 1s ease-out 5s forwards;
+        }
+
+        /* Loading State */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 1.2rem;
+            z-index: 100;
+        }
+
+        .loader {
+            border: 4px solid rgba(255,107,53,0.3);
+            border-top: 4px solid #ff6b35;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,0,0,0.9);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 80%;
+            display: none;
+        }
+
+        /* Social Share Popup */
+        .share-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid #ff6b35;
+            backdrop-filter: blur(20px);
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .share-popup.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .share-title {
+            font-size: 1.3rem;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .share-platform {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .share-facebook { background: #1877f2; }
+        .share-twitter { background: #1da1f2; }
+        .share-tiktok { background: #000; }
+
+        .share-platform:hover {
+            transform: scale(1.1);
+        }
+
+        .close-popup {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .restaurant-header {
+                top: 15px;
+                padding: 10px 20px;
+            }
+            
+            .restaurant-name {
+                font-size: 20px;
+            }
+            
+            .menu-categories {
+                top: 80px;
+                left: 10px;
+                right: 10px;
+            }
+            
+            .category-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            
+            .menu-items-container {
+                bottom: 130px;
+            }
+            
+            .menu-item {
+                min-width: 180px;
+            }
+            
+            .item-info-panel {
+                right: 10px;
+                width: 180px;
+            }
+            
+            .instructions {
+                bottom: 100px;
+                max-width: 250px;
+                font-size: 12px;
+            }
+            
+            .welcome-text {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-instruction {
+                font-size: 1rem;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ar-container">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="canvas"></canvas>
+        
+        <!-- Welcome Overlay -->
+        <div class="welcome-overlay">
+            <div class="welcome-text">🍕 Welcome to Mario's Pizzeria!</div>
+            <div class="welcome-instruction">Point your camera at the table and explore our delicious menu in 3D</div>
+        </div>
+        
+        <div class="ui-overlay">
+            <!-- Restaurant Header -->
+            <div class="restaurant-header">
+                <div class="restaurant-name">🍕 Mario's Pizzeria</div>
+                <div class="restaurant-tagline">Authentic Italian Since 1952</div>
+            </div>
+            
+            <div class="ar-status">🟢 AR LIVE</div>
+            
+            <!-- Menu Categories -->
+            <div class="menu-categories">
+                <div class="category-btn active" data-category="pizza">🍕 Pizza</div>
+                <div class="category-btn" data-category="pasta">🍝 Pasta</div>
+                <div class="category-btn" data-category="salads">🥗 Salads</div>
+                <div class="category-btn" data-category="desserts">🍰 Desserts</div>
+                <div class="category-btn" data-category="drinks">🥤 Drinks</div>
+            </div>
+            
+            <!-- Surface Detection -->
+            <div class="surface-detection" id="surfaceDetection">
+                <div class="surface-text">Scanning table surface...</div>
+            </div>
+            
+            <!-- Menu Items Slider -->
+            <div class="menu-items-container">
+                <div class="menu-items-slider" id="menuItemsSlider">
+                    <!-- Menu items will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Item Info Panel -->
+            <div class="item-info-panel" id="itemInfoPanel">
+                <div class="info-name">Margherita Pizza</div>
+                <div class="info-description">Fresh mozzarella, tomato sauce, basil, olive oil on our signature wood-fired crust</div>
+                <div class="info-price">$18.99</div>
+                <div class="info-nutrition">320 cal | Ready in 12 min</div>
+                <button class="add-to-order-btn" onclick="addToOrder()">Add to Order</button>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="instructions">
+                Tap any dish to see it in 3D on your table! 📱✨
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn share-btn" onclick="openSharePopup()" title="Share Experience">📤</button>
+                <button class="action-btn photo-btn" onclick="takePhoto()" title="Take Photo">📸</button>
+                <button class="action-btn menu-btn" onclick="showFullMenu()" title="Full Menu">📋</button>
+            </div>
+        </div>
+        
+        <!-- Share Popup -->
+        <div class="share-popup" id="sharePopup">
+            <div class="share-title">Share Your AR Experience!</div>
+            <div class="share-buttons">
+                <button class="share-platform share-instagram" onclick="shareOn('instagram')">📷</button>
+                <button class="share-platform share-facebook" onclick="shareOn('facebook')">📘</button>
+                <button class="share-platform share-twitter" onclick="shareOn('twitter')">🐦</button>
+                <button class="share-platform share-tiktok" onclick="shareOn('tiktok')">🎵</button>
+            </div>
+            <button class="close-popup" onclick="closeSharePopup()">Close</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="loader"></div>
+            <p>Starting AR Menu Experience...</p>
+        </div>
+        
+        <div class="error-message" id="errorMsg">
+            <h3>Camera Access Required</h3>
+            <p>Please allow camera access to view our AR menu!</p>
+            <button onclick="startAR()" style="margin-top: 10px; padding: 10px 20px; background: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        let video, canvas, ctx;
+        let scene, camera, renderer, currentFoodItem;
+        let currentCategory = 'pizza';
+        let selectedItem = null;
+        let surfaceDetected = false;
+        let animationId;
+
+        // Menu data - this would come from the restaurant's generated data
+        const menuData = {
+            pizza: [
+                { id: 'margherita', name: 'Margherita Pizza', price: '$18.99', description: 'Fresh mozzarella, tomato sauce, basil, olive oil', icon: '🍕', calories: '320 cal', time: '12 min' },
+                { id: 'pepperoni', name: 'Pepperoni Classic', price: '$21.99', description: 'Pepperoni, mozzarella, tomato sauce', icon: '🍕', calories: '380 cal', time: '12 min' },
+                { id: 'supreme', name: 'Supreme Deluxe', price: '$24.99', description: 'Pepperoni, sausage, peppers, onions, mushrooms', icon: '🍕', calories: '420 cal', time: '15 min' },
+                { id: 'veggie', name: 'Garden Veggie', price: '$19.99', description: 'Bell peppers, mushrooms, onions, olives, tomatoes', icon: '🍕', calories: '290 cal', time: '12 min' }
+            ],
+            pasta: [
+                { id: 'carbonara', name: 'Carbonara', price: '$16.99', description: 'Creamy sauce, pancetta, parmesan, black pepper', icon: '🍝', calories: '520 cal', time: '8 min' },
+                { id: 'bolognese', name: 'Spaghetti Bolognese', price: '$17.99', description: 'Traditional meat sauce, parmesan', icon: '🍝', calories: '480 cal', time: '10 min' },
+                { id: 'alfredo', name: 'Fettuccine Alfredo', price: '$15.99', description: 'Rich cream sauce, butter, parmesan', icon: '🍝', calories: '620 cal', time: '7 min' }
+            ],
+            salads: [
+                { id: 'caesar', name: 'Caesar Salad', price: '$12.99', description: 'Romaine, croutons, parmesan, caesar dressing', icon: '🥗', calories: '180 cal', time: '5 min' },
+                { id: 'caprese', name: 'Caprese Salad', price: '$14.99', description: 'Fresh mozzarella, tomatoes, basil, balsamic', icon: '🥗', calories: '220 cal', time: '3 min' }
+            ],
+            desserts: [
+                { id: 'tiramisu', name: 'Tiramisu', price: '$8.99', description: 'Coffee-soaked ladyfingers, mascarpone, cocoa', icon: '🍰', calories: '420 cal', time: '2 min' },
+                { id: 'gelato', name: 'Gelato Trio', price: '$6.99', description: 'Vanilla, chocolate, strawberry', icon: '🍨', calories: '180 cal', time: '1 min' }
+            ],
+            drinks: [
+                { id: 'wine', name: 'House Wine', price: '$8.99', description: 'Red or white, Italian selection', icon: '🍷', calories: '120 cal', time: '1 min' },
+                { id: 'soda', name: 'Italian Sodas', price: '$3.99', description: 'Aranciata, Limonata, Cola', icon: '🥤', calories: '140 cal', time: '1 min' }
+            ]
+        };
+
+        async function startAR() {
+            try {
+                const loading = document.getElementById('loading');
+                const errorMsg = document.getElementById('errorMsg');
+                
+                loading.style.display = 'block';
+                errorMsg.style.display = 'none';
+
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
+                });
+
+                video = document.getElementById('video');
+                canvas = document.getElementById('canvas');
+                ctx = canvas.getContext('2d');
+
+                video.srcObject = stream;
+                
+                video.onloadedmetadata = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    
+                    initThreeJS();
+                    setupEventListeners();
+                    loadMenuItems();
+                    startSurfaceDetection();
+                    
+                    loading.style.display = 'none';
+                };
+
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+            
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas, 
+                alpha: true,
+                antialias: true 
+            });
+            renderer.setSize(canvas.width, canvas.height);
+            renderer.setClearColor(0x000000, 0);
+
+            camera.position.set(0, 2, 3);
+            camera.lookAt(0, 0, 0);
+            
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+            
+            animate();
+        }
+
+        function createFoodItem(itemData) {
+            const foodGroup = new THREE.Group();
+
+            // Create different 3D models based on category
+            switch(currentCategory) {
+                case 'pizza':
+                    createPizza(foodGroup, itemData);
+                    break;
+                case 'pasta':
+                    createPasta(foodGroup, itemData);
+                    break;
+                case 'salads':
+                    createSalad(foodGroup, itemData);
+                    break;
+                case 'desserts':
+                    createDessert(foodGroup, itemData);
+                    break;
+                case 'drinks':
+                    createDrink(foodGroup, itemData);
+                    break;
+            }
+
+            foodGroup.position.set(0, 0, 0);
+            foodGroup.scale.set(0.8, 0.8, 0.8);
+
+            if (currentFoodItem) {
+                scene.remove(currentFoodItem);
+            }
+
+            currentFoodItem = foodGroup;
+            scene.add(currentFoodItem);
+            
+            // Dramatic appearance animation
+            currentFoodItem.scale.set(0, 0, 0);
+            currentFoodItem.rotation.y = Math.PI * 4;
+            
+            const startTime = Date.now();
+            const animateAppear = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / 1000, 1);
+                const scale = progress * 0.8;
+                const rotation = (1 - progress) * Math.PI * 4;
+                
+                currentFoodItem.scale.set(scale, scale, scale);
+                currentFoodItem.rotation.y = rotation;
+                
+
+if (progress < 1) {
+                    requestAnimationFrame(animateAppear);
+                }
+            };
+            animateAppear();
+        }
+
+        function createPizza(group, itemData) {
+            // Pizza base
+            const baseGeometry = new THREE.CylinderGeometry(1.2, 1.2, 0.1, 32);
+            const baseMaterial = new THREE.MeshLambertMaterial({ color: 0xDEB887 });
+            const base = new THREE.Mesh(baseGeometry, baseMaterial);
+            group.add(base);
+
+            // Pizza sauce
+            const sauceGeometry = new THREE.CylinderGeometry(1.1, 1.1, 0.02, 32);
+            const sauceMaterial = new THREE.MeshLambertMaterial({ color: 0xDC143C });
+            const sauce = new THREE.Mesh(sauceGeometry, sauceMaterial);
+            sauce.position.y = 0.06;
+            group.add(sauce);
+
+            // Cheese
+            const cheeseGeometry = new THREE.CylinderGeometry(1.05, 1.05, 0.02, 32);
+            const cheeseMaterial = new THREE.MeshLambertMaterial({ color: 0xFFFACD });
+            const cheese = new THREE.Mesh(cheeseGeometry, cheeseMaterial);
+            cheese.position.y = 0.08;
+            group.add(cheese);
+        }
+
+        function createPasta(group, itemData) {
+            // Plate
+            const plateGeometry = new THREE.CylinderGeometry(1, 1, 0.05, 32);
+            const plateMaterial = new THREE.MeshLambertMaterial({ color: 0xF5F5F5 });
+            const plate = new THREE.Mesh(plateGeometry, plateMaterial);
+            group.add(plate);
+
+            // Pasta pile
+            const pastaGeometry = new THREE.SphereGeometry(0.6, 16, 16);
+            const pastaMaterial = new THREE.MeshLambertMaterial({ color: 0xFFF8DC });
+            const pasta = new THREE.Mesh(pastaGeometry, pastaMaterial);
+            pasta.position.y = 0.3;
+            pasta.scale.set(1, 0.6, 1);
+            group.add(pasta);
+        }
+
+        function createSalad(group, itemData) {
+            // Bowl
+            const bowlGeometry = new THREE.SphereGeometry(0.8, 16, 16);
+            const bowlMaterial = new THREE.MeshLambertMaterial({ color: 0xF5F5F5 });
+            const bowl = new THREE.Mesh(bowlGeometry, bowlMaterial);
+            bowl.scale.set(1, 0.5, 1);
+            group.add(bowl);
+
+            // Salad greens
+            for (let i = 0; i < 8; i++) {
+                const leafGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const leafMaterial = new THREE.MeshLambertMaterial({ color: 0x228B22 });
+                const leaf = new THREE.Mesh(leafGeometry, leafMaterial);
+                const angle = (i / 8) * Math.PI * 2;
+                leaf.position.set(Math.cos(angle) * 0.3, 0.1, Math.sin(angle) * 0.3);
+                group.add(leaf);
+            }
+        }
+
+        function createDessert(group, itemData) {
+            // Plate
+            const plateGeometry = new THREE.CylinderGeometry(0.6, 0.6, 0.03, 32);
+            const plateMaterial = new THREE.MeshLambertMaterial({ color: 0xF5F5F5 });
+            const plate = new THREE.Mesh(plateGeometry, plateMaterial);
+            group.add(plate);
+
+            // Dessert
+            const dessertGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 32);
+            const dessertMaterial = new THREE.MeshLambertMaterial({ color: 0xDEB887 });
+            const dessert = new THREE.Mesh(dessertGeometry, dessertMaterial);
+            dessert.position.y = 0.1;
+            group.add(dessert);
+        }
+
+        function createDrink(group, itemData) {
+            // Glass
+            const glassGeometry = new THREE.CylinderGeometry(0.15, 0.12, 0.8, 16);
+            const glassMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0xFFFFFF,
+                transparent: true,
+                opacity: 0.3
+            });
+            const glass = new THREE.Mesh(glassGeometry, glassMaterial);
+            glass.position.y = 0.4;
+            group.add(glass);
+
+            // Liquid
+            const liquidGeometry = new THREE.CylinderGeometry(0.13, 0.11, 0.6, 16);
+            const liquidMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+            const liquid = new THREE.Mesh(liquidGeometry, liquidMaterial);
+            liquid.position.y = 0.35;
+            group.add(liquid);
+        }
+
+        function loadMenuItems() {
+            const slider = document.getElementById('menuItemsSlider');
+            const items = menuData[currentCategory];
+            
+            slider.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = `menu-item ${index === 0 ? 'active' : ''}`;
+                itemElement.dataset.itemId = item.id;
+                
+                itemElement.innerHTML = `
+                    <div class="item-icon">${item.icon}</div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-description">${item.description}</div>
+                    <div class="item-price">${item.price}</div>
+                `;
+                
+                itemElement.addEventListener('click', () => selectItem(item, itemElement));
+                slider.appendChild(itemElement);
+            });
+            
+            if (items.length > 0) {
+                selectedItem = items[0];
+                updateItemInfo();
+            }
+        }
+
+        function selectItem(item, element) {
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            
+            selectedItem = item;
+            updateItemInfo();
+            
+            if (surfaceDetected) {
+                createFoodItem(item);
+            }
+        }
+
+        function updateItemInfo() {
+            if (!selectedItem) return;
+            
+            const panel = document.getElementById('itemInfoPanel');
+            panel.innerHTML = `
+                <div class="info-name">${selectedItem.name}</div>
+                <div class="info-description">${selectedItem.description}</div>
+                <div class="info-price">${selectedItem.price}</div>
+                <div class="info-nutrition">${selectedItem.calories} | ${selectedItem.time}</div>
+                <button class="add-to-order-btn" onclick="addToOrder()">Add to Order</button>
+            `;
+            panel.classList.add('active');
+        }
+
+        function startSurfaceDetection() {
+            setTimeout(() => {
+                document.getElementById('surfaceDetection').classList.add('active');
+                
+                setTimeout(() => {
+                    surfaceDetected = true;
+                    document.getElementById('surfaceDetection').classList.remove('active');
+                    if (selectedItem) {
+                        createFoodItem(selectedItem);
+                    }
+                }, 3000);
+            }, 2000);
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+
+            if (currentFoodItem && surfaceDetected) {
+                const time = Date.now() * 0.001;
+                currentFoodItem.rotation.y += 0.01;
+                currentFoodItem.position.y = Math.sin(time * 0.5) * 0.02;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.category-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelector('.category-btn.active').classList.remove('active');
+                    button.classList.add('active');
+                    currentCategory = button.dataset.category;
+                    loadMenuItems();
+                });
+            });
+        }
+
+        function addToOrder() {
+            const button = document.querySelector('.add-to-order-btn');
+            button.textContent = 'Added! ✓';
+            button.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+            
+            setTimeout(() => {
+                button.textContent = 'Add to Order';
+                button.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+            }, 2000);
+        }
+
+        function takePhoto() {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            tempCanvas.width = video.videoWidth;
+            tempCanvas.height = video.videoHeight;
+            
+            tempCtx.drawImage(video, 0, 0);
+            tempCtx.drawImage(canvas, 0, 0);
+            
+            tempCanvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `marios-ar-experience-${Date.now()}.jpg`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+            
+            // Visual feedback
+            document.querySelector('.photo-btn').style.background = '#fff';
+            setTimeout(() => {
+                document.querySelector('.photo-btn').style.background = 'rgba(76, 175, 80, 0.9)';
+            }, 200);
+        }
+
+        function openSharePopup() {
+            document.getElementById('sharePopup').classList.add('active');
+        }
+
+        function closeSharePopup() {
+            document.getElementById('sharePopup').classList.remove('active');
+        }
+
+        function shareOn(platform) {
+            const message = "🍕 Just tried Mario's Pizzeria AR menu! Seeing 3D food on my table was incredible! #ARMenu #Innovation #MariosPizzeria";
+            
+            const urls = {
+                instagram: `https://www.instagram.com/`,
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
+                twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`,
+                tiktok: `https://www.tiktok.com/`
+            };
+            
+            window.open(urls[platform], '_blank');
+            closeSharePopup();
+        }
+
+        function showFullMenu() {
+            alert('📋 Full Menu\n\nIn production, this would:\n• Show complete menu with prices\n• Allow ordering for pickup/delivery\n• Show nutritional information\n• Display daily specials\n\nCurrently viewing AR preview mode!');
+        }
+
+        // Start AR when page loads
+        window.addEventListener('load', () => {
+            startAR();
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            if (video && video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
+</html>

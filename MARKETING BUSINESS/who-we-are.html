@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us Who We Are - insane.marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #ff3366;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        /* Neural Network Visualization */
+        #neuralNetwork {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 60px 0 20px;
+            line-height: 1.3;
+        }
+
+        .highlight {
+            color: #ff3366;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .benefits {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-left: 4px solid #ff3366;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 8px;
+        }
+
+        .benefits h3 {
+            color: #ff3366;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .benefit-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .benefit-item::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ff3366;
+            font-weight: bold;
+        }
+
+        .benefit-title {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .value-card {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            border-color: #ff3366;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 102, 0.2);
+        }
+
+        .value-card h3 {
+            color: #ff3366;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .cta {
+            text-align: center;
+            margin-top: 80px;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
+            border-radius: 12px;
+        }
+
+        .cta h2 {
+            color: #ffffff;
+            margin: 0 0 20px 0;
+        }
+
+        .cta p {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .tagline {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #ff3366;
+            font-weight: 700;
+            margin-top: 60px;
+            padding: 30px;
+            border-top: 1px solid #333;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(180deg, #0a0a0a, #000000);
+            border-top: 1px solid #333;
+            padding: 60px 30px 30px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h4 {
+            color: #ff3366;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            position: relative;
+        }
+
+        .footer-column a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #ff3366, #ff6b35);
+            transition: width 0.3s ease;
+        }
+
+        .footer-column a:hover {
+            color: #ff3366;
+            transform: translateX(3px);
+        }
+
+        .footer-column a:hover::after {
+            width: 100%;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .footer-copyright {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .values {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-columns {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-columns {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-column {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="neuralNetwork"></canvas>
+
+    <div class="container">
+        <header>
+            <div class="logo">insane.marketing</div>
+        </header>
+
+        <section class="section">
+            <h1>We're Not Just Another Marketing Tech Company</h1>
+            <p><strong>We're battle-tested builders who've been in the trenches for 35 years.</strong></p>
+            <p>Our founders didn't just consult on emerging technology—they lived it. From the early days of ERP systems to the SaaS revolution, through the machine learning explosion, and now at the forefront of Real-Time Predictive AI, we've been there for every major shift that's transformed how businesses operate.</p>
+            <p>We understand the high-stakes world of luxury venues and premium experiences—where technology must be as sophisticated as the clientele, and where there are no second chances to get it right.</p>
+        </section>
+
+        <section class="section">
+            <h2>Fortune 500 Experience. Startup Hustle.</h2>
+            <p>We've worked for and with Fortune corporations and global brands where stakes are high and mediocrity isn't an option. But we've also built our own startups from scratch in the USA and UK—bootstrapped, launched, scaled, and sometimes failed forward.</p>
+            <p><strong>We're not rookies. We're not fly-by-nighters. We're entrepreneurs who understand what you're building because we've built it ourselves.</strong></p>
+        </section>
+
+        <section class="section">
+            <h2>Obsessed with What's Next</h2>
+            <p>What drives us? The bleeding edge. The "what's next" technology that most people don't see coming. It excites us, motivates us, and pushes us to evaluate, create, and deliver first-mover solutions that give our clients an unfair advantage.</p>
+            <p>While others are still figuring out yesterday's trends, we're already building tomorrow's solutions.</p>
+        </section>
+
+        <section class="section">
+            <h2>Built Different: Full-Stack, Not Frankenstein-Stack</h2>
+            <p>Here's where we diverge from the pack: <strong>We don't hash together technology with a chain of 3rd party integrations that need to be patched, prayed over, and perpetually maintained.</strong></p>
+            <p>We build pure, clean, full-stack technology from the ground up.</p>
+            
+            <div class="benefits">
+                <h3>Better for you because:</h3>
+                <div class="benefit-item">
+                    <span class="benefit-title">Faster performance</span> - No middleware bottlenecks or API rate limits slowing you down
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-title">Bulletproof reliability</span> - Fewer integration points mean fewer points of failure
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-title">Ironclad security</span> - Your data doesn't bounce through multiple vendors' infrastructure
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-title">Total control</span> - Custom solutions built for your exact needs, not generic one-size-fits-none tools
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-title">Future-proof flexibility</span> - We can pivot and adapt without being held hostage by third-party roadmaps
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Our Core Values</h2>
+            <div class="values">
+                <div class="value-card">
+                    <h3>Service Excellence</h3>
+                    <p>We obsess over your success. Every interaction, every deliverable, every outcome is held to an uncompromising standard.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Radical Transparency</h3>
+                    <p>No smoke and mirrors. No overcomplicating things to justify our existence. We tell you what you need to know, even when it's not what you want to hear.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Innovation Without BS</h3>
+                    <p>We love cutting-edge tech, but we're allergic to buzzwords. If something doesn't deliver measurable results, we don't build it.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Partnership Over Vendor Relationship</h3>
+                    <p>You're not a ticket number. We're in this together, invested in your wins like they're our own.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="cta">
+            <h2>Ready to Work with People Who've Actually Done It?</h2>
+            <p>Let's talk about what's possible when experience meets innovation, and expertise meets execution.</p>
+        </div>
+
+        <div class="tagline">
+            <strong>insane.marketing</strong> - Where 35 years of tech evolution meets tomorrow's competitive advantage.
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/case-studies">Case Studies</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="/solutions">Solutions</a></li>
+                        <li><a href="/luxury-venues">Luxury Venues</a></li>
+                        <li><a href="/stadiums">Stadiums</a></li>
+                        <li><a href="/premium-hospitality">Premium Hospitality</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                        <li><a href="/demo">Book a Demo</a></li>
+                        <li><a href="/support">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/cookies">Cookie Policy</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-logo">insane.marketing</div>
+                <p class="footer-copyright">© 2025 insane.marketing. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Neural Network Animation
+        const canvas = document.getElementById('neuralNetwork');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Node {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                this.connections = [];
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff3366';
+                ctx.fill();
+            }
+        }
+
+        const nodes = [];
+        const nodeCount = 50;
+        const maxDistance = 150;
+
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push(new Node(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height
+            ));
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
+
+                nodes.forEach(otherNode => {
+                    if (node !== otherNode) {
+                        const dx = node.x - otherNode.x;
+                        const dy = node.y - otherNode.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < maxDistance) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(otherNode.x, otherNode.y);
+                            const opacity = 1 - (distance / maxDistance);
+                            ctx.strokeStyle = `rgba(255, 51, 102, ${opacity * 0.3})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                });
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

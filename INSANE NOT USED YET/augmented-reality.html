@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your AR Menu - INSANE.MARKETING</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ff6b35 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b35, #f7931e, #ffcc02);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(255,107,53,0.3)); }
+            to { filter: drop-shadow(0 0 40px rgba(255,107,53,0.6)); }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin: 40px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #f7931e, #ffcc02);
+            border-radius: 10px;
+            width: 20%;
+            transition: width 0.5s ease;
+        }
+
+        .step-indicator {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .main-form {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,107,53,0.2);
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,107,53,0.05);
+            border-radius: 15px;
+            border: 2px solid rgba(255,107,53,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255,107,53,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 20px rgba(255,107,53,0.2);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .menu-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255,107,53,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            border-color: rgba(255,107,53,0.4);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .item-number {
+            font-size: 1rem;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            background: rgba(255,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: rgba(255,0,0,0.9);
+            transform: scale(1.05);
+        }
+
+        .add-item-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .add-item-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,107,53,0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            text-align: center;
+            background: rgba(255,107,53,0.1);
+            border: 2px solid #ff6b35;
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255,107,53,0.3);
+            border-top: 6px solid #ff6b35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .loading-step {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .loading-step.active {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* Success State */
+        .success-panel {
+            display: none;
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .success-panel.show {
+            display: block;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .ar-preview {
+            background: rgba(0,0,0,0.6);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .qr-display {
+            width: 200px;
+            height: 200px;
+            background: white;
+            margin: 20px auto;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #333;
+            border: 5px solid #4CAF50;
+            font-weight: bold;
+        }
+
+        .ar-url {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin: 20px 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .next-steps {
+            background: rgba(255,107,53,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .steps-title {
+            color: #ff6b35;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .step-item {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .step-item::before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+        }
+
+        /* Error State */
+        .error-message {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            color: #f44336;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .main-form {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="logo">INSANE.MARKETING</h1>
+            <p class="subtitle">Create Your AR Menu Experience</p>
+            <p class="description">Transform your restaurant into a viral sensation with 3D food that customers can't stop filming and sharing!</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="step-indicator" id="stepIndicator">Step 1 of 3: Restaurant Information</div>
+
+        <!-- Main Form -->
+        <div class="main-form">
+            <!-- Restaurant Details Section -->
+            <div class="section" id="restaurantSection">
+                <h2 class="section-title">🏪 Tell Us About Your Restaurant</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Restaurant Name *</label>
+                    <input type="text" id="restaurantName" class="form-input" placeholder="Mario's Pizzeria" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tagline or Description</label>
+                    <input type="text" id="restaurantTagline" class="form-input" placeholder="Authentic Italian Since 1952">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Your Email *</label>
+                        <input type="email" id="ownerEmail" class="form-input" placeholder="owner@restaurant.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" id="restaurantPhone" class="form-input" placeholder="(555) 123-4567">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Restaurant Address</label>
+                    <input type="text" id="restaurantAddress" class="form-input" placeholder="123 Main St, Your City, State">
+                </div>
+            </div>
+
+            <!-- Menu Items Section -->
+            <div class="section" id="menuSection">
+                <h2 class="section-title">🍕 Add Your Menu Items</h2>
+                <p style="opacity: 0.8; margin-bottom: 25px;">Add the dishes you want customers to see in stunning 3D!</p>
+                
+                <div id="menuItemsContainer">
+                    <!-- Menu items will be added here -->
+                </div>
+                
+                <button class="add-item-btn" onclick="addMenuItem()">+ Add Another Dish</button>
+            </div>
+
+            <!-- Generate Button -->
+            <button class="generate-btn" onclick="generateARExperience()" id="generateBtn" disabled>
+                🚀 Create My AR Experience
+            </button>
+        </div>
+
+        <!-- Success Panel -->
+        <div class="success-panel" id="successPanel">
+            <div class="success-icon">🎉</div>
+            <h2 class="success-title">Your AR Menu is Live!</h2>
+            
+            <div class="ar-preview">
+                <h3 style="color: #ff6b35; margin-bottom: 15px;">Your Customers Will See This:</h3>
+                <div class="qr-display" id="qrDisplay">
+                    📱 SCAN ME<br>
+                    <small>AR Menu QR Code</small>
+                </div>
+                <div class="ar-url">
+                    <strong>Your AR Menu URL:</strong><br>
+                    <span id="generatedUrl">https://ar.insane.marketing/your-restaurant</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="#" class="action-btn btn-primary" onclick="testARExperience()">🔍 Test Your AR Menu</a>
+                <a href="#" class="action-btn btn-secondary" onclick="downloadMaterials()">📥 Download QR Codes</a>
+                <a href="#" class="action-btn btn-tertiary" onclick="shareSuccess()">📱 Share the News</a>
+            </div>
+
+            <div class="next-steps">
+                <h4 class="steps-title">🎯 Your Next Steps:</h4>
+                <div class="step-item">Print the QR codes and place them on your tables</div>
+                <div class="step-item">Train your staff to show customers how to scan</div>
+                <div class="step-item">Post about your AR menu on social media</div>
+                <div class="step-item">Watch your customers create viral content!</div>
+                <div class="step-item">Enjoy your revenue increase! 📈</div>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage">
+            <h3>Oops! Something went wrong</h3>
+            <p id="errorText">Please try again or contact support.</p>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Creating Your AR Experience...</div>
+            <div class="loading-step active" id="step1">🔍 Processing your restaurant data...</div>
+            <div class="loading-step" id="step2">🎨 Generating 3D food models...</div>
+            <div class="loading-step" id="step3">📱 Building your AR menu...</div>
+            <div class="loading-step" id="step4">🎯 Creating QR codes...</div>
+            <div class="loading-step" id="step5">✨ Almost ready...</div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Supabase with your credentials
+        const supabase = window.supabase.createClient(
+            'https://wkfyvpgitdzunhrxayse.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrZnl2cGdpdGR6dW5ocnhheXNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NTEzNTUsImV4cCI6MjA2OTUyNzM1NX0.YknaPC_KxE1R5qg9UFpl-eYp6VW3ugINsbIjOSS9pjw'
+        );
+
+        let menuItems = [];
+
+        // Initialize with sample data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add sample menu items
+            addMenuItem();
+            setTimeout(() => {
+                updateMenuItem(0, 'name', 'Margherita Pizza');
+                updateMenuItem(0, 'description', 'Fresh mozzarella, tomato sauce, basil, olive oil');
+                updateMenuItem(0, 'price', '18.99');
+                updateMenuItem(0, 'category', 'Pizza');
+                
+                // Update the form display
+                const inputs = document.querySelectorAll('#menuItemsContainer input, #menuItemsContainer select');
+                if (inputs.length >= 4) {
+                    inputs[0].value = 'Margherita Pizza';
+                    inputs[1].value = '18.99';
+                    inputs[2].value = 'Fresh mozzarella, tomato sauce, basil, olive oil';
+                    inputs[3].value = 'Pizza';
+                }
+            }, 100);
+
+            addMenuItem();
+            setTimeout(() => {
+                updateMenuItem(1, 'name', 'Spaghetti Carbonara');
+                updateMenuItem(1, 'description', 'Creamy sauce, pancetta, parmesan, black pepper');
+                updateMenuItem(1, 'price', '16.99');
+                updateMenuItem(1, 'category', 'Pasta');
+                
+                // Update the second set of inputs
+                const containers = document.querySelectorAll('.menu-item');
+                if (containers[1]) {
+                    const inputs = containers[1].querySelectorAll('input, select');
+                    inputs[0].value = 'Spaghetti Carbonara';
+                    inputs[1].value = '16.99';
+                    inputs[2].value = 'Creamy sauce, pancetta, parmesan, black pepper';
+                    inputs[3].value = 'Pasta';
+                }
+            }, 200);
+
+            // Add real-time form validation
+            setupFormValidation();
+        });
+
+        function addMenuItem() {
+            const container = document.getElementById('menuItemsContainer');
+            const index = menuItems.length;
+            
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'menu-item';
+            itemDiv.innerHTML = `
+                <div class="item-header">
+                    <span class="item-number">Dish ${index + 1}</span>
+                    <button class="remove-btn" onclick="removeMenuItem(${index})" ${index < 2 ? 'style="display:none"' : ''}>Remove</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Dish Name *</label>
+                        <input type="text" class="form-input" placeholder="Margherita Pizza" 
+                               onchange="updateMenuItem(${index}, 'name', this.value)" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Price *</label>
+                        <input type="text" class="form-input" placeholder="$18.99" 
+                               onchange="updateMenuItem(${index}, 'price', this.value)" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-input" 
+                           placeholder="Fresh mozzarella, tomato sauce, basil, olive oil..."
+                           onchange="updateMenuItem(${index}, 'description', this.value)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input" onchange="updateMenuItem(${index}, 'category', this.value)">
+                        <option value="Pizza">🍕 Pizza</option>
+                        <option value="Pasta">🍝 Pasta</option>
+                        <option value="Salads">🥗 Salads</option>
+                        <option value="Desserts">🍰 Desserts</option>
+                        <option value="Drinks">🥤 Drinks</option>
+                        <option value="Appetizers">🥨 Appetizers</option>
+                        <option value="Main Course">🍽️ Main Course</option>
+                        <option value="Specials">⭐ Specials</option>
+                    </select>
+                </div>
+            `;
+            
+            container.appendChild(itemDiv);
+            menuItems.push({
+                name: '',
+                description: '',
+                price: '',
+                category: 'Pizza'
+            });
+
+            updateProgress();
+        }
+
+        function updateMenuItem(index, field, value) {
+            if (menuItems[index]) {
+                menuItems[index][field] = value;
+                updateProgress();
+                validateForm();
+            }
+        }
+
+        function removeMenuItem(index) {
+            if (menuItems.length <= 2) return; // Keep at least 2 items
+            
+            menuItems.splice(index, 1);
+            refreshMenuItems();
+            updateProgress();
+            validateForm();
+        }
+
+        function refreshMenuItems() {
+            const container = document.getElementById('menuItemsContainer');
+            container.innerHTML = '';
+            
+            const tempItems = [...menuItems];
+            menuItems = [];
+            
+            tempItems.forEach((item, newIndex) => {
+                addMenuItem();
+                Object.keys(item).forEach(key => {
+                    menuItems[newIndex][key] = item[key];
+                    const inputs = document.querySelectorAll('.menu-item');
+                    if (inputs[newIndex]) {
+                        const input = inputs[newIndex].querySelector(`[onchange*="'${key}'"]`);
+                        if (input) input.value = item[key];
+                    }
+                });
+            });
+        }
+
+        function updateProgress() {
+            const restaurantName = document.getElementById('restaurantName').value;
+            const email = document.getElementById('ownerEmail').value;
+            const validItems = menuItems.filter(item => item.name && item.price);
+            
+            let progress = 20; // Base progress
+            
+            if (restaurantName) progress += 20;
+            if (email) progress += 20;
+            if (validItems.length > 0) progress += 20;
+            if (validItems.length >= 3) progress += 20;
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            // Update step indicator
+            let stepText = "Step 1 of 3: Restaurant Information";
+            if (restaurantName && email) {
+                stepText = "Step 2 of 3: Menu Items";
+            }
+            if (validItems.length >= 2) {
+                stepText = "Step 3 of 3: Ready to Generate!";
+            }
+            
+            document.getElementById('stepIndicator').textContent = stepText;
+        }
+
+        function validateForm() {
+            const restaurantName = document.getElementById('restaurantName').value;
+            const email = document.getElementById('ownerEmail').value;
+            const validItems = menuItems.filter(item => item.name.trim() && item.price.trim());
+            
+            const isValid = restaurantName.trim() && email.trim() && validItems.length >= 2;
+            document.getElementById('generateBtn').disabled = !isValid;
+        }
+
+        function setupFormValidation() {
+            ['restaurantName', 'ownerEmail'].forEach(id => {
+                document.getElementById(id).addEventListener('input', () => {
+                    updateProgress();
+                    validateForm();
+                });
+            });
+        }
+
+        async function generateARExperience() {
+            const restaurantData = {
+                name: document.getElementById('restaurantName').value,
+                tagline: document.getElementById('restaurantTagline').value,
+                owner_email: document.getElementById('ownerEmail').value,
+                phone: document.getElementById('restaurantPhone').value,
+                address: document.getElementById('restaurantAddress').value,
+                ar_url: generateARUrl(),
+                created_at: new Date().toISOString(),
+                status: 'active'
+            };
+
+            const validMenuItems = menuItems.filter(item => item.name.trim() && item.price.trim());
+
+            // Show loading
+            showLoading();
+
+            try {
+                // Save restaurant
+                const { data: restaurant, error: restaurantError } = await supabase
+                    .from('restaurants')
+                    .insert([restaurantData])
+                    .select()
+                    .single();
+
+                if (restaurantError) {
+                    throw new Error('Failed to save restaurant: ' + restaurantError.message);
+                }
+
+                updateLoadingStep(2);
+
+                // Save menu items
+                const menuItemsData = validMenuItems.map(item => ({
+                    restaurant_id: restaurant.id,
+                    name: item.name,
+                    description: item.description,
+                    price: item.price,
+                    category: item.category,
+                    created_at: new Date().toISOString()
+                }));
+
+                const { error: menuError } = await supabase
+                    .from('menu_items')
+                    .insert(menuItemsData);
+
+                if (menuError) {
+                    throw new Error('Failed to save menu items: ' + menuError.message);
+                }
+
+                updateLoadingStep(3);
+                updateLoadingStep(4);
+                updateLoadingStep(5);
+
+                // Hide loading and show success
+                setTimeout(() => {
+                    hideLoading();
+                    showSuccess(restaurant);
+                }, 1500);
+
+            } catch (error) {
+                hideLoading();
+                showError(error.message);
+            }
+        }
+
+        function generateARUrl() {
+            const name = document.getElementById('restaurantName').value;
+            const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            return `https://ar.insane.marketing/${slug}`;
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+            
+            // Animate through steps
+            setTimeout(() => updateLoadingStep(1), 500);
+        }
+
+        
+
+function updateLoadingStep(step) {
+            // Remove active from all steps
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`step${i}`).classList.remove('active');
+            }
+            // Add active to current step
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        function showSuccess(restaurant) {
+            document.getElementById('generatedUrl').textContent = restaurant.ar_url;
+            document.getElementById('successPanel').classList.add('show');
+            document.getElementById('successPanel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').classList.add('show');
+            setTimeout(() => {
+                document.getElementById('errorMessage').classList.remove('show');
+            }, 5000);
+        }
+
+        function testARExperience() {
+            const url = document.getElementById('generatedUrl').textContent;
+            alert(`🚀 Your AR Menu is Live!\n\nURL: ${url}\n\nIn production, this would:\n• Open your live AR menu experience\n• Show 3D food models from your menu\n• Allow customers to interact and share\n• Track analytics and engagement\n\nYour restaurant is now AR-powered!`);
+        }
+
+        function downloadMaterials() {
+            const restaurantName = document.getElementById('restaurantName').value;
+            alert(`📥 Download Package Ready!\n\nFor ${restaurantName}:\n• High-resolution QR codes (PNG, SVG)\n• Table tent cards (PDF)\n• Window clings design\n• Social media templates\n• Staff training guide\n• Setup instructions\n\nIn production, this would start the download automatically!`);
+        }
+
+        function shareSuccess() {
+            const restaurantName = document.getElementById('restaurantName').value;
+            const message = `🚀 ${restaurantName} now has AR menus! Our customers can see 3D food floating on their tables. The future of dining is here! #ARMenu #Innovation #${restaurantName.replace(/\s+/g, '')}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `${restaurantName} - AR Menu`,
+                    text: message,
+                    url: document.getElementById('generatedUrl').textContent
+                });
+            } else {
+                navigator.clipboard.writeText(message).then(() => {
+                    alert(`📱 Social Media Post Copied!\n\n"${message}"\n\nPaste this on your social media to announce your AR menu!`);
+                });
+            }
+        }
+
+        // Add smooth form interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add focus effects to inputs
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.transform = 'scale(1)';
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add hover effects to menu items
+            document.addEventListener('mouseover', function(e) {
+                if (e.target.closest('.menu-item')) {
+                    e.target.closest('.menu-item').style.transform = 'translateY(-3px)';
+                    e.target.closest('.menu-item').style.boxShadow = '0 10px 30px rgba(255,107,53,0.2)';
+                }
+            });
+
+            document.addEventListener('mouseout', function(e) {
+                if (e.target.closest('.menu-item')) {
+                    e.target.closest('.menu-item').style.transform = 'translateY(0)';
+                    e.target.closest('.menu-item').style.boxShadow = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

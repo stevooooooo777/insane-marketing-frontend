@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SME Business Intelligence Suite - insane.marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .suite-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .main-header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .branding {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border-color: #ff6b35;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tool-icon {
+            font-size: 3em;
+            margin-right: 20px;
+        }
+
+        .tool-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .tool-description {
+            color: #6c757d;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .tool-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .tool-features li {
+            padding: 8px 0;
+            color: #495057;
+            display: flex;
+            align-items: center;
+        }
+
+        .tool-features li::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .launch-btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .demo-btn {
+            background: transparent;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .demo-btn:hover {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .active-tool {
+            grid-column: 1 / -1;
+            margin-top: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tool-content {
+            padding: 0;
+        }
+
+        .quick-scanner {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 40px;
+        }
+
+        .scanner-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .quick-input {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .benchmark-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .benchmark-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .benchmark-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .benchmark-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .benchmark-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .comparison-chart {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-label {
+            width: 120px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .chart-container {
+            flex: 1;
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 30px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+            border-radius: 10px;
+            transition: all 0.8s ease;
+        }
+
+        .chart-value {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 50px;
+        }
+
+        .insights-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .insight-text {
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .action-plan {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .action-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-priority {
+            background: #ff6b35;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .action-description {
+            color: #495057;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-input {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-header h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="suite-container">
+        <div class="main-header">
+            <h1>🚀 SME Business Intelligence Suite</h1>
+            <p>Complete toolkit for understanding, benchmarking, and growing your business</p>
+            <div class="branding">Powered by insane.marketing</div>
+        </div>
+
+        <div class="tool-grid" id="toolGrid">
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">⚡</div>
+                    <div class="tool-title">Quick Health Scanner</div>
+                </div>
+                <div class="tool-description">
+                    Get instant insights into your business health with our 2-minute assessment. Perfect for lead qualification and initial consultations.
+                </div>
+                <ul class="tool-features">
+                    <li>5 key metrics analysis</li>
+                    <li>Instant risk assessment</li>
+                    <li>Priority action items</li>
+                    <li>Lead capture integration</li>
+                </ul>
+                <button class="launch-btn" onclick="launchTool('quickScanner')">Launch Quick Scanner</button>
+                <button class="demo-btn" onclick="loadDemoData('quick')">Load Demo Data</button>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📊</div>
+                    <div class="tool-title">Industry Benchmarking</div>
+                </div>
+                <div class="tool-description">
+                    Compare your business against industry standards and top performers. See exactly where you stand in your market.
+                </div>
+                <ul class="tool-features">
+                    <li>Industry-specific comparisons</li>
+                    <li>Percentile rankings</li>
+                    <li>Growth opportunity identification</li>
+                    <li>Competitive positioning</li>
+                </ul>
+                <button class="launch-btn" onclick="launchTool('benchmarking')">Launch Benchmarking</button>
+                <button class="demo-btn" onclick="loadDemoData('benchmark')">See Example</button>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🎯</div>
+                    <div class="tool-title">Competitor Analysis</div>
+                </div>
+                <div class="tool-description">
+                    Analyze your competition and identify market gaps. Understand what's working in your industry and find your competitive edge.
+                </div>
+                <ul class="tool-features">
+                    <li>Market positioning analysis</li>
+                    <li>Pricing strategy insights</li>
+                    <li>Marketing channel comparison</li>
+                    <li>Opportunity gap identification</li>
+                </ul>
+                <button class="launch-btn" onclick="launchTool('competitor')">Launch Analysis</button>
+                <button class="demo-btn" onclick="loadDemoData('competitor')">View Sample</button>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">📈</div>
+                    <div class="tool-title">Growth Action Planner</div>
+                </div>
+                <div class="tool-description">
+                    Get a customized 90-day action plan with specific, prioritized steps to improve your weakest areas and accelerate growth.
+                </div>
+                <ul class="tool-features">
+                    <li>Prioritized action items</li>
+                    <li>Timeline and milestones</li>
+                    <li>Resource requirements</li>
+                    <li>Expected ROI projections</li>
+                </ul>
+                <button class="launch-btn" onclick="launchTool('actionPlan')">Create Action Plan</button>
+                <button class="demo-btn" onclick="loadDemoData('action')">See Example Plan</button>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">💰</div>
+                    <div class="tool-title">ROI Calculator</div>
+                </div>
+                <div class="tool-description">
+                    Calculate the potential return on investment for different marketing strategies and business improvements.
+                </div>
+                <ul class="tool-features">
+                    <li>Marketing ROI projections</li>
+                    <li>Investment scenario modeling</li>
+                    <li>Payback period analysis</li>
+                    <li>Risk-adjusted returns</li>
+                </ul>
+                <button class="launch-btn" onclick="launchTool('roiCalculator')">Launch Calculator</button>
+                <button class="demo-btn" onclick="loadDemoData('roi')">Try Examples</button>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-header">
+                    <div class="tool-icon">🏆</div>
+                    <div class="tool-title">Full Health Audit</div>
+                </div>
+                <div class="tool-description">
+                    Comprehensive business analysis covering all aspects from financials to marketing effectiveness. The complete picture.
+                </div>
+                <ul class="tool-features">
+                    <li>25+ metric analysis</li>
+                    <li>Detailed recommendations</li>
+                    <li>Industry benchmarking</li>
+                    <li>Executive summary report</li>
+                </ul>
+                <button class="launch-btn" onclick="launchTool('fullAudit')">Start Full Audit</button>
+                <button class="demo-btn" onclick="loadDemoData('full')">See Sample Report</button>
+            </div>
+        </div>
+
+        <!-- Quick Scanner Tool -->
+        <div id="quickScannerTool" class="active-tool hidden">
+            <div class="tool-content">
+                <div class="quick-scanner">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">⚡ Quick Business Health Scanner</h2>
+                    <div class="scanner-form">
+                        <div class="quick-input">
+                            <div class="input-group">
+                                <label>Monthly Revenue ($)</label>
+                                <input type="number" id="quickRevenue" placeholder="50000">
+                            </div>
+                            <div class="input-group">
+                                <label>Monthly Growth (%)</label>
+                                <input type="number" id="quickGrowth" placeholder="10" step="0.1">
+                            </div>
+                        </div>
+                        
+                        <div class="quick-input">
+                            <div class="input-group">
+                                <label>Customer Acquisition Cost ($)</label>
+                                <input type="number" id="quickCAC" placeholder="150">
+                            </div>
+                            <div class="input-group">
+                                <label>Customer Lifetime Value ($)</label>
+                                <input type="number" id="quickLTV" placeholder="1200">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Industry</label>
+                            <select id="quickIndustry">
+                                <option value="technology">Technology</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="finance">Financial Services</option>
+                                <option value="retail">Retail/E-commerce</option>
+                                <option value="professional">Professional Services</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="hospitality">Hospitality</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <button class="launch-btn" onclick="runQuickScan()" style="margin-top: 20px;">
+                            🔍 Scan My Business Health
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="quickResults" class="hidden">
+                    <div class="benchmark-container">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px;">📊 Your Business Health Score</h3>
+                        <div id="quickScoreDisplay" style="text-align: center; font-size: 4em; font-weight: bold; color: #ff6b35; margin-bottom: 20px;">-</div>
+                        
+                        <div class="comparison-chart">
+                            <h4 style="margin-bottom: 20px; color: #2c3e50;">How You Compare</h4>
+                            <div class="chart-bar">
+                                <div class="chart-label">LTV:CAC Ratio</div>
+                                <div class="chart-container">
+                                    <div class="chart-fill" id="ltvCacBar"></div>
+                                </div>
+                                <div class="chart-value" id="ltvCacValue">-</div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-label">Growth Rate</div>
+                                <div class="chart-container">
+                                    <div class="chart-fill" id="growthBar"></div>
+                                </div>
+                                <div class="chart-value" id="growthValue">-</div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-label">Revenue Scale</div>
+                                <div class="chart-container">
+                                    <div class="chart-fill" id="revenueBar"></div>
+                                </div>
+                                <div class="chart-value" id="revenueValue">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="insights-panel">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px;">💡 Key Insights</h3>
+                        <div id="quickInsights"></div>
+                    </div>
+
+                    <div class="action-plan">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px;">🎯 Immediate Action Items</h3>
+                        <div id="quickActions"></div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; padding: 30px;">
+                    <button class="demo-btn" onclick="closeTool()">← Back to Suite</button>
+                    <button class="launch-btn" onclick="launchTool('fullAudit')" style="margin-left: 20px;">
+                        Get Full Business Audit →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benchmarking Tool -->
+        <div id="benchmarkingTool" class="active-tool hidden">
+            <div class="tool-content">
+                <div style="padding: 40px; background: linear-gradient(135deg, #f1f3f4 0%, #e8eaf0 100%);">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">📊 Industry Benchmarking Dashboard</h2>
+                    
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <div class="input-group" style="margin-bottom: 30px;">
+                            <label>Select Your Industry for Comparison</label>
+                            <select id="benchmarkIndustry" onchange="updateBenchmarks()">
+                                <option value="technology">Technology & Software</option>
+                                <option value="professional">Professional Services</option>
+                                <option value="retail">Retail & E-commerce</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="finance">Financial Services</option>
+                                <option value="manufacturing">Manufacturing</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="benchmark-grid" id="benchmarkGrid">
+                        <!-- Benchmarks will be populated here -->
+                    </div>
+
+                    <div class="comparison-chart" style="margin-top: 30px;">
+                        <h4 style="margin-bottom: 20px; color: #2c3e50;">Industry Performance Ranges</h4>
+                        <div id="benchmarkCharts">
+                            <!-- Charts will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="insights-panel" style="margin-top: 30px;">
+                        <h3 style="color: #2c3e50; margin-bottom: 20px;">📈 Industry Insights</h3>
+                        <div id="industryInsights"></div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="demo-btn" onclick="closeTool()">← Back to Suite</button>
+                        <button class="launch-btn" onclick="launchTool('quickScanner')" style="margin-left: 20px;">
+                            Compare My Business →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Industry benchmark data
+        const industryBenchmarks = {
+            technology: {
+                avgGrowthRate: 25,
+                avgLtvCac: 4.2,
+                avgMargin: 28,
+                avgChurnRate: 8,
+                avgCacPayback: 12,
+                insights: [
+                    "Tech companies typically achieve 20-30% monthly growth in early stages",
+                    "LTV:CAC ratios above 3:1 are considered healthy, 4:1+ is excellent",
+                    "Focus on product-market fit before scaling marketing spend",
+                    "SaaS companies should aim for <5% monthly churn rate"
+                ]
+            },
+            professional: {
+                avgGrowthRate: 15,
+                avgLtvCac: 6.8,
+                avgMargin: 35,
+                avgChurnRate: 12,
+                avgCacPayback: 8,
+                insights: [
+                    "Professional services rely heavily on referrals - 60% of new business",
+                    "Higher margins but slower growth compared to tech",
+                    "Personal relationships drive retention more than product features",
+                    "Thought leadership and content marketing show highest ROI"
+                ]
+            },
+            retail: {
+                avgGrowthRate: 12,
+                avgLtvCac: 2.8,
+                avgMargin: 18,
+                avgChurnRate: 25,
+                avgCacPayback: 6,
+                insights: [
+                    "Retail requires lower CAC but accepts higher churn rates",
+                    "Seasonal trends significantly impact growth patterns",
+                    "Email marketing and loyalty programs crucial for retention",
+                    "Focus on conversion rate optimization over traffic volume"
+                ]
+            },
+            healthcare: {
+                avgGrowthRate: 10,
+                avgLtvCac: 8.5,
+                avgMargin: 42,
+                avgChurnRate: 5,
+                avgCacPayback: 15,
+                insights: [
+                    "Healthcare has highest customer lifetime values",
+                    "Regulatory compliance adds to customer acquisition costs",
+                    "Trust and reputation are primary growth drivers",
+                    "Referral programs from existing patients most effective"
+                ]
+            },
+            finance: {
+                avgGrowthRate: 8,
+                avgLtvCac: 7.2,
+                avgMargin: 38,
+                avgChurnRate: 6,
+                avgCacPayback: 18,
+                insights: [
+                    "Financial services have longest sales cycles",
+                    "Compliance and trust factors increase acquisition costs",
+                    "Cross-selling to existing clients drives profitability",
+                    "Digital transformation is accelerating growth opportunities"
+                ]
+            },
+            manufacturing: {
+                avgGrowthRate: 6,
+                avgLtvCac: 5.5,
+                avgMargin: 22,
+                avgChurnRate: 8,
+                avgCacPayback: 24,
+                insights: [
+                    "B2B relationships drive long customer lifecycles",
+                    "Supply chain efficiency directly impacts margins",
+                    "Trade shows and industry events still primary for lead gen",
+                    "Digital marketing adoption accelerating post-COVID"
+                ]
+            }
+        };
+
+        let currentTool = null;
+
+        function launchTool(toolName) {
+            // Hide all tools
+            document.querySelectorAll('.active-tool').forEach(tool => {
+                tool.classList.add('hidden');
+            });
+            
+            // Show selected tool
+            const tool = document.getElementById(toolName + 'Tool');
+            if (tool) {
+                tool.classList.remove('hidden');
+                currentTool = toolName;
+                
+                // Initialize tool-specific data
+                if (toolName === 'benchmarking') {
+                    updateBenchmarks();
+                }
+            }
+        }
+
+        function closeTool() {
+            if (currentTool) {
+                document.getElementById(currentTool + 'Tool').classList.add('hidden');
+                currentTool = null;
+            }
+        }
+
+        function loadDemoData(toolType) {
+            switch(toolType) {
+                case 'quick':
+                    document.getElementById('quickRevenue').value = '75000';
+                    document.getElementById('quickGrowth').value = '18';
+                    document.getElementById('quickCAC').value = '120';
+                    document.getElementById('quickLTV').value = '950';
+                    document.getElementById('quickIndustry').value = 'professional';
+                    launchTool('quickScanner');
+                    setTimeout(() => runQuickScan(), 500);
+                    break;
+                case 'benchmark':
+                    launchTool('benchmarking');
+                    break;
+                default:
+                    alert('Demo data for ' + toolType + ' will be available soon!');
+            }
+        }
+
+        function runQuickScan() {
+            const revenue = parseFloat(document.getElementById('quickRevenue').value) || 0;
+            const growth = parseFloat(document.getElementById('quickGrowth').value) || 0;
+            const cac = parseFloat(document.getElementById('quickCAC').value) || 0;
+            const ltv = parseFloat(document.getElementById('quickLTV').value) || 0;
+            const industry = document.getElementById('quickIndustry').value;
+
+            // Calculate metrics
+            const ltvCacRatio = cac > 0 ? ltv / cac : 0;
+            const annualRevenue = revenue * 12;
+            
+            // Calculate health score
+            let healthScore = 0;
+            
+            // LTV:CAC scoring (40% weight)
+            if (ltvCacRatio >= 4) healthScore += 40;
+            else if (ltvCacRatio >= 3) healthScore += 30;
+            else if (ltvCacRatio >= 2) healthScore += 20;
+            else healthScore += 10;
+            
+            // Growth scoring (30% weight)
+            if (growth >= 20) healthScore += 30;
+            else if (growth >= 15) healthScore += 25;
+            else if (growth >= 10) healthScore += 20;
+            else if (growth >= 5) healthScore += 15;
+            else healthScore += 5;
+            
+            // Revenue scale scoring (30% weight)
+            if (annualRevenue >= 1000000) healthScore += 30;
+            else if (annualRevenue >= 500000) healthScore += 25;
+            else if (annualRevenue >= 100000) healthScore += 20;
+            else if (annualRevenue >= 50000) healthScore += 15;
+            else healthScore += 10;
+
+            // Display results
+            document.getElementById('quickScoreDisplay').textContent = healthScore + '/100';
+            document.getElementById('quickResults').classList.remove('hidden');
+
+            // Update bars
+            updateBar('ltvCacBar', 'ltvCacValue', ltvCacRatio, 10, ltvCacRatio.toFixed(1) + ':1');
+            updateBar('growthBar', 'growthValue', growth, 30, growth + '%');
+            updateBar('revenueBar', 'revenueValue', Math.min(annualRevenue / 10000, 100), 100, '$' + (annualRevenue/1000).toFixed(0) + 'K');
+
+            // Generate insights
+            generateQuickInsights(healthScore, ltvCacRatio, growth, revenue, industry);
+            generateQuickActions(healthScore, ltvCacRatio, growth, revenue, industry);
+        }
+
+        function updateBar(barId, valueId, score, maxValue, displayValue) {
+            const percentage = Math.min((score / maxValue) * 100, 100);
+            document.getElementById(barId).style.width = percentage + '%';
+            document.getElementById(valueId).textContent = displayValue;
+        }
+
+        function generateQuickInsights(score, ltvCac, growth, revenue, industry) {
+            const insights = [];
+            const benchmark = industryBenchmarks[industry] || industryBenchmarks.technology;
+
+            if (score >= 80) {
+                insights.push({
+                    title: "🎉 Excellent Business Health",
+                    text: "Your business is performing very well across key metrics. You're in the top 20% of businesses in your industry."
+                });
+            } else if (score >= 60) {
+                insights.push({
+                    title: "✅ Good Foundation",
+                    text: "Your business has solid fundamentals with room for optimization in specific areas."
+                });
+            } else {
+                insights.push({
+                    title: "⚠️ Improvement Opportunities",
+                    text: "There are significant opportunities to improve your business performance and profitability."
+                });
+            }
+
+            if (ltvCac < 3) {
+                insights.push({
+                    title: "💰 Customer Value Optimization Needed",
+                    text: `Your LTV:CAC ratio of ${ltvCac.toFixed(1)}:1 is below the healthy 3:1 minimum. Focus on increasing customer value or reducing acquisition costs.`
+                });
+            } else if (ltvCac > benchmark.avgLtvCac) {
+                insights.push({
+                    title: "🏆 Superior Customer Economics",
+                    text: `Your LTV:CAC ratio of ${ltvCac.toFixed(1)}:1 exceeds industry average of ${benchmark.avgLtvCac}:1. This is a strong competitive advantage.`
+                });
+            }
+
+            if (growth > benchmark.avgGrowthRate) {
+                insights.push({
+                    title: "🚀 Above-Average Growth",
+                    text: `Your ${growth}% growth rate exceeds the ${industry} industry average of ${benchmark.avgGrowthRate}%. Consider scaling your successful strategies.`
+                });
+            }
+
+            displayInsights('quickInsights', insights);
+        }
+
+        function generateQuickActions(score, ltvCac, growth, revenue, industry) {
+            const actions = [];
+            let priority = 1;
+
+            if (ltvCac < 2) {
+                actions.push({
+                    priority: priority++,
+                    title: "URGENT: Fix Customer Economics",
+                    description: "Your customer acquisition is unsustainable. Either reduce marketing costs or increase customer value immediately."
+                });
+            } else if (ltvCac < 3) {
+                actions.push({
+                    priority: priority++,
+                    title: "Optimize Customer Value",
+                    description: "Implement upselling, cross-selling, or retention programs to increase lifetime value."
+                });
+            }
+
+            if (growth < 5) {
+                actions.push({
+                    priority: priority++,
+                    title: "Accelerate Growth",
+                    description: "Launch targeted marketing campaigns or expand to new customer segments."
+                });
+            } else if (growth > 25) {
+                actions.push({
+                    priority: priority++,
+                    title: "Scale Operations",
+                    description: "Ensure your operations can handle rapid growth - consider hiring and process automation."
+                });
+            }
+
+            if (revenue < 25000) {
+                actions.push({
+                    priority: priority++,
+                    title: "Focus on Revenue Growth",
+                    description: "Prioritize sales activities and customer acquisition over optimization at this stage."
+                });
+            }
+
+            if (actions.length < 3) {
+                actions.push({
+                    priority: priority++,
+                    title: "Implement Analytics",
+                    description: "Set up proper tracking for all marketing channels to identify what's working best."
+                });
+                
+                actions.push({
+                    priority: priority++,
+                    title: "Build Email List",
+                    description: "Create lead magnets and email sequences to nurture prospects and reduce acquisition costs."
+                });
+            }
+
+            displayActions('quickActions', actions);
+        }
+
+        function displayInsights(containerId, insights) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            insights.forEach(insight => {
+                const div = document.createElement('div');
+                div.className = 'insight-card';
+                div.innerHTML = `
+                    <div class="insight-title">${insight.title}</div>
+                    <div class="insight-text">${insight.text}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function displayActions(containerId, actions) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            actions.forEach(action => {
+                const div = document.createElement('div');
+                div.className = 'action-item';
+                div.innerHTML = `
+                    <div class="action-priority">${action.priority}</div>
+                    <div class="action-content">
+                        <div class="action-title">${action.title}</div>
+                        <div class="action-description">${action.description}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateBenchmarks() {
+            const industry = document.getElementById('benchmarkIndustry').value;
+            const benchmark = industryBenchmarks[industry];
+            
+            const benchmarkGrid = document.getElementById('benchmarkGrid');
+            benchmarkGrid.innerHTML = `
+                <div class="benchmark-card">
+                    <div class="benchmark-value">${benchmark.avgGrowthRate}%</div>
+                    <div class="benchmark-label">Average Growth Rate</div>
+                </div>
+                <div class="benchmark-card">
+                    <div class="benchmark-value">${benchmark.avgLtvCac}:1</div>
+                    <div class="benchmark-label">Average LTV:CAC</div>
+                </div>
+                <div class="benchmark-card">
+                    <div class="benchmark-value">${benchmark.avgMargin}%</div>
+                    <div class="benchmark-label">Average Profit Margin</div>
+                </div>
+                <div class="benchmark-card">
+                    <div class="benchmark-value">${benchmark.avgChurnRate}%</div>
+                    <div class="benchmark-label">Average Churn Rate</div>
+                </div>
+                <div class="benchmark-card">
+                    <div class="benchmark-value">${benchmark.avgCacPayback}</div>
+                    <div class="benchmark-label">CAC Payback (months)</div>
+                </div>
+            `;
+
+            // Update benchmark charts
+            const chartsContainer = document.getElementById('benchmarkCharts');
+            chartsContainer.innerHTML = `
+                <div class="chart-bar">
+                    <div class="chart-label">Growth Rate</div>
+                    <div class="chart-container">
+                        <div class="chart-fill" style="width: ${(benchmark.avgGrowthRate / 30) * 100}%"></div>
+                    </div>
+                    <div class="chart-value">${benchmark.avgGrowthRate}%</div>
+                </div>
+                <div class="chart-bar">
+                    <div class="chart-label">LTV:CAC Ratio</div>
+                    <div class="chart-container">
+                        <div class="chart-fill" style="width: ${(benchmark.avgLtvCac / 10) * 100}%"></div>
+                    </div>
+                    <div class="chart-value">${benchmark.avgLtvCac}:1</div>
+                </div>
+                <div class="chart-bar">
+                    <div class="chart-label">Profit Margin</div>
+                    <div class="chart-container">
+                        <div class="chart-fill" style="width: ${(benchmark.avgMargin / 50) * 100}%"></div>
+                    </div>
+                    <div class="chart-value">${benchmark.avgMargin}%</div>
+                </div>
+            `;
+
+            // Update insights
+            const insightsContainer = document.getElementById('industryInsights');
+            insightsContainer.innerHTML = '';
+            
+            benchmark.insights.forEach(insight => {
+                const div = document.createElement('div');
+                div.className = 'insight-card';
+                div.innerHTML = `
+                    <div class="insight-title">💡 ${industry.charAt(0).toUpperCase() + industry.slice(1)} Industry Insight</div>
+                    <div class="insight-text">${insight}</div>
+                `;
+                insightsContainer.appendChild(div);
+            });
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            // Load demo data for quick scanner
+            document.getElementById('quickRevenue').value = '45000';
+            document.getElementById('quickGrowth').value = '12';
+            document.getElementById('quickCAC').value = '180';
+            document.getElementById('quickLTV').value = '850';
+        };
+    </script>
+</body>
+</html>

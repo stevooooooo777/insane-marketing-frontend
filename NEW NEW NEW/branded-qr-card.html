@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced QR Card Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+<script src="/config-client.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .qr-card {
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            border: 3px solid;
+        }
+
+        /* Color themes for different QR types */
+        .qr-card.menu { border-color: #1f2937; }
+        .qr-card.service { border-color: #dc2626; }
+        .qr-card.wifi { border-color: #2563eb; }
+        .qr-card.review { border-color: #16a34a; }
+        .qr-card.booking { border-color: #7c3aed; }
+        .qr-card.specials { border-color: #f59e0b; }
+
+        .restaurant-header {
+            margin-bottom: 15px;
+        }
+
+        .restaurant-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .table-number {
+            font-size: 1.1em;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .qr-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .qr-code-canvas {
+            border-radius: 8px;
+        }
+
+        .qr-type-header {
+            margin: 15px 0 10px 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+        }
+
+        /* QR type specific colors */
+        .qr-type-header.menu { background: #1f2937; }
+        .qr-type-header.service { background: #dc2626; }
+        .qr-type-header.wifi { background: #2563eb; }
+        .qr-type-header.review { background: #16a34a; }
+        .qr-type-header.booking { background: #7c3aed; }
+        .qr-type-header.specials { background: #f59e0b; }
+
+        .call-to-action {
+            font-size: 1em;
+            font-weight: 600;
+            color: #374151;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .sub-text {
+            font-size: 0.8em;
+            color: #6b7280;
+            line-height: 1.2;
+        }
+
+        .icon {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .demo-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .demo-controls input, .demo-controls select {
+            padding: 8px 12px;
+            margin: 5px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .demo-controls button {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .demo-controls button:hover {
+            background: #1d4ed8;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        @media print {
+            .demo-controls { display: none; }
+            .qr-card { 
+                break-inside: avoid;
+                margin: 10px;
+                box-shadow: none;
+                border: 2px solid #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-controls">
+        <h2>Enhanced QR Card Generator - SME Restaurant Demo</h2>
+        <div>
+            <input type="text" id="restaurant-name" placeholder="Restaurant Name" value="Mario's Italian Kitchen">
+            <input type="number" id="table-number" placeholder="Table #" value="5" min="1" max="50">
+            <select id="qr-type">
+                <option value="menu">Menu QR</option>
+                <option value="service">Service Call QR</option>
+                <option value="wifi">WiFi QR</option>
+                <option value="review">Review QR</option>
+                <option value="booking">Booking QR</option>
+                <option value="specials">Specials QR</option>
+            </select>
+            <button onclick="generateSingleCard()">Generate Card</button>
+            <button onclick="generateAllCards()">Generate All 6 Types</button>
+            <button onclick="window.print()">Print Cards</button>
+        </div>
+    </div>
+
+    <div class="cards-container" id="cards-container">
+        <!-- QR cards will be generated here -->
+    </div>
+
+    <script>
+        // QR type configurations
+        const qrTypeConfigs = {
+            menu: {
+                icon: '🍽️',
+                label: 'MENU',
+                callToAction: 'Scan to View Menu',
+                subText: 'Order Faster • See Prices • Check Ingredients',
+                sampleUrl: 'https://example.com/menu'
+            },
+            service: {
+                icon: '🔔',
+                label: 'SERVICE CALL',
+                callToAction: 'Scan for Instant Service',
+                subText: 'No Waiting • Direct Staff Alerts • Quick Response',
+                sampleUrl: '/service-request'
+            },
+            wifi: {
+                icon: '📶',
+                label: 'FREE WIFI',
+                callToAction: 'Scan for Free Secure WiFi',
+                subText: 'Instant Connection • No Password Needed • Fast Speed',
+                sampleUrl: '/wifi-connect'
+            },
+            review: {
+                icon: '⭐',
+                label: 'REVIEWS',
+                callToAction: 'Scan to Share Your Experience',
+                subText: 'Help Others • Quick & Easy • Make a Difference',
+                sampleUrl: 'https://google.com/reviews'
+            },
+            booking: {
+                icon: '📅',
+                label: 'RESERVATIONS',
+                callToAction: 'Scan to Book Your Next Visit',
+                subText: 'Easy Booking • Choose Your Time • Guarantee Your Table',
+                sampleUrl: 'https://opentable.com/book'
+            },
+            specials: {
+                icon: '🎉',
+                label: 'TODAY\'S SPECIALS',
+                callToAction: 'Scan for Today\'s Deals',
+                subText: 'Limited Time • Special Prices • Exclusive Offers',
+                sampleUrl: '/specials'
+            }
+        };
+
+        function createQRCard(restaurantName, tableNumber, qrType, qrUrl) {
+            const config = qrTypeConfigs[qrType];
+            if (!config) return null;
+
+            // Create card container
+            const card = document.createElement('div');
+            card.className = `qr-card ${qrType}`;
+
+            // Generate QR code
+            const canvas = document.createElement('canvas');
+            canvas.className = 'qr-code-canvas';
+            
+            const qr = new QRious({
+                element: canvas,
+                value: qrUrl || config.sampleUrl,
+                size: 180,
+                background: '#ffffff',
+                foreground: '#000000',
+                level: 'M'
+            });
+
+            // Build card HTML
+            card.innerHTML = `
+                <div class="restaurant-header">
+                    <div class="restaurant-name">${restaurantName}</div>
+                    <div class="table-number">Table ${tableNumber}</div>
+                </div>
+                
+                <div class="qr-container">
+                    ${canvas.outerHTML}
+                </div>
+                
+                <div class="qr-type-header ${qrType}">
+                    <div class="icon">${config.icon}</div>
+                    ${config.label}
+                </div>
+                
+                <div class="call-to-action">
+                    ${config.callToAction}
+                </div>
+                
+                <div class="sub-text">
+                    ${config.subText}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function generateSingleCard() {
+            const restaurantName = document.getElementById('restaurant-name').value || 'Restaurant Name';
+            const tableNumber = document.getElementById('table-number').value || '1';
+            const qrType = document.getElementById('qr-type').value;
+
+            // Generate table-specific tracking URL
+            const restaurantId = restaurantName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const trackingUrl = `https://qr-tracking-backend-production.up.railway.app/qr/${restaurantId}/table/${tableNumber}/${qrType}`;
+
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            
+            const card = createQRCard(restaurantName, tableNumber, qrType, trackingUrl);
+            if (card) {
+                container.appendChild(card);
+            }
+        }
+
+        function generateAllCards() {
+            const restaurantName = document.getElementById('restaurant-name').value || 'Restaurant Name';
+            const tableNumber = document.getElementById('table-number').value || '1';
+            const restaurantId = restaurantName.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+
+            // Generate all 6 QR types
+            Object.keys(qrTypeConfigs).forEach(qrType => {
+                const trackingUrl = `https://qr-tracking-backend-production.up.railway.app/qr/${restaurantId}/table/${tableNumber}/${qrType}`;
+                const card = createQRCard(restaurantName, tableNumber, qrType, trackingUrl);
+                if (card) {
+                    container.appendChild(card);
+                }
+            });
+        }
+
+        // Enhanced QR generation function for integration
+        function generateEnhancedTableQR(restaurantId, restaurantName, tableNumber, qrType) {
+            const trackingUrl = `https://qr-tracking-backend-production.up.railway.app/qr/${restaurantId}/table/${tableNumber}/${qrType}`;
+            
+            return {
+                trackingUrl: trackingUrl,
+                card: createQRCard(restaurantName, tableNumber, qrType, trackingUrl),
+                printReady: true,
+                branded: true,
+                qrType: qrType,
+                tableNumber: tableNumber
+            };
+        }
+
+        // Initialize with demo
+        document.addEventListener('DOMContentLoaded', function() {
+            generateSingleCard();
+            
+            console.log('Enhanced QR Card Generator Loaded');
+            console.log('Features:');
+            console.log('• Professional branding with restaurant name');
+            console.log('• Clear call-to-action text for each QR type');
+            console.log('• Color-coded borders for easy identification');
+            console.log('• Print-ready format for SME restaurants');
+            console.log('• Table-specific tracking URLs');
+        });
+
+        // Export function for integration with main system
+        window.generateEnhancedQRCard = generateEnhancedTableQR;
+        window.qrTypeConfigs = qrTypeConfigs;
+    </script>
+</body>
+</html>

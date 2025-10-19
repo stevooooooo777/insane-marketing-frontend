@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Menu Upload System - INSANE.MARKETING</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ff6b35 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b35, #f7931e, #ffcc02);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .upload-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .step-card {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,107,53,0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            border-color: rgba(255,107,53,0.5);
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            color: #ff6b35;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .step-description {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Upload Options */
+        .upload-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-option {
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,107,53,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-option:hover {
+            border-color: rgba(255,107,53,0.6);
+            transform: translateY(-5px);
+        }
+
+        .upload-option.active {
+            border-color: #ff6b35;
+            background: rgba(255,107,53,0.1);
+        }
+
+        .option-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .option-title {
+            font-size: 1.4rem;
+            color: #ff6b35;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .option-description {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .option-benefits {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .option-benefits li {
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .option-benefits li::before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+        }
+
+        /* Upload Forms */
+        .upload-form {
+            display: none;
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,107,53,0.3);
+            margin-bottom: 30px;
+        }
+
+        .upload-form.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            color: #ff6b35;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,107,53,0.1);
+            border-radius: 15px;
+            border: 2px solid rgba(255,107,53,0.2);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255,107,53,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        /* File Upload Areas */
+        .file-upload-area {
+            border: 3px dashed rgba(255,107,53,0.5);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            background: rgba(255,107,53,0.05);
+        }
+
+        .file-upload-area:hover {
+            border-color: rgba(255,107,53,0.8);
+            background: rgba(255,107,53,0.1);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #ff6b35;
+            background: rgba(255,107,53,0.2);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #ff6b35;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Uploaded Files Display */
+        .uploaded-files {
+            margin-top: 20px;
+        }
+
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px solid rgba(76,175,80,0.3);
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: #4CAF50;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .remove-file {
+            background: rgba(255,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Processing Status */
+        .processing-status {
+            display: none;
+            background: rgba(255,107,53,0.1);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .processing-status.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .processing-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255,107,53,0.3);
+            border-top: 6px solid #ff6b35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .processing-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .processing-step {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .processing-step.active {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            background: rgba(76,175,80,0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 1.8rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .ar-preview {
+            background: rgba(0,0,0,0.8);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .qr-code-display {
+            width: 200px;
+            height: 200px;
+            background: white;
+            margin: 20px auto;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #333;
+            border: 5px solid #4CAF50;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Template Downloads */
+        .template-section {
+            background: rgba(33,150,243,0.1);
+            border: 2px solid rgba(33,150,243,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .template-title {
+            font-size: 1.1rem;
+            color: #2196F3;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .template-downloads {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .template-btn {
+            background: rgba(33,150,243,0.2);
+            color: #2196F3;
+            padding: 8px 16px;
+            border: 2px solid rgba(33,150,243,0.3);
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .template-btn:hover {
+            background: rgba(33,150,243,0.3);
+            border-color: #2196F3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .upload-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .template-downloads {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="logo">AR MENU UPLOAD SYSTEM</h1>
+            <p class="subtitle">Complete self-service AR menu creation in minutes</p>
+        </div>
+
+        <!-- Upload Steps -->
+        <div class="upload-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Choose Upload Method</h3>
+                <p class="step-description">Select how you want to provide your menu data - manual entry, file upload, or photo processing</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Upload Your Content</h3>
+                <p class="step-description">Provide your restaurant details, menu items, and food photos using your preferred method</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3 class="step-title">AI Processing</h3>
+                <p class="step-description">Our AI automatically creates 3D models, generates AR experiences, and prepares your materials</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3 class="step-title">Launch & Deploy</h3>
+                <p class="step-description">Download QR codes, print materials, and go live with your AR menu immediately</p>
+            </div>
+        </div>
+
+        <!-- Upload Options -->
+        <div class="upload-options">
+            <div class="upload-option" onclick="selectUploadMethod('manual')">
+                <div class="option-icon">⌨️</div>
+                <h3 class="option-title">Manual Entry</h3>
+                <p class="option-description">Type your menu items directly into our form</p>
+                <ul class="option-benefits">
+                    <li>Complete control over descriptions</li>
+                    <li>Perfect for new restaurants</li>
+                    <li>No existing files needed</li>
+                    <li>Takes 10-15 minutes</li>
+                </ul>
+            </div>
+            
+            <div class="upload-option" onclick="selectUploadMethod('file')">
+                <div class="option-icon">📄</div>
+                <h3 class="option-title">File Upload</h3>
+                <p class="option-description">Upload your existing menu (PDF, Word, Excel, CSV)</p>
+                <ul class="option-benefits">
+                    <li>AI extracts menu data automatically</li>
+                    <li>Works with any file format</li>
+                    <li>Perfect for existing restaurants</li>
+                    <li>Takes 2-3 minutes</li>
+                </ul>
+            </div>
+            
+            <div class="upload-option" onclick="selectUploadMethod('photo')">
+                <div class="option-icon">📸</div>
+                <h3 class="option-title">Photo Processing</h3>
+                <p class="option-description">Take photos of your existing printed menu</p>
+                <ul class="option-benefits">
+                    <li>OCR extracts text from images</li>
+                    <li>Works with any menu design</li>
+                    <li>Great for traditional restaurants</li>
+                    <li>Takes 5 minutes</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Manual Entry Form -->
+        <div class="upload-form" id="manualForm">
+            <h2 class="form-title">📝 Manual Menu Entry</h2>
+            
+            <div class="form-section">
+                <h3 class="section-title">Restaurant Information</h3>
+                <div class="form-group">
+                    <label class="form-label">Restaurant Name</label>
+                    <input type="text" class="form-input" placeholder="Mario's Pizzeria" id="restaurantName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tagline/Description</label>
+                    <input type="text" class="form-input" placeholder="Authentic Italian Since 1952" id="restaurantTagline">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-input" placeholder="123 Main St, Your City" id="restaurantAddress">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-input" placeholder="(555) 123-4567" id="restaurantPhone">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Menu Items</h3>
+                <div id="manualMenuItems">
+                    <!-- Menu items will be added here dynamically -->
+                </div>
+                <button class="action-btn btn-secondary" onclick="addManualMenuItem()">+ Add Menu Item</button>
+            </div>
+        </div>
+
+        <!-- File Upload Form -->
+        <div class="upload-form" id="fileForm">
+            <h2 class="form-title">📄 File Upload</h2>
+            
+            <div class="template-section">
+                <h3 class="template-title">📋 Download Templates (Optional)</h3>
+                <div class="template-downloads">
+                    <a href="#" class="template-btn" onclick="downloadTemplate('excel')">📊 Excel Template</a>
+                    <a href="#" class="template-btn" onclick="downloadTemplate('csv')">📈 CSV Template</a>
+                    <a href="#" class="template-btn" onclick="downloadTemplate('word')">📝 Word Template</a>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Upload Your Menu File</h3>
+                <div class="file-upload-area" onclick="document.getElementById('menuFile').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Drag & drop your menu file here</div>
+                    <div class="upload-hint">Supports PDF, Word, Excel, CSV, TXT files</div>
+                    <input type="file" id="menuFile" class="file-input" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" onchange="handleFileUpload(this.files)">
+                </div>
+                <div class="uploaded-files" id="uploadedFiles">
+                    <!-- Uploaded files will appear here -->
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Food Photos (Optional)</h3>
+                <div class="file-upload-area" onclick="document.getElementById('foodPhotos').click()">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Upload photos of your dishes</div>
+                    <div class="upload-hint">JPG, PNG files - helps create better 3D models</div>
+                    <input type="file" id="foodPhotos" class="file-input" accept="image/*" multiple onchange="handlePhotoUpload(this.files)">
+                </div>
+                <div class="uploaded-files" id="uploadedPhotos">
+                    <!-- Uploaded photos will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Processing Form -->
+        <div class="upload-form" id="photoForm">
+            <h2 class="form-title">📸 Photo Menu Processing</h2>
+            
+            <div class="form-section">
+                <h3 class="section-title">Take or Upload Menu Photos</h3>
+                <div class="file-upload-area" onclick="document.getElementById('menuPhotos').click()">
+                    <div class="upload-icon">📱</div>
+                    <div class="upload-text">Take photos of your printed menu</div>
+                    <div class="upload-hint">Clear, well-lit photos work best - multiple pages OK</div>
+                    <input type="file" id="menuPhotos" class="file-input" accept="image/*" multiple capture="environment" onchange="handleMenuPhotoUpload(this.files)">
+                </div>
+                <div class="uploaded-files" id="uploadedMenuPhotos">
+                    <!-- Uploaded menu photos will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Status -->
+        <div class="processing-status" id="processingStatus">
+            <div class="processing-spinner"></div>
+            <div class="processing-text">Creating Your AR Experience...</div>
+            <div class="processing-step active" id="step1">🔍 Analyzing your menu data...</div>
+            <div class="processing-step" id="step2">🎨 Generating 3D food models...</div>
+            <div class="processing-step" id="step3">📱 Building AR experience...</div>
+            <div class="processing-step" id="step4">🎯 Creating QR codes and materials...</div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="success-icon">🎉</div>
+            <h2 class="success-title">Your AR Menu is Ready!</h2>
+            
+            <div class="ar-preview">
+                <h3 style="color: #ff6b35; margin-bottom: 15px;">Your AR Experience</h3>
+                <div class="qr-code-display">
+                    📱 QR CODE<br>
+                    <small>Scan to test!</small>
+                </div>
+                <p>URL: <strong id="arMenuUrl">https://ar.insane.marketing/your-restaurant</strong></p>
+            </div>
+
+            <div class="action-buttons">
+                <a href="#" class="action-btn btn-primary" onclick="testARExperience()">🔍 Test AR Experience</a>
+                <a href="#" class="action-btn btn-secondary" onclick="downloadMaterials()">📥 Download Materials</a>
+                <a href="#" class="action-btn btn-tertiary" onclick="shareSocial()">📱 Share on Social</a>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: rgba(255,107,53,0.1); border-radius: 15px;">
+                <h4 style="color: #ff6b35; margin-bottom: 15px;">🚀 Next Steps:</h4>
+                <p style="margin-bottom: 10px;">1. <strong>Test the experience</strong> - scan QR code with your phone</p>
+                <p style="margin-bottom: 10px;">2. <strong>Download & print materials</strong> - QR codes, table tents, signage</p>
+                <p style="margin-bottom: 10px;">3. <strong>Train your staff</strong> - show them how to demo AR to customers</p>
+                <p style="margin-bottom: 10px;">4. <strong>Launch & promote</strong> - social media, local press, customer announcements</p>
+                <p><strong>5. Watch your revenue grow!</strong> 📈</p>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="action-btn btn-primary" id="submitBtn" onclick="processUpload()" style="font-size: 1.2rem; padding: 15px 40px;">
+                🚀 Create My AR Experience
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedMethod = null;
+        let uploadedFiles = [];
+        let menuItems = [];
+
+        function selectUploadMethod(method) {
+            selectedMethod = method;
+            
+            // Reset all options
+            document.querySelectorAll('.upload-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelectorAll('.upload-form').forEach(form => form.classList.remove('active'));
+            
+            // Activate selected option
+            event.target.closest('.upload-option').classList.add('active');
+            document.getElementById(method + 'Form').classList.add('active');
+            
+            // Show submit button
+            document.getElementById('submitBtn').style.display = 'inline-block';
+        }
+
+        function addManualMenuItem() {
+            const container = document.getElementById('manualMenuItems');
+            const index = menuItems.length;
+            
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'form-section';
+            itemDiv.innerHTML = `
+                <h4 style="color: #ff6b35; margin-bottom: 15px;">Item ${index + 1}</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Item Name</label>
+                        <input type="text" class="form-input" placeholder="Margherita Pizza" onchange="updateMenuItem(${index}, 'name', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Price</label>
+                        <input type="text" class="form-input" placeholder="$18.99" onchange="updateMenuItem(${index}, 'price', this.value)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-input" placeholder="Fresh mozzarella, tomato sauce, basil..." onchange="updateMenuItem(${index}, 'description', this.value)">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-input" onchange="updateMenuItem(${index}, 'category', this.value)">
+                            <option value="Pizza">Pizza</option>
+                            <option value="Pasta">Pasta</option>
+                            <option value="Salads">Salads</option>
+                            <option value="Desserts">Desserts</option>
+                            <option value="Drinks">Drinks</option>
+                            <option value="Appetizers">Appetizers</option>
+                            <option value="Main Course">Main Course</option>
+                            <option value="Specials">Specials</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="action-btn" style="background: rgba(255,0,0,0.7); margin-top: 26px;" onclick="removeMenuItem(${index})">Remove</button>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(itemDiv);
+            menuItems.push({});
+        }
+
+        function updateMenuItem(index, field, value) {
+            if (!menuItems[index]) menuItems[index] = {};
+            menuItems[index][field] = value;
+        }
+
+        function removeMenuItem(index) {
+            menuItems.splice(index, 1);
+            // Rebuild the menu items display
+            document.getElementById('manualMenuItems').innerHTML = '';
+            menuItems.forEach((item, newIndex) => {
+                addManualMenuItem();
+                // Restore values
+Object.keys(item).forEach(key => {
+                    const input = document.querySelector(`[onchange*="updateMenuItem(${newIndex}, '${key}'"]`);
+                    if (input) input.value = item[key];
+                });
+            });
+        }
+
+        function handleFileUpload(files) {
+            const container = document.getElementById('uploadedFiles');
+            container.innerHTML = '';
+            
+            Array.from(files).forEach(file => {
+                uploadedFiles.push(file);
+                
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'uploaded-file';
+                fileDiv.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024).toFixed(1)} KB</div>
+                    </div>
+                    <button class="remove-file" onclick="removeFile('${file.name}')">Remove</button>
+                `;
+                container.appendChild(fileDiv);
+            });
+        }
+
+        function handlePhotoUpload(files) {
+            const container = document.getElementById('uploadedPhotos');
+            
+            Array.from(files).forEach(file => {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'uploaded-file';
+                fileDiv.innerHTML = `
+                    <div class="file-icon">📸</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024).toFixed(1)} KB</div>
+                    </div>
+                    <button class="remove-file" onclick="removeFile('${file.name}')">Remove</button>
+                `;
+                container.appendChild(fileDiv);
+            });
+        }
+
+        function handleMenuPhotoUpload(files) {
+            const container = document.getElementById('uploadedMenuPhotos');
+            
+            Array.from(files).forEach(file => {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'uploaded-file';
+                fileDiv.innerHTML = `
+                    <div class="file-icon">📱</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024).toFixed(1)} KB</div>
+                    </div>
+                    <button class="remove-file" onclick="removeFile('${file.name}')">Remove</button>
+                `;
+                container.appendChild(fileDiv);
+            });
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+            // Refresh the display
+            document.querySelectorAll('.uploaded-file').forEach(div => {
+                if (div.querySelector('.file-name').textContent === fileName) {
+                    div.remove();
+                }
+            });
+        }
+
+        function downloadTemplate(type) {
+            const templates = {
+                excel: 'Menu-Template.xlsx',
+                csv: 'Menu-Template.csv',
+                word: 'Menu-Template.docx'
+            };
+            
+            alert(`📥 Downloading ${templates[type]}\n\nIn production, this would download:\n- Pre-formatted template\n- Sample menu data\n- Instructions for filling out\n- Tips for best AR results`);
+        }
+
+        function processUpload() {
+            if (!selectedMethod) {
+                alert('Please select an upload method first!');
+                return;
+            }
+
+            // Collect data based on method
+            let uploadData = {
+                method: selectedMethod,
+                restaurant: {
+                    name: document.getElementById('restaurantName')?.value || 'Sample Restaurant',
+                    tagline: document.getElementById('restaurantTagline')?.value || 'Great Food Awaits',
+                    address: document.getElementById('restaurantAddress')?.value || '',
+                    phone: document.getElementById('restaurantPhone')?.value || ''
+                }
+            };
+
+            if (selectedMethod === 'manual') {
+                uploadData.menuItems = menuItems.filter(item => item.name && item.price);
+                if (uploadData.menuItems.length === 0) {
+                    alert('Please add at least one menu item!');
+                    return;
+                }
+            } else if (selectedMethod === 'file') {
+                if (uploadedFiles.length === 0) {
+                    alert('Please upload a menu file!');
+                    return;
+                }
+                uploadData.files = uploadedFiles.map(f => f.name);
+            } else if (selectedMethod === 'photo') {
+                const photoFiles = document.getElementById('uploadedMenuPhotos').children;
+                if (photoFiles.length === 0) {
+                    alert('Please upload menu photos!');
+                    return;
+                }
+                uploadData.photos = Array.from(photoFiles).map(div => 
+                    div.querySelector('.file-name').textContent
+                );
+            }
+
+            // Start processing
+            startProcessing(uploadData);
+        }
+
+        function startProcessing(data) {
+            // Hide forms and show processing
+            document.querySelectorAll('.upload-form').forEach(form => form.style.display = 'none');
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('processingStatus').classList.add('show');
+
+            // Simulate processing steps
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            let currentStep = 0;
+
+            const processStep = () => {
+                if (currentStep > 0) {
+                    document.getElementById(steps[currentStep - 1]).classList.remove('active');
+                }
+                
+                if (currentStep < steps.length) {
+                    document.getElementById(steps[currentStep]).classList.add('active');
+                    currentStep++;
+                    setTimeout(processStep, 2000); // 2 seconds per step
+                } else {
+                    // Processing complete
+                    setTimeout(() => {
+                        document.getElementById('processingStatus').classList.remove('show');
+                        showResults(data);
+                    }, 1000);
+                }
+            };
+
+            processStep();
+        }
+
+        function showResults(data) {
+            // Generate unique URL
+            const restaurantSlug = data.restaurant.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const arUrl = `https://ar.insane.marketing/${restaurantSlug}`;
+            
+            document.getElementById('arMenuUrl').textContent = arUrl;
+            document.getElementById('resultsSection').classList.add('show');
+            
+            // Store the data for the AR experience
+            sessionStorage.setItem('generatedARData', JSON.stringify({
+                ...data,
+                arUrl: arUrl,
+                qrCode: `QR-${Date.now()}.png`,
+                generatedAt: new Date().toISOString()
+            }));
+        }
+
+        function testARExperience() {
+            const data = JSON.parse(sessionStorage.getItem('generatedARData'));
+            alert(`🎯 Testing AR Experience\n\nRestaurant: ${data.restaurant.name}\nMethod: ${data.method}\nURL: ${data.arUrl}\n\nIn production, this would:\n• Open the actual AR menu experience\n• Show 3D food models\n• Allow photo sharing\n• Track analytics\n\nReady to go live!`);
+        }
+
+        function downloadMaterials() {
+            const data = JSON.parse(sessionStorage.getItem('generatedARData'));
+            alert(`📥 Download Package Ready!\n\nIncludes:\n• High-res QR codes (PNG, SVG)\n• Table tent cards (PDF)\n• Window clings design\n• Social media templates\n• Staff training guide\n• Setup instructions\n\nAll branded with ${data.restaurant.name}!`);
+        }
+
+        function shareSocial() {
+            const data = JSON.parse(sessionStorage.getItem('generatedARData'));
+            const message = `🚀 ${data.restaurant.name} now has AR menus! See our food in 3D by scanning QR codes at our tables. The future of dining is here! #ARMenu #Innovation`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `${data.restaurant.name} - AR Menu`,
+                    text: message,
+                    url: data.arUrl
+                });
+            } else {
+                navigator.clipboard.writeText(message).then(() => {
+                    alert(`📱 Social Media Post Copied!\n\n"${message}"\n\nPaste this on your social media to announce your AR menu!`);
+                });
+            }
+        }
+
+        // Add drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadAreas = document.querySelectorAll('.file-upload-area');
+            
+            uploadAreas.forEach(area => {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    area.addEventListener(eventName, preventDefaults, false);
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    area.addEventListener(eventName, () => area.classList.add('dragover'), false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    area.addEventListener(eventName, () => area.classList.remove('dragover'), false);
+                });
+
+                area.addEventListener('drop', handleDrop, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function handleDrop(e) {
+                const files = e.dataTransfer.files;
+                const area = e.target.closest('.file-upload-area');
+                
+                if (area.querySelector('#menuFile')) {
+                    handleFileUpload(files);
+                } else if (area.querySelector('#foodPhotos')) {
+                    handlePhotoUpload(files);
+                } else if (area.querySelector('#menuPhotos')) {
+                    handleMenuPhotoUpload(files);
+                }
+            }
+        });
+
+        // Initialize with sample data for demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some sample menu items for manual entry demo
+            addManualMenuItem();
+            addManualMenuItem();
+            
+            // Fill with sample data
+            setTimeout(() => {
+                if (document.getElementById('restaurantName')) {
+                    document.getElementById('restaurantName').value = 'Mario\'s Pizzeria';
+                    document.getElementById('restaurantTagline').value = 'Authentic Italian Since 1952';
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Evolution Gap Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 60px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 50px;
+            color: #64ffda;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #b0b8c1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .stage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .stage-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .stage-card:hover {
+            background: rgba(255,255,255,0.06);
+        }
+        
+        .stage-card.selected {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border: 2px solid #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stage-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .stage-number {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .stage-card.selected .stage-number {
+            color: #64ffda;
+        }
+        
+        .stage-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .stage-desc {
+            color: #b0b8c1;
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .stage-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stage-stat-label {
+            font-size: 0.8em;
+            color: #8892b0;
+            margin-bottom: 5px;
+        }
+        
+        .stage-stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #64ffda;
+        }
+        
+        .input-section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .input-section.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .input-section h3 {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #b0b8c1;
+            font-size: 0.95em;
+        }
+        
+        input[type="text"],
+        input[type="range"] {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+        }
+        
+        input[type="range"] {
+            padding: 0;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 10px;
+            outline: none;
+        }
+        
+        .analyze-btn-container {
+            text-align: center;
+        }
+        
+        .analyze-btn {
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .results {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .results.visible {
+            display: block;
+        }
+        
+        .alert-banner {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 149, 0, 0.2) 100%);
+            border: 2px solid rgba(255, 59, 48, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .alert-icon {
+            font-size: 3em;
+        }
+        
+        .alert-text h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .alert-highlight {
+            font-size: 1.2em;
+            color: #ffcc00;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        
+        .metric-icon {
+            margin-bottom: 15px;
+            font-size: 2.2em;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #ff3b30;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            font-size: 1.1em;
+            color: #b0b8c1;
+        }
+        
+        .comparison-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 50px;
+        }
+        
+        .comparison-section h3 {
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .comparison-box {
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        .comparison-box.current {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255, 59, 48, 0.3);
+        }
+        
+        .comparison-box.target {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border: 2px solid #667eea;
+        }
+        
+        .comparison-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .comparison-box.current .comparison-title {
+            color: #ff9500;
+        }
+        
+        .comparison-box.target .comparison-title {
+            color: #64ffda;
+        }
+        
+        .comparison-stat {
+            margin-bottom: 15px;
+        }
+        
+        .comparison-stat-label {
+            color: #8892b0;
+            margin-bottom: 5px;
+        }
+        
+        .comparison-stat-value {
+            font-size: 2em;
+            font-weight: 700;
+        }
+        
+        .comparison-stat-gain {
+            font-size: 0.5em;
+            color: #4ade80;
+            margin-left: 10px;
+        }
+        
+        .features-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 50px;
+        }
+        
+        .features-section h3 {
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-item {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .feature-icon {
+            font-size: 1.5em;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-radius: 20px;
+            border: 2px solid #667eea;
+        }
+        
+        .cta-section h3 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .cta-section p {
+            font-size: 1.3em;
+            color: #b0b8c1;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-primary {
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-secondary {
+            padding: 20px 40px;
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .cta-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .stage-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="badge">Interactive Gap Analysis</div>
+            <h1>Where Are You In The Evolution?</h1>
+            <p class="subtitle">
+                Select your current stage to discover exactly what you're missing and how much it's costing you.
+            </p>
+        </div>
+
+        <div class="stage-grid" id="stageGrid">
+            <!-- Stages will be populated by JavaScript -->
+        </div>
+
+        <div class="input-section" id="inputSection">
+            <h3>Tell us about your restaurant</h3>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Restaurant Name (optional)</label>
+                    <input type="text" id="restaurantName" placeholder="e.g., Bella Vista">
+                </div>
+                <div class="input-group">
+                    <label>Average Daily Tables: <span id="tablesValue">50</span></label>
+                    <input type="range" id="avgTables" min="10" max="200" value="50">
+                </div>
+                <div class="input-group">
+                    <label>Average Check Size: $<span id="checkValue">45</span></label>
+                    <input type="range" id="avgCheck" min="20" max="150" value="45">
+                </div>
+            </div>
+        </div>
+
+        <div class="analyze-btn-container" id="analyzeBtnContainer" style="display: none;">
+            <button class="analyze-btn" onclick="analyzeGap()">Show Me What I'm Missing →</button>
+        </div>
+
+        <div class="results" id="results">
+            <!-- Results will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            {
+                id: 1,
+                name: 'Basic Black & White QR',
+                icon: '📄',
+                description: 'Static QR code linking to a PDF menu or website',
+                engagement: 15,
+                upsellCapture: 8,
+                returnRate: 42,
+                satisfaction: 65,
+                features: ['View menu only', 'No ordering', 'No personalization', 'Manual payment']
+            },
+            {
+                id: 2,
+                name: 'Digital Menu System',
+                icon: '📱',
+                description: 'Digital menu with basic ordering capability',
+                engagement: 35,
+                upsellCapture: 22,
+                returnRate: 58,
+                satisfaction: 74,
+                features: ['Digital ordering', 'Basic payments', 'Limited customization', 'No AI assistance']
+            },
+            {
+                id: 3,
+                name: 'AI-Powered 3D Hub',
+                icon: '🚀',
+                description: 'Fully interactive, AI-driven customer experience platform',
+                engagement: 92,
+                upsellCapture: 67,
+                returnRate: 88,
+                satisfaction: 95,
+                features: ['AI personalization', 'Smart recommendations', 'Predictive analytics', 'Instant support', '3D interactive interface', 'Privacy-first', 'Zero friction']
+            }
+        ];
+
+        let selectedStage = null;
+        let avgTables = 50;
+        let avgCheck = 45;
+        let restaurantName = '';
+
+        // Populate stages
+        const stageGrid = document.getElementById('stageGrid');
+        stages.forEach(stage => {
+            const card = document.createElement('div');
+            card.className = 'stage-card';
+            card.onclick = () => selectStage(stage.id);
+            card.innerHTML = `
+                <div class="stage-icon">${stage.icon}</div>
+                <div class="stage-number">Stage ${stage.id}</div>
+                <div class="stage-name">${stage.name}</div>
+                <div class="stage-desc">${stage.description}</div>
+                <div class="stage-stats">
+                    <div>
+                        <div class="stage-stat-label">Engagement</div>
+                        <div class="stage-stat-value">${stage.engagement}%</div>
+                    </div>
+                    <div>
+                        <div class="stage-stat-label">Satisfaction</div>
+                        <div class="stage-stat-value">${stage.satisfaction}%</div>
+                    </div>
+                </div>
+            `;
+            stageGrid.appendChild(card);
+        });
+
+        function selectStage(stageId) {
+            selectedStage = stageId;
+            
+            // Update UI
+            document.querySelectorAll('.stage-card').forEach((card, idx) => {
+                if (idx + 1 === stageId) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            document.getElementById('inputSection').classList.add('visible');
+            document.getElementById('analyzeBtnContainer').style.display = 'block';
+        }
+
+        // Update slider values
+        document.getElementById('avgTables').addEventListener('input', (e) => {
+            avgTables = parseInt(e.target.value);
+            document.getElementById('tablesValue').textContent = avgTables;
+        });
+
+        document.getElementById('avgCheck').addEventListener('input', (e) => {
+            avgCheck = parseInt(e.target.value);
+            document.getElementById('checkValue').textContent = avgCheck;
+        });
+
+        document.getElementById('restaurantName').addEventListener('input', (e) => {
+            restaurantName = e.target.value;
+        });
+
+        function analyzeGap() {
+            if (!selectedStage) return;
+
+            const currentStage = stages[selectedStage - 1];
+            const targetStage = stages[2]; // AI-Powered Hub
+
+            const monthlyTables = avgTables * 30;
+            const currentUpsellRevenue = monthlyTables * avgCheck * (currentStage.upsellCapture / 100);
+            const potentialUpsellRevenue = monthlyTables * avgCheck * (targetStage.upsellCapture / 100);
+            const monthlyLoss = potentialUpsellRevenue - currentUpsellRevenue;
+            const yearlyLoss = monthlyLoss * 12;
+
+            const engagementGap = targetStage.engagement - currentStage.engagement;
+            const missedCustomers = monthlyTables * (engagementGap / 100);
+            const satisfactionGap = targetStage.satisfaction - currentStage.satisfaction;
+            const returnRateGap = targetStage.returnRate - currentStage.returnRate;
+            const lostReturningCustomers = monthlyTables * (returnRateGap / 100);
+
+            const missingFeatures = targetStage.features.filter(f => !currentStage.features.includes(f));
+
+            // Populate results
+            const resultsHTML = `
+                <div class="alert-banner">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-text">
+                        <h2>${restaurantName || 'Your Restaurant'} is at Stage ${selectedStage}</h2>
+                        <p class="alert-highlight">
+                            You're leaving <strong>$${monthlyLoss.toLocaleString()}/month</strong> on the table. 
+                            That's <strong>$${yearlyLoss.toLocaleString()}/year</strong> in lost revenue.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">💸</div>
+                        <div class="metric-value">-$${monthlyLoss.toLocaleString()}</div>
+                        <div class="metric-label">Lost monthly revenue from missed upsell opportunities</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">👥</div>
+                        <div class="metric-value">${Math.round(missedCustomers)}</div>
+                        <div class="metric-label">Customers per month not fully engaged with your brand</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📈</div>
+                        <div class="metric-value">${Math.round(lostReturningCustomers)}</div>
+                        <div class="metric-label">Lost returning customers per month due to lower satisfaction</div>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <h3>What You're Missing</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-box current">
+                            <h4 class="comparison-title">Your Current State</h4>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Engagement Rate</div>
+                                <div class="comparison-stat-value">${currentStage.engagement}%</div>
+                            </div>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Upsell Capture</div>
+                                <div class="comparison-stat-value">${currentStage.upsellCapture}%</div>
+                            </div>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Customer Satisfaction</div>
+                                <div class="comparison-stat-value">${currentStage.satisfaction}%</div>
+                            </div>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Return Rate</div>
+                                <div class="comparison-stat-value">${currentStage.returnRate}%</div>
+                            </div>
+                        </div>
+                        <div class="comparison-box target">
+                            <h4 class="comparison-title">With AI-Powered Hub</h4>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Engagement Rate</div>
+                                <div class="comparison-stat-value" style="color: #64ffda;">
+                                    ${targetStage.engagement}%
+                                    <span class="comparison-stat-gain">+${engagementGap}%</span>
+                                </div>
+                            </div>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Upsell Capture</div>
+                                <div class="comparison-stat-value" style="color: #64ffda;">
+                                    ${targetStage.upsellCapture}%
+                                    <span class="comparison-stat-gain">+${targetStage.upsellCapture - currentStage.upsellCapture}%</span>
+                                </div>
+                            </div>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Customer Satisfaction</div>
+                                <div class="comparison-stat-value" style="color: #64ffda;">
+                                    ${targetStage.satisfaction}%
+                                    <span class="comparison-stat-gain">+${satisfactionGap}%</span>
+                                </div>
+                            </div>
+                            <div class="comparison-stat">
+                                <div class="comparison-stat-label">Return Rate</div>
+                                <div class="comparison-stat-value" style="color: #64ffda;">
+                                    ${targetStage.returnRate}%
+                                    <span class="comparison-stat-gain">+${returnRateGap}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="features-section">
+                    <h3>Features You're Missing Out On</h3>
+                    <div class="features-grid">
+                        ${missingFeatures.map(feature => `
+                            <div class="feature-item">
+                                <div class="feature-icon">⚡</div>
+                                <span>${feature}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="cta-section">
+                    <h3>Ready to Close the Gap?</h3>
+                    <p>
+                        Stop leaving money on the table. Upgrade to the AI-Powered Hub and join the restaurants 
+                        already maximizing every customer opportunity.
+                    </p>
+                    <div class="cta-buttons">
+                        <button class="cta-primary" onclick="alert('Connect to your booking system')">Get Started Now</button>
+                        <button class="cta-secondary" onclick="location.reload()">Analyze Another Stage</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('results').innerHTML = resultsHTML;
+            document.getElementById('results').classList.add('visible');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

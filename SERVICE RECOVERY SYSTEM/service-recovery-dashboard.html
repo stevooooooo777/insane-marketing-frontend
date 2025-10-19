@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Recovery Dashboard | insane.marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #ff3366, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-left p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 25px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-change.positive {
+            color: #22c55e;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #ff3366, #ff6b9d);
+            border-color: transparent;
+        }
+
+        .alerts-container {
+            display: grid;
+            gap: 15px;
+        }
+
+        .alert-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid;
+            border-radius: 12px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: start;
+            transition: all 0.3s ease;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        .alert-card.urgent {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .alert-card.high {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .alert-card.medium {
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .alert-card.low {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .priority-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .priority-badge.urgent {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .priority-badge.high {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .priority-badge.medium {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .priority-badge.low {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .guest-info {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .location-info {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .time-elapsed {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .time-elapsed.critical {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .issue-summary {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .keywords {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .keyword-tag {
+            padding: 4px 10px;
+            background: rgba(255, 51, 102, 0.2);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 12px;
+            font-size: 12px;
+            color: #ff6b9d;
+        }
+
+        .alert-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .action-btn.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .sentiment-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .sentiment-indicator.negative {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .sentiment-indicator.neutral {
+            background: rgba(156, 163, 175, 0.2);
+            color: #9ca3af;
+        }
+
+        .sentiment-indicator.positive {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        @media (max-width: 768px) {
+            .alert-card {
+                grid-template-columns: 1fr;
+            }
+
+            .alert-actions {
+                flex-direction: row;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🛡️ Service Recovery Dashboard</h1>
+                <p>Real-time issue detection & response | insane.marketing</p>
+            </div>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>LIVE MONITORING</span>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active Alerts</div>
+                <div class="stat-value" id="activeAlerts">7</div>
+                <div class="stat-change negative">↑ 2 in last hour</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Avg Response Time</div>
+                <div class="stat-value" id="avgResponse">1.4m</div>
+                <div class="stat-change positive">↓ 15% vs yesterday</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Resolution Rate</div>
+                <div class="stat-value" id="resolutionRate">94%</div>
+                <div class="stat-change positive">↑ 3% this week</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Recovered Ratings</div>
+                <div class="stat-value" id="recoveredRatings">23</div>
+                <div class="stat-change positive">↑ 12 today</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterAlerts('all')">All Alerts</button>
+            <button class="filter-btn" onclick="filterAlerts('urgent')">🔴 Urgent</button>
+            <button class="filter-btn" onclick="filterAlerts('high')">🟠 High</button>
+            <button class="filter-btn" onclick="filterAlerts('medium')">🔵 Medium</button>
+            <button class="filter-btn" onclick="filterAlerts('pending')">⏳ Pending</button>
+        </div>
+
+        <!-- Alerts Container -->
+        <div class="alerts-container" id="alertsContainer">
+            <!-- Alerts will be dynamically populated -->
+        </div>
+    </div>
+
+    <script>
+        // Sample alert data - in production, this comes from your backend
+        let alerts = [
+            {
+                id: 1,
+                priority: 'urgent',
+                guest: 'Sarah Mitchell',
+                location: 'VIP Suite 14',
+                rating: 2,
+                sentiment: 'negative',
+                sentimentScore: 0.85,
+                issue: 'Guest reports excessive noise from adjacent suite disrupting their anniversary celebration. Mentioned in feedback: "Paid premium for peace and quiet but can\'t enjoy our special evening."',
+                keywords: ['noise', 'anniversary', 'disruption', 'premium'],
+                timeElapsed: '2 min',
+                status: 'pending',
+                recommendedAction: 'Immediate manager visit, offer suite upgrade or complementary service'
+            },
+            {
+                id: 2,
+                priority: 'high',
+                guest: 'James Chen',
+                location: 'Premium Box 7',
+                rating: 2,
+                sentiment: 'negative',
+                sentimentScore: 0.72,
+                issue: 'Multiple complaints about food service delays. Guest ordered 45 minutes ago and still waiting. Mentioned "unacceptable for premium seating."',
+                keywords: ['wait time', 'food delay', 'service', 'premium'],
+                timeElapsed: '5 min',
+                status: 'pending',
+                recommendedAction: 'Rush order, comp drinks, manager apology'
+            },
+            {
+                id: 3,
+                priority: 'high',
+                guest: 'Emily Rodriguez',
+                location: 'Restaurant - Table 12',
+                rating: 3,
+                sentiment: 'negative',
+                sentimentScore: 0.68,
+                issue: 'Guest allergic to shellfish - kitchen sent wrong dish. Now waiting for replacement. Guest is understanding but concerned about timing.',
+                keywords: ['allergy', 'wrong order', 'kitchen error'],
+                timeElapsed: '8 min',
+                status: 'pending',
+                recommendedAction: 'Priority kitchen order, comp meal, update guest profile'
+            },
+            {
+                id: 4,
+                priority: 'medium',
+                guest: 'Marcus Thompson',
+                location: 'Lounge Suite 3',
+                rating: 3,
+                sentiment: 'neutral',
+                sentimentScore: 0.45,
+                issue: 'WiFi connectivity issues mentioned. Guest trying to work during halftime but experiencing slow connection.',
+                keywords: ['wifi', 'connectivity', 'technical'],
+                timeElapsed: '12 min',
+                status: 'pending',
+                recommendedAction: 'IT support check, alternative network, follow-up'
+            },
+            {
+                id: 5,
+                priority: 'medium',
+                guest: 'Lisa Wang',
+                location: 'VIP Suite 22',
+                rating: 3,
+                sentiment: 'neutral',
+                sentimentScore: 0.52,
+                issue: 'Temperature control - guest reports room is too warm. Thermostat not responding properly.',
+                keywords: ['temperature', 'comfort', 'hvac'],
+                timeElapsed: '15 min',
+                status: 'pending',
+                recommendedAction: 'Maintenance check, portable AC if needed'
+            },
+            {
+                id: 6,
+                priority: 'urgent',
+                guest: 'David Park',
+                location: 'Hospitality Box 5',
+                rating: 1,
+                sentiment: 'negative',
+                sentimentScore: 0.92,
+                issue: 'Extremely dissatisfied with entire experience. Mentioned staff was rude, food was cold, and paid £500 for "terrible service." Threatening to leave review.',
+                keywords: ['rude staff', 'cold food', 'poor service', 'review threat'],
+                timeElapsed: '3 min',
+                status: 'pending',
+                recommendedAction: 'IMMEDIATE senior management intervention required'
+            },
+            {
+                id: 7,
+                priority: 'low',
+                guest: 'Rachel Green',
+                location: 'Premium Seating - Row F',
+                rating: 4,
+                sentiment: 'positive',
+                sentimentScore: 0.25,
+                issue: 'Minor issue - requested extra napkins 10 minutes ago. Overall positive feedback but noted slight delay in service.',
+                keywords: ['minor', 'service timing'],
+                timeElapsed: '18 min',
+                status: 'pending',
+                recommendedAction: 'Quick service follow-up'
+            }
+        ];
+
+        // Render alerts
+        function renderAlerts(filter = 'all') {
+            const container = document.getElementById('alertsContainer');
+            let filteredAlerts = alerts;
+
+            if (filter !== 'all') {
+                filteredAlerts = alerts.filter(alert => 
+                    filter === 'pending' ? alert.status === 'pending' : alert.priority === filter
+                );
+            }
+
+            if (filteredAlerts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✨</div>
+                        <h3>All Clear!</h3>
+                        <p>No active alerts at the moment. Great job!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredAlerts.map(alert => `
+                <div class="alert-card ${alert.priority}" data-id="${alert.id}">
+                    <div class="priority-badge ${alert.priority}">
+                        ${alert.priority}
+                    </div>
+
+                    <div class="alert-content">
+                        <div class="alert-header">
+                            <div>
+                                <div class="guest-info">
+                                    👤 ${alert.guest}
+                                    <span class="sentiment-indicator ${alert.sentiment}">
+                                        ${alert.sentiment === 'negative' ? '😟' : alert.sentiment === 'neutral' ? '😐' : '😊'} 
+                                        ${Math.round(alert.sentimentScore * 100)}% ${alert.sentiment}
+                                    </span>
+                                </div>
+                                <div class="location-info">📍 ${alert.location} • ⭐ ${alert.rating}/5 stars</div>
+                            </div>
+                            <div class="time-elapsed ${alert.timeElapsed.includes('min') && parseInt(alert.timeElapsed) < 5 ? 'critical' : ''}">
+                                ⏱️ ${alert.timeElapsed} ago
+                            </div>
+                        </div>
+
+                        <div class="issue-summary">
+                            ${alert.issue}
+                        </div>
+
+                        <div class="keywords">
+                            ${alert.keywords.map(keyword => `
+                                <span class="keyword-tag">${keyword}</span>
+                            `).join('')}
+                        </div>
+
+                        <div style="margin-top: 10px; padding: 10px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 3px solid #3b82f6;">
+                            <strong style="color: #3b82f6;">💡 Recommended Action:</strong><br>
+                            <span style="font-size: 13px;">${alert.recommendedAction}</span>
+                        </div>
+                    </div>
+
+                    <div class="alert-actions">
+                        <button class="action-btn primary" onclick="resolveAlert(${alert.id})">
+                            ✅ Resolve
+                        </button>
+                        <button class="action-btn secondary" onclick="viewDetails(${alert.id})">
+                            👁️ Details
+                        </button>
+                        <button class="action-btn danger" onclick="escalateAlert(${alert.id})">
+                            ⚠️ Escalate
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter alerts
+        function filterAlerts(filter) {
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderAlerts(filter);
+        }
+
+        // Resolve alert
+        function resolveAlert(id) {
+            const alert = alerts.find(a => a.id === id);
+            if (confirm(`Mark issue for ${alert.guest} as resolved?`)) {
+                alerts = alerts.filter(a => a.id !== id);
+                renderAlerts();
+                updateStats();
+                showNotification('✅ Alert resolved successfully!', 'success');
+            }
+        }
+
+        // View details
+        function viewDetails(id) {
+            const alert = alerts.find(a => a.id === id);
+            alert(`Guest Profile: ${alert.guest}\nLocation: ${alert.location}\nRating: ${alert.rating}/5\n\nIssue:\n${alert.issue}\n\nRecommended Action:\n${alert.recommendedAction}`);
+        }
+
+        // Escalate alert
+        function escalateAlert(id) {
+            const alert = alerts.find(a => a.id === id);
+            if (confirm(`Escalate ${alert.guest}'s issue to senior management?`)) {
+                alert.priority = 'urgent';
+                renderAlerts();
+                showNotification('⚠️ Alert escalated to senior management', 'warning');
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('activeAlerts').textContent = alerts.length;
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            // Simple alert for demo - in production, use toast notifications
+            alert(message);
+        }
+
+        // Simulate new alerts (for demo)
+        function simulateNewAlert() {
+            // In production, this would be real-time updates from your backend
+            const newAlert = {
+                id: Date.now(),
+                priority: ['urgent', 'high', 'medium'][Math.floor(Math.random() * 3)],
+                guest: 'New Guest',
+                location: 'Suite ' + Math.floor(Math.random() * 30),
+                rating: Math.floor(Math.random() * 3) + 1,
+                sentiment: 'negative',
+                sentimentScore: 0.7 + Math.random() * 0.2,
+                issue: 'New issue detected by AI system',
+                keywords: ['service', 'issue'],
+                timeElapsed: '0 min',
+                status: 'pending',
+                recommendedAction: 'Immediate attention required'
+            };
+
+            alerts.unshift(newAlert);
+            renderAlerts();
+            updateStats();
+            showNotification('🔔 New alert received!', 'info');
+        }
+
+        // Initialize
+        renderAlerts();
+
+        // Simulate new alerts every 30 seconds (for demo)
+        // setInterval(simulateNewAlert, 30000);
+    </script>
+</body>
+</html>
