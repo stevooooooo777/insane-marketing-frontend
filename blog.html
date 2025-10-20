@@ -3,1182 +3,860 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Quantum Chronicles | Tatyoo Events Blog</title>
+    <title>Blog - insane.marketing</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #000;
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.7;
             overflow-x: hidden;
-            cursor: none;
         }
 
-        .quantum-cursor {
+        #neuralNetwork {
             position: fixed;
-            width: 35px;
-            height: 35px;
-            background: radial-gradient(circle, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            opacity: 0.1;
             pointer-events: none;
-            z-index: 99999;
-            animation: quantumPulse 2s infinite;
-            box-shadow: 0 0 25px #ff6b6b, 0 0 50px #4ecdc4, 0 0 75px #45b7d1;
-        }
-
-        .background-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .navigation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(25px);
-            padding: 15px 0;
-            z-index: 1000;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 200% 200%;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 18px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid transparent;
-        }
-
-        .nav-links a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            transition: left 0.3s ease;
-            z-index: -1;
-        }
-
-        .nav-links a:hover::before {
-            left: 0;
-        }
-
-        .nav-links a:hover {
-            border-color: #ff6b6b;
-            box-shadow: 0 0 20px rgba(255,107,107,0.5);
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 120px 20px 20px;
-        }
-
-        .blog-hero {
-            text-align: center;
-            margin: 60px 0 100px;
+            padding: 60px 30px;
             position: relative;
+            z-index: 2;
         }
 
-        .blog-title {
-            font-size: 7rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3);
-            background-size: 600% 600%;
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #ff3366;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientShift 4s ease-in-out infinite, titleFloat 5s ease-in-out infinite;
-            margin-bottom: 30px;
-            text-shadow: 0 0 50px rgba(255,107,107,0.3);
+            margin-bottom: 10px;
+            letter-spacing: -1px;
         }
 
-        .blog-subtitle {
-            font-size: 2rem;
-            margin-bottom: 50px;
-            opacity: 0.9;
-            text-shadow: 0 0 25px #4ecdc4;
-            animation: subtitleGlow 3s ease-in-out infinite;
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 15px;
         }
 
-        .blog-stats {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            margin: 50px 0;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            text-align: center;
-            background: rgba(255,255,255,0.05);
-            padding: 25px 35px;
-            border-radius: 25px;
-            border: 2px solid rgba(255,107,107,0.3);
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(255,107,107,0.4);
-            border-color: #ff6b6b;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ff6b6b;
-            animation: numberPulse 2s infinite;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.8;
-            margin-top: 10px;
-        }
-
-        /* CONTENT FILTER TABS */
-        .content-filters {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 80px 0 60px;
-            flex-wrap: wrap;
-        }
-
-        .filter-tab {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .filter-tab::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .filter-tab:hover::before {
-            left: 100%;
-        }
-
-        .filter-tab:hover,
-        .filter-tab.active {
-            border-color: #4ecdc4;
-            box-shadow: 0 0 30px rgba(76,205,196,0.5);
-            background: rgba(76,205,196,0.2);
-            transform: translateY(-5px);
-        }
-
-        /* FEATURED ARTICLE HERO */
-        .featured-article {
-            background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(76,205,196,0.2));
-            border-radius: 30px;
-            padding: 60px;
-            margin: 80px 0;
-            border: 3px solid rgba(255,107,107,0.4);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.5s ease;
-        }
-
-        .featured-article::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            animation: aiScan 6s infinite;
-        }
-
-        .featured-article:hover {
-            transform: scale(1.02);
-            box-shadow: 0 30px 80px rgba(255,107,107,0.4);
-            border-color: #ff6b6b;
-        }
-
-        .featured-badge {
-            position: absolute;
-            top: -15px;
-            left: 50px;
-            background: linear-gradient(45deg, #feca57, #ff9ff3);
-            color: black;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transform: rotate(-5deg);
-            box-shadow: 0 5px 20px rgba(254,202,87,0.4);
-        }
-
-        .featured-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .featured-image {
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            animation: imageFloat 4s ease-in-out infinite;
-        }
-
-        .featured-text {
-            padding: 20px;
-        }
-
-        .featured-category {
-            background: rgba(76,205,196,0.3);
-            color: #4ecdc4;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 20px;
-            border: 1px solid #4ecdc4;
-        }
-
-        .featured-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #ff6b6b;
-            line-height: 1.2;
-        }
-
-        .featured-excerpt {
+        .page-subtitle {
             font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            opacity: 0.9;
+            color: #b0b0b0;
         }
 
-        .featured-meta {
-            display: flex;
-            gap: 30px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .read-time {
-            color: #96ceb4;
-        }
-
-        .engagement-stats {
-            display: flex;
-            gap: 15px;
-        }
-
-        /* BLOG GRID */
         .blog-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 40px;
-            margin: 80px 0;
+            margin-top: 50px;
         }
 
         .blog-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 25px;
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 12px;
             overflow: hidden;
-            border: 2px solid rgba(255,255,255,0.1);
-            transition: all 0.4s ease;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .blog-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s ease;
-            z-index: 1;
-        }
-
-        .blog-card:hover::before {
-            left: 100%;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
         }
 
         .blog-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 25px 60px rgba(255,107,107,0.3);
-            border-color: #ff6b6b;
+            border-color: #ff3366;
+            box-shadow: 0 15px 40px rgba(255, 51, 102, 0.2);
         }
 
-        .card-image {
+        .blog-card.expanded {
+            grid-column: 1 / -1;
+            border-color: #ff3366;
+        }
+
+        .blog-image {
             width: 100%;
-            height: 250px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            height: 200px;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4rem;
-            position: relative;
-            overflow: hidden;
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 800;
         }
 
-        .card-overlay {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            padding: 8px 16px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: white;
-        }
-
-        .card-content {
+        .blog-content {
             padding: 30px;
         }
 
-        .card-category {
-            background: rgba(69,183,209,0.3);
-            color: #45b7d1;
-            padding: 6px 15px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 15px;
-            border: 1px solid #45b7d1;
-        }
-
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #ff6b6b;
-            line-height: 1.3;
-        }
-
-        .card-excerpt {
-            font-size: 1rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            opacity: 0.8;
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        .card-engagement {
+        .blog-meta {
             display: flex;
             gap: 15px;
-        }
-
-        .engagement-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* TRENDING SIDEBAR */
-        .content-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 60px;
-            margin: 80px 0;
-        }
-
-        .main-content {
-            /* Blog grid will go here */
-        }
-
-        .sidebar {
-            position: sticky;
-            top: 120px;
-            height: fit-content;
-        }
-
-        .sidebar-section {
-            background: rgba(255,255,255,0.05);
-            border-radius: 25px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
-        }
-
-        .sidebar-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 25px;
-            color: #4ecdc4;
-            text-align: center;
-        }
-
-        .trending-item {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .trending-item:hover {
-            background: rgba(255,107,107,0.1);
-            border-color: #ff6b6b;
-            transform: translateX(10px);
-        }
-
-        .trending-rank {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .trending-content {
-            flex: 1;
-        }
-
-        .trending-title {
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-            line-height: 1.3;
-        }
-
-        .trending-views {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            color: #96ceb4;
-        }
-
-        /* NEWSLETTER SIGNUP */
-        .newsletter-section {
-            background: linear-gradient(135deg, rgba(150,206,180,0.2), rgba(254,202,87,0.2));
-            border-radius: 25px;
-            padding: 40px 30px;
-            text-align: center;
-            border: 2px solid #96ceb4;
-        }
-
-        .newsletter-title {
-            font-size: 1.3rem;
-            font-weight: bold;
             margin-bottom: 15px;
-            color: #96ceb4;
-        }
-
-        .newsletter-description {
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            opacity: 0.8;
-            line-height: 1.4;
-        }
-
-        .newsletter-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .newsletter-input {
-            padding: 12px 15px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 15px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .newsletter-input:focus {
-            outline: none;
-            border-color: #96ceb4;
-            box-shadow: 0 0 15px rgba(150,206,180,0.4);
-        }
-
-        .newsletter-btn {
-            background: linear-gradient(45deg, #96ceb4, #4ecdc4);
-            border: none;
-            padding: 15px;
-            border-radius: 15px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .newsletter-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(150,206,180,0.4);
-        }
-
-        /* LIVE ACTIVITY FEED */
-        .activity-feed {
-            background: rgba(0,0,0,0.8);
-            border-radius: 25px;
-            padding: 30px;
-            border: 2px solid #45b7d1;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            animation: activityPulse 3s infinite;
-        }
-
-        .activity-icon {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(45deg, #45b7d1, #4ecdc4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-
-        .activity-text {
-            flex: 1;
             font-size: 0.85rem;
+            color: #888;
+            flex-wrap: wrap;
+        }
+
+        .blog-category {
+            background: rgba(255, 51, 102, 0.2);
+            color: #ff3366;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .blog-date {
+            display: flex;
+            align-items: center;
+        }
+
+        .blog-card h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 700;
             line-height: 1.3;
         }
 
-        .activity-time {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            color: #45b7d1;
+        .blog-excerpt {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
 
-        /* PAGINATION */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 80px 0;
+        .blog-full-article {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
         }
 
-        .page-btn {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
+        .blog-full-article.active {
+            max-height: 5000px;
         }
 
-        .page-btn:hover,
-        .page-btn.active {
-            border-color: #ff6b6b;
-            background: rgba(255,107,107,0.2);
-            box-shadow: 0 0 20px rgba(255,107,107,0.3);
+        .article-body {
+            color: #b0b0b0;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #333;
         }
 
-        /* SEARCH BAR */
-        .search-container {
-            position: relative;
-            max-width: 500px;
-            margin: 40px auto;
+        .article-body h3 {
+            color: #ffffff;
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            font-weight: 700;
         }
 
-        .search-input {
-            width: 100%;
-            padding: 15px 50px 15px 20px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 25px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(15px);
+        .article-body p {
+            margin-bottom: 20px;
         }
 
-        .search-input:focus {
-            outline: none;
-            border-color: #4ecdc4;
-            box-shadow: 0 0 25px rgba(76,205,196,0.4);
+        .article-body strong {
+            color: #ff3366;
         }
 
-        .search-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
+        .read-more {
+            color: #ff3366;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
+            gap: 8px;
+            transition: gap 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-family: inherit;
         }
 
-        /* ANIMATIONS */
-        @keyframes quantumPulse {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.3) rotate(180deg); }
+        .read-more:hover {
+            gap: 12px;
         }
 
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .read-more::after {
+            content: "→";
+            transition: transform 0.3s ease;
         }
 
-        @keyframes titleFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-25px); }
+        .read-more.active::after {
+            content: "×";
+            transform: rotate(180deg);
+            font-size: 1.5rem;
         }
 
-        @keyframes subtitleGlow {
-            0%, 100% { text-shadow: 0 0 25px #4ecdc4; }
-            50% { text-shadow: 0 0 40px #4ecdc4, 0 0 60px #ff6b6b; }
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(180deg, #0a0a0a, #000000);
+            border-top: 1px solid #333;
+            padding: 60px 30px 30px;
+            margin-top: 100px;
         }
 
-        @keyframes numberPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        @keyframes aiScan {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 50px;
         }
 
-        @keyframes imageFloat {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
+        .footer-column h4 {
+            color: #ff3366;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        @keyframes activityPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .footer-column ul {
+            list-style: none;
         }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 1024px) {
-            .content-wrapper {
-                grid-template-columns: 1fr;
-                gap: 40px;
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-column a:hover {
+            color: #ff3366;
+            transform: translateX(3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #1a1a1a;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff3366, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .footer-copyright {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
             }
-            
-            .sidebar {
-                position: static;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-columns {
+                grid-template-columns: repeat(2, 1fr);
                 gap: 30px;
             }
         }
 
-        @media (max-width: 768px) {
-            .blog-title { font-size: 4rem; }
-            .blog-subtitle { font-size: 1.5rem; }
-            .blog-grid { grid-template-columns: 1fr; }
-            .featured-content { grid-template-columns: 1fr; }
-            .blog-stats { flex-direction: column; align-items: center; }
-            .content-filters { justify-content: center; }
-            body { cursor: auto; }
-            .quantum-cursor { display: none; }
-        }
-
         @media (max-width: 480px) {
-            .blog-title { font-size: 3rem; }
-            .featured-article { padding: 30px; }
-            .blog-card .card-content { padding: 20px; }
-            .sidebar-section { padding: 20px; }
+            .footer-columns {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="quantum-cursor" id="quantumCursor"></div>
-    <canvas class="background-canvas" id="backgroundCanvas"></canvas>
-    
-    <!-- NAVIGATION -->
-    <nav class="navigation">
-        <div class="nav-container">
-            <div class="logo">📖 THE QUANTUM CHRONICLES</div>
-            <ul class="nav-links">
-                <li><a href="/">🏠 Home</a></li>
-                <li><a href="#ai-studio">🤖 AI Studio</a></li>
-                <li><a href="#business-tools">💰 Business Tools</a></li>
-                <li><a href="#virtual-experiences">🌀 Virtual Experiences</a></li>
-                <li><a href="#gallery">🎨 Gallery</a></li>
-                <li><a href="#contact">📞 Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+    <canvas id="neuralNetwork"></canvas>
 
     <div class="container">
-        <!-- BLOG HERO -->
-        <section class="blog-hero">
-            <h1 class="blog-title">THE QUANTUM CHRONICLES</h1>
-            <p class="blog-subtitle">Where Reality Meets Digital Artistry</p>
-            
-            <div class="blog-stats">
-                <div class="stat-item">
-                    <div class="stat-number">847K+</div>
-                    <div class="stat-label">Monthly Readers</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">1,247</div>
-                    <div class="stat-label">Articles Published</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">50K+</div>
-                    <div class="stat-label">Newsletter Subscribers</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">98.7%</div>
-                    <div class="stat-label">Reader Satisfaction</div>
-                </div>
-            </div>
-            
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search the quantum realm of knowledge..." id="searchInput">
-                <button class="search-btn" onclick="performSearch()">🔍</button>
-            </div>
-        </section>
+        <header>
+            <div class="logo">insane.marketing</div>
+            <h1 class="page-title">Insights & Innovation</h1>
+            <p class="page-subtitle">Where cutting-edge tech meets real-world results</p>
+        </header>
 
-        <!-- CONTENT FILTERS -->
-        <section class="content-filters">
-            <div class="filter-tab active" data-category="all">🌟 All Articles</div>
-            <div class="filter-tab" data-category="success-stories">🏆 Success Stories</div>
-            <div class="filter-tab" data-category="technology">🤖 Technology</div>
-            <div class="filter-tab" data-category="design">🎨 Design Inspiration</div>
-            <div class="filter-tab" data-category="industry">📊 Industry Trends</div>
-            <div class="filter-tab" data-category="behind-scenes">🎬 Behind the Scenes</div>
-        </section>
-
-        <!-- FEATURED ARTICLE -->
-        <section class="featured-article" onclick="readArticle('featured')">
-            <div class="featured-badge">⚡ FEATURED STORY</div>
-            <div class="featured-content">
-                <div class="featured-image">🚀</div>
-                <div class="featured-text">
-                    <div class="featured-category">🏆 SUCCESS STORY</div>
-                    <h2 class="featured-title">How We Generated $2.3M in Sales with One Holographic Event</h2>
-                    <p class="featured-excerpt">
-                        Discover the complete case study of TechNova Corp's product launch that broke all records. 
-                        From concept to execution, learn how quantum technology and strategic event design created 
-                        a viral sensation that generated massive ROI and 15M+ social media impressions.
-                    </p>
-                    <div class="featured-meta">
-                        <span class="read-time">⏱️ 8 min read</span>
-                        <div class="engagement-stats">
-                            <span>👁️ 45.7K views</span>
-                            <span>💬 234 comments</span>
-                            <span>🔗 1.2K shares</span>
-                        </div>
+        <div class="blog-grid">
+            <!-- Article 1 -->
+            <article class="blog-card">
+                <div class="blog-image">AI</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">AI & Machine Learning</span>
+                        <span class="blog-date">Oct 10, 2025 • 6 min read</span>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MAIN CONTENT WRAPPER -->
-        <div class="content-wrapper">
-            <div class="main-content">
-                <!-- BLOG GRID -->
-                <section class="blog-grid" id="blogGrid">
-                    <!-- Article 1 -->
-                    <article class="blog-card" onclick="readArticle('ai-revolution')">
-                        <div class="card-image">
-                            🤖
-                            <div class="card-overlay">⚡ TRENDING</div>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-category">🤖 TECHNOLOGY</div>
-                            <h3 class="card-title">The AI Revolution in Event Personalization</h3>
-                            <p class="card-excerpt">
-                                How artificial intelligence is transforming event experiences by creating 
-                                personalized content for every single attendee in real-time.
-                            </p>
-                            <div class="card-meta">
-                                <span class="read-time">⏱️ 6 min read</span>
-                                <div class="card-engagement">
-                                    <div class="engagement-item">👁️ 28.4K</div>
-                                    <div class="engagement-item">💬 156</div>
-                                    <div class="engagement-item">❤️ 892</div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Article 2 -->
-                    <article class="blog-card" onclick="readArticle('holographic-design')">
-                        <div class="card-image">
-                            🎨
-                            <div class="card-overlay">🔥 HOT</div>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-category">🎨 DESIGN</div>
-                            <h3 class="card-title">Creating Immersive Holographic Environments</h3>
-                            <p class="card-excerpt">
-                                Step-by-step guide to designing breathtaking holographic experiences that 
-                                captivate audiences and create unforgettable brand moments.
-                            </p>
-                            <div class="card-meta">
-                                <span class="read-time">⏱️ 12 min read</span>
-                                <div class="card-engagement">
-                                    <div class="engagement-item">👁️ 19.2K</div>
-                                    <div class="engagement-item">💬 89</div>
-                                    <div class="engagement-item">❤️ 643</div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Article 3 -->
-                    <article class="blog-card" onclick="readArticle('virtual-networking')">
-                        <div class="card-image">
-                            🌐
-                            <div class="card-overlay">✨ NEW</div>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-category">📊 INDUSTRY</div>
-                            <h3 class="card-title">The Future of Virtual Networking Events</h3>
-                            <p class="card-excerpt">
-                                Exploring how VR and AI are revolutionizing business networking, 
-                                creating deeper connections in virtual spaces than ever before.
-                            </p>
-                            <div class="card-meta">
-                                <span class="read-time">⏱️ 9 min read</span>
-                                <div class="card-engagement">
-                                    <div class="engagement-item">👁️ 31.7K</div>
-                                    <div class="engagement-item">💬 203</div>
-                                    <div class="engagement-item">❤️ 1.1K</div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Article 4 -->
-                    <article class="blog-card" onclick="readArticle('event-metrics')">
-                        <div class="card-image">
-                            📊
-                        </div>
-                        <div class="card-content">
-                            <div class="card-category">🎬 BEHIND SCENES</div>
-                            <h3 class="card-title">Measuring Success: Advanced Event Analytics</h3>
-                            <p class="card-excerpt">
-                                Deep dive into the metrics that matter most for modern events, 
-                                from engagement tracking to ROI optimization strategies.
-                            </p>
-                            <div class="card-meta">
-                                <span class="read-time">⏱️ 7 min read</span>
-                                <div class="card-engagement">
-                                    <div class="engagement-item">👁️ 15.8K</div>
-                                    <div class="engagement-item">💬 67</div>
-                                    <div class="engagement-item">❤️ 432</div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Article 5 -->
-                    <article class="blog-card" onclick="readArticle('startup-success')">
-                        <div class="card-image">
-                            🚀
-                            <div class="card-overlay">💎 PREMIUM</div>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-category">🏆 SUCCESS STORY</div>
-                            <h3 class="card-title">How a Startup Used AR to Land $50M Investment</h3>
-                            <p class="card-excerpt">
-                                Exclusive case study: TechFlow's innovative AR presentation that impressed 
-                                investors and secured massive funding in just 20 minutes.
-                            </p>
-                            <div class="card-meta">
-                                <span class="read-time">⏱️ 11 min read</span>
-                                <div class="card-engagement">
-                                    <div class="engagement-item">👁️ 52.3K</div>
-                                    <div class="engagement-item">💬 345</div>
-                                    <div class="engagement-item">❤️ 2.1K</div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Article 6 -->
-                    <article class="blog-card" onclick="readArticle('quantum-experiences')">
-                        <div class="card-image">
-                            ⚡
-                        </div>
-                        <div class="card-content">
-                            <div class="card-category">🤖 TECHNOLOGY</div>
-                            <h3 class="card-title">Quantum Computing Meets Event Technology</h3>
-                            <p class="card-excerpt">
-                                Exploring the cutting-edge intersection of quantum computing and immersive 
-                                experiences, pushing the boundaries of what's possible.
-                            </p>
-                            <div class="card-meta">
-                                <span class="read-time">⏱️ 14 min read</span>
-                                <div class="card-engagement">
-                                    <div class="engagement-item">👁️ 8.9K</div>
-                                    <div class="engagement-item">💬 124</div>
-                                    <div class="engagement-item">❤️ 567</div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </section>
-
-                <!-- PAGINATION -->
-                <section class="pagination">
-                    <div class="page-btn" onclick="changePage(1)">« Previous</div>
-                    <div class="page-btn active" onclick="changePage(1)">1</div>
-                    <div class="page-btn" onclick="changePage(2)">2</div>
-                    <div class="page-btn" onclick="changePage(3)">3</div>
-                    <div class="page-btn" onclick="changePage(4)">4</div>
-                    <div class="page-btn" onclick="changePage(5)">5</div>
-                    <div class="page-btn" onclick="changePage(2)">Next »</div>
-                </section>
-            </div>
-
-            <!-- SIDEBAR -->
-            <aside class="sidebar">
-                <!-- TRENDING ARTICLES -->
-                <div class="sidebar-section">
-                    <h3 class="sidebar-title">🔥 Trending This Week</h3>
+                    <h2>Real-Time Predictive AI: The Unfair Advantage Luxury Venues Need</h2>
+                    <p class="blog-excerpt">How real-time predictive AI transforms guest experiences from reactive to proactive. Learn why leading venues are abandoning traditional analytics for AI that predicts behavior before it happens.</p>
                     
-                    <div class="trending-item" onclick="readArticle('trending-1')">
-                        <div class="trending-rank">1</div>
-                        <div class="trending-content">
-                            <div class="trending-title">Meta's New Hologram API Changes Everything</div>
-                            <div class="trending-views">👁️ 847K views</div>
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>The luxury hospitality game has changed. Your guests don't want you to respond to their needs—they expect you to anticipate them. That's where real-time predictive AI separates the leaders from the also-rans.</p>
+
+                            <h3>The Problem with Traditional Analytics</h3>
+                            <p>Most venues are still using <strong>backward-looking analytics</strong>. They tell you what happened last week, last month, last quarter. By the time you act on those insights, the moment has passed and your competitor has already moved.</p>
+                            <p>Traditional CRM systems are glorified databases. They store information, but they don't think. They can't predict that the guest checking in is likely to book your spa based on their behavioral patterns, weather conditions, and time of stay.</p>
+
+                            <h3>Real-Time Prediction Changes Everything</h3>
+                            <p>Real-time predictive AI doesn't wait for patterns to emerge over months. It processes thousands of data points instantly—guest history, current behavior, environmental factors, booking patterns, even social sentiment—and makes <strong>actionable predictions in milliseconds</strong>.</p>
+                            <p>When a high-value guest walks into your venue, the system already knows they prefer a specific type of room, typically order from a particular menu section, and are 73% likely to book an experience if offered within the first hour. Your staff gets this intelligence before the guest even mentions it.</p>
+
+                            <h3>The ROI Is Impossible to Ignore</h3>
+                            <p>Venues implementing real-time predictive AI report:</p>
+                            <p>• <strong>34% increase in ancillary revenue</strong> through perfectly-timed upsells<br>
+                            • <strong>47% reduction in guest service issues</strong> by predicting and preventing problems<br>
+                            • <strong>22% higher guest satisfaction scores</strong> from personalized experiences<br>
+                            • <strong>2.3x increase in repeat bookings</strong> compared to reactive approaches</p>
+
+                            <h3>Why First-Movers Win Big</h3>
+                            <p>This isn't about incremental improvement. This is about redefining what's possible in guest experience. The venues implementing this now are capturing loyalty that will be nearly impossible for competitors to break later.</p>
+                            <p>Your guests already experience this level of personalization from Amazon, Netflix, and Spotify. They expect it from you too. The question isn't whether to adopt real-time predictive AI—it's whether you'll lead or follow.</p>
                         </div>
                     </div>
-
-                    <div class="trending-item" onclick="readArticle('trending-2')">
-                        <div class="trending-rank">2</div>
-                        <div class="trending-content">
-                            <div class="trending-title">5 Event Trends That Will Dominate 2025</div>
-                            <div class="trending-views">👁️ 623K views</div>
-                        </div>
-                    </div>
-
-                    <div class="trending-item" onclick="readArticle('trending-3')">
-                        <div class="trending-rank">3</div>
-                        <div class="trending-content">
-                            <div class="trending-title">Behind the $10M Virtual Concert</div>
-                            <div class="trending-views">👁️ 592K views</div>
-                        </div>
-                    </div>
-
-                    <div class="trending-item" onclick="readArticle('trending-4')">
-                        <div class="trending-rank">4</div>
-                        <div class="trending-content">
-                            <div class="trending-title">AI Avatars: The New Event Hosts</div>
-                            <div class="trending-views">👁️ 456K views</div>
-                        </div>
-                    </div>
-
-                    <div class="trending-item" onclick="readArticle('trending-5')">
-                        <div class="trending-rank">5</div>
-                        <div class="trending-content">
-                            <div class="trending-title">Quantum Networking Protocol Released</div>
-                            <div class="trending-views">👁️ 398K views</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NEWSLETTER SIGNUP -->
-                <div class="sidebar-section newsletter-section">
-                    <h3 class="newsletter-title">🚀 Join the Quantum Network</h3>
-                    <p class="newsletter-description">
-                        Get exclusive insights, early access to case studies, and cutting-edge event tech updates delivered to your inbox.
-                    </p>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" class="newsletter-input" placeholder="Enter your email" required>
-                        <button type="submit" class="newsletter-btn">Subscribe Now</button>
-                    </form>
-                </div>
-
-                <!-- LIVE ACTIVITY FEED -->
-                <div class="sidebar-section activity-feed">
-                    <h3 class="sidebar-title">⚡ Live Activity</h3>
                     
-                    <div class="activity-item">
-                        <div class="activity-icon">👁️</div>
-                        <div class="activity-text">
-                            <strong>Sarah M.</strong> just read "AI Revolution in Events"
-                        </div>
-                        <div class="activity-time">2m ago</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon">💬</div>
-                        <div class="activity-text">
-                            <strong>Alex K.</strong> commented on "Holographic Design Guide"
-                        </div>
-                        <div class="activity-time">5m ago</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon">🔗</div>
-                        <div class="activity-text">
-                            <strong>Marcus R.</strong> shared "Virtual Networking Future"
-                        </div>
-                        <div class="activity-time">8m ago</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon">❤️</div>
-                        <div class="activity-text">
-                            <strong>Emma L.</strong> liked "Startup AR Success Story"
-                        </div>
-                        <div class="activity-time">12m ago</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon">📖</div>
-                        <div class="activity-text">
-                            <strong>David P.</strong> started reading "Event Analytics Deep Dive"
-                        </div>
-                        <div class="activity-time">15m ago</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon">🚀</div>
-                        <div class="activity-text">
-                            New article published: "Quantum Computing & Events"
-                        </div>
-                        <div class="activity-time">18m ago</div>
-                    </div>
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
                 </div>
-            </aside>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="blog-card">
+                <div class="blog-image">⚡</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Industry Trends</span>
+                        <span class="blog-date">Oct 5, 2025 • 5 min read</span>
+                    </div>
+                    <h2>Stadium Boxes Are Dead. Long Live Smart Suites.</h2>
+                    <p class="blog-excerpt">Premium stadium experiences are evolving faster than ever. Discover how intelligent suites with personalized AI-driven services are redefining what VIP means in 2025 and beyond.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>The traditional stadium box—leather seats, catered food, a TV screen—is officially obsolete. High-net-worth individuals aren't impressed by champagne and climate control anymore. They get that at home.</p>
+
+                            <h3>What Today's VIPs Actually Want</h3>
+                            <p>Premium guests expect <strong>experiences that adapt to them in real-time</strong>. They want their favorite drinks waiting when they arrive. They want instant replay angles they choose. They want to order from their phone and have it delivered to their seat before they finish the thought.</p>
+                            <p>Smart suites deliver all of this through integrated AI systems that learn preferences, predict needs, and orchestrate seamless experiences across every touchpoint.</p>
+
+                            <h3>The Technology Stack That Matters</h3>
+                            <p>Modern smart suites integrate:</p>
+                            <p>• <strong>Behavioral AI</strong> that learns guest preferences across multiple visits<br>
+                            • <strong>Dynamic content systems</strong> that personalize in-suite entertainment<br>
+                            • <strong>Frictionless ordering</strong> with predictive menus based on past behavior<br>
+                            • <strong>Real-time engagement tools</strong> for exclusive content and experiences<br>
+                            • <strong>Integrated loyalty platforms</strong> that reward and recognize VIP guests</p>
+
+                            <h3>The Business Case Is Crystal Clear</h3>
+                            <p>Stadiums with smart suites are seeing <strong>56% higher per-guest revenue</strong> compared to traditional boxes. Why? Because the technology enables perfectly-timed upsells, reduces service friction, and creates memorable experiences that drive renewals.</p>
+                            <p>Suite renewal rates for smart-enabled spaces average <strong>94%</strong> versus 67% for traditional boxes. That's the difference between predictable revenue and constantly selling your inventory.</p>
+
+                            <h3>The Competitive Moat</h3>
+                            <p>Here's what most venues don't realize: once guests experience a truly smart suite, going back to a "dumb" box feels like downgrading from a Tesla to a minivan. You're not just competing on amenities anymore—you're competing on intelligence.</p>
+                            <p>The stadiums implementing this now are locking in their premium customers for the next decade. Everyone else is fighting over the scraps.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="blog-card">
+                <div class="blog-image">🎯</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Marketing Tech</span>
+                        <span class="blog-date">Sep 28, 2025 • 7 min read</span>
+                    </div>
+                    <h2>Why Your Marketing Stack Is Costing You Millions</h2>
+                    <p class="blog-excerpt">The hidden costs of patched-together marketing technology. Full-stack solutions deliver 3x ROI over integrated platforms—here's the data that proves it.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>Let's talk about the elephant in the boardroom: your marketing stack is bleeding money, and you probably don't even realize how much.</p>
+
+                            <h3>The Integration Tax Nobody Talks About</h3>
+                            <p>You're paying for Salesforce, HubSpot, Google Analytics, your CRM, your email platform, your social tools, and twelve other solutions that all promise to "integrate seamlessly." Except they don't.</p>
+                            <p>The average enterprise spends <strong>$427,000 annually just maintaining integrations</strong> between marketing tools. That's not counting the actual software licenses—that's just keeping the pipes flowing.</p>
+
+                            <h3>Hidden Costs That Destroy ROI</h3>
+                            <p><strong>Data Lag:</strong> Your systems sync every 15 minutes, or hourly, or daily. By the time data moves from one platform to another, opportunities are gone. Real-time responsiveness is impossible when your tech stack thinks in hours.</p>
+                            <p><strong>Integration Breaks:</strong> Vendor A updates their API. Vendor B changes their data structure. Your integration breaks. Your team scrambles. Your campaigns pause. Revenue stops.</p>
+                            <p><strong>Vendor Lock-In:</strong> Want to switch email providers? Better budget six months and $200K for migration and re-integration. You're trapped, and the vendors know it.</p>
+
+                            <h3>The Full-Stack Alternative</h3>
+                            <p>Purpose-built full-stack platforms eliminate the integration tax entirely. One codebase. One database. Zero latency. When everything is built together from the ground up, data flows at the speed of thought, not the speed of APIs.</p>
+                            <p>Organizations switching from integrated stacks to full-stack solutions report:</p>
+                            <p>• <strong>67% reduction in total tech costs</strong><br>
+                            • <strong>3.2x faster campaign deployment</strong><br>
+                            • <strong>Zero integration failures</strong> (because there are no integrations)<br>
+                            • <strong>Real-time data</strong> instead of synced data</p>
+
+                            <h3>The Math Is Simple</h3>
+                            <p>If you're spending $500K on licenses and $400K on integration maintenance, you're at $900K annually. A full-stack solution at $300K with zero integration costs saves you $600K per year while delivering superior performance.</p>
+                            <p>That's not an incremental improvement. That's a complete transformation of your marketing economics.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
+
+            <!-- Article 4 -->
+            <article class="blog-card">
+                <div class="blog-image">🏨</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Hospitality</span>
+                        <span class="blog-date">Sep 20, 2025 • 5 min read</span>
+                    </div>
+                    <h2>Hyper-Personalization: How Luxury Hotels Are Winning Guest Loyalty</h2>
+                    <p class="blog-excerpt">Gone are the days of remembering names and preferences. Today's luxury guests expect experiences tailored to them before they even check in. Here's how AI makes it possible.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>Remembering a guest's name isn't personalization anymore. It's table stakes. True hyper-personalization means knowing their preferences before they state them, anticipating needs before they arise, and creating moments that feel impossibly tailored.</p>
+
+                            <h3>Beyond the Preference Card</h3>
+                            <p>Traditional luxury hotels keep notes: "Guest prefers king bed, extra pillows, room away from elevator." That's not personalization—that's basic competence.</p>
+                            <p>Hyper-personalization uses AI to analyze hundreds of data points: booking patterns, in-stay behavior, dining preferences, spa usage, even weather on previous visits. It predicts what guests want before they know they want it.</p>
+
+                            <h3>What This Actually Looks Like</h3>
+                            <p>A guest books a three-night stay. Before arrival, the AI predicts:</p>
+                            <p>• 89% probability they'll visit the spa (sends personalized treatment recommendations)<br>
+                            • Preferred dining time is 7:30 PM (proactively offers reservation)<br>
+                            • Likely to work in room mornings (ensures optimal desk setup and strong WiFi)<br>
+                            • Historically books activities on day two (prepares curated local experiences)</p>
+                            <p>None of this required the guest to fill out a survey or answer questions. The system knows because it learns.</p>
+
+                            <h3>The Loyalty Impact</h3>
+                            <p>Luxury hotels implementing hyper-personalization see <strong>68% higher guest loyalty scores</strong> and <strong>3.8x more direct bookings</strong> from returning guests compared to traditional personalization approaches.</p>
+                            <p>Why? Because once guests experience true hyper-personalization, everything else feels generic. You're not competing on thread count anymore—you're competing on how well you know your guests.</p>
+
+                            <h3>The Technology Requirements</h3>
+                            <p>This level of personalization requires full-stack AI that can:</p>
+                            <p>• Process real-time behavioral data<br>
+                            • Learn from every guest interaction<br>
+                            • Make predictions with high confidence<br>
+                            • Orchestrate personalized experiences across all touchpoints<br>
+                            • Operate without manual intervention</p>
+                            <p>The hotels implementing this now are creating competitive moats that will be nearly impossible to overcome. Because once a guest is truly known, they don't want to start over somewhere else.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
+
+            <!-- Article 5 -->
+            <article class="blog-card">
+                <div class="blog-image">📊</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Data & Analytics</span>
+                        <span class="blog-date">Sep 15, 2025 • 8 min read</span>
+                    </div>
+                    <h2>From Vanity Metrics to Victory: What Premium Venues Should Actually Measure</h2>
+                    <p class="blog-excerpt">Page views and click rates don't pay the bills. Learn which metrics actually correlate with revenue growth and guest lifetime value in high-end hospitality.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>Your dashboard is lying to you. Those impressive graphs showing website traffic and social engagement? They're vanity metrics—they make you feel good but don't predict revenue.</p>
+
+                            <h3>The Metrics That Actually Matter</h3>
+                            <p><strong>Guest Lifetime Value (GLV):</strong> Not how much they spent last visit—how much they'll spend over their entire relationship with you. This one metric predicts long-term success better than any other.</p>
+                            <p><strong>Predictive Booking Score:</strong> AI-driven prediction of likelihood to book again within 90 days. This tells you who to nurture and who to let go.</p>
+                            <p><strong>Revenue Per Available Experience (RevPAE):</strong> Beyond room revenue—how much are you extracting from every monetizable moment? Dining, spa, activities, upgrades, everything.</p>
+                            <p><strong>Service Recovery Success Rate:</strong> When something goes wrong, how often do you turn it into loyalty? This metric separates good venues from great ones.</p>
+
+                            <h3>Why Traditional Metrics Fail</h3>
+                            <p>Occupancy rate doesn't tell you profitability. Website traffic doesn't predict bookings. Social followers don't correlate with revenue. Email open rates don't measure engagement quality.</p>
+                            <p>Premium venues need premium metrics that connect directly to business outcomes. Every metric you track should answer: "How does this make us more money or create more loyal guests?"</p>
+
+                            <h3>The Data Architecture You Need</h3>
+                            <p>To measure what matters, you need systems that can:</p>
+                            <p>• Track guest behavior across all touchpoints<br>
+                            • Calculate predictive scores in real-time<br>
+                            • Connect actions to revenue outcomes<br>
+                            • Identify which experiences drive lifetime value<br>
+                            • Segment guests by predicted behavior, not demographics</p>
+
+                            <h3>What Success Looks Like</h3>
+                            <p>Venues that shifted from vanity metrics to value metrics report:</p>
+                            <p>• <strong>41% increase in marketing ROI</strong> by focusing spend on high-GLV guests<br>
+                            • <strong>52% improvement in staff performance</strong> by measuring service recovery<br>
+                            • <strong>2.7x higher per-guest revenue</strong> through RevPAE optimization<br>
+                            • <strong>34% reduction in marketing waste</strong> by ignoring vanity metrics</p>
+                            <p>Stop measuring what's easy to measure. Start measuring what actually drives your business forward.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
+
+            <!-- Article 6 -->
+            <article class="blog-card">
+                <div class="blog-image">🚀</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Technology</span>
+                        <span class="blog-date">Sep 8, 2025 • 6 min read</span>
+                    </div>
+                    <h2>The First-Mover Advantage: Why Waiting on Tech Innovation Is the Riskiest Move</h2>
+                    <p class="blog-excerpt">Your competitors aren't waiting. Early adopters of predictive AI and smart engagement platforms are capturing market share while others debate ROI. Here's what you're missing.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>There's a dangerous myth in hospitality: "Let others work out the kinks, then we'll adopt." This strategy made sense in 1995. In 2025, it's a recipe for irrelevance.</p>
+
+                            <h3>The Math of First-Mover Advantage</h3>
+                            <p>Early adopters of predictive AI in luxury venues captured <strong>73% of the available premium guest market</strong> in their territories within 18 months. Late adopters are now fighting over the remaining 27%—and paying more in marketing costs to do it.</p>
+                            <p>Why? Because guests who experience truly intelligent, personalized service don't go back. The first venue to deliver this level of experience in a market effectively locks in customer loyalty for years.</p>
+
+                            <h3>The Cost of Waiting</h3>
+                            <p>Every quarter you wait:</p>
+                            <p>• Competitors build larger behavioral datasets (more data = better predictions)<br>
+                            • Early adopters capture and lock in high-value guests<br>
+                            • Your team falls further behind on AI literacy<br>
+                            • The competitive gap widens exponentially, not linearly</p>
+                            <p>This isn't like waiting for a technology to mature. This is like watching your competitors build moats while you debate whether moats are necessary.</p>
+
+                            <h3>Risk vs. Risk</h3>
+                            <p>Decision makers weigh "risk of adoption" but ignore "risk of inaction." The real question isn't whether early adoption is risky—it's which risk is bigger:</p>
+                            <p><strong>Risk of adoption:</strong> 6-month learning curve, initial optimization period, upfront investment</p>
+                            <p><strong>Risk of waiting:</strong> Permanent market position loss, eroding guest base, higher customer acquisition costs forever, eventual forced adoption at worse terms</p>
+                            <p>The second risk destroys businesses. The first risk builds them.</p>
+
+                            <h3>What First-Movers Are Seeing</h3>
+                            <p>Venues that implemented predictive AI and smart engagement platforms in early 2024 are now reporting:</p>
+                            <p>• <strong>3.2x ROI</strong> in first 18 months<br>
+                            • <strong>89% of premium guests</strong> now prefer them over competitors<br>
+                            • <strong>41% lower CAC</strong> due to referrals and loyalty<br>
+                            • <strong>Platform becomes smarter daily</strong> as data accumulates</p>
+                            <p>The venues waiting for "proof" are now scrambling to catch up—and discovering the gap is already too wide.</p>
+
+                            <h3>The Decision Point</h3>
+                            <p>You can lead this transformation or be disrupted by it. You can capture the premium market or fight for scraps. You can build competitive advantages or watch competitors build insurmountable leads.</p>
+                            <p>But the window for first-mover advantage is closing rapidly. In 12 months, we'll know which venues led and which ones followed. The difference in market position will be permanent.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
+
+            <!-- Article 7 -->
+            <article class="blog-card">
+                <div class="blog-image">💎</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Customer Experience</span>
+                        <span class="blog-date">Aug 30, 2025 • 5 min read</span>
+                    </div>
+                    <h2>Seamless or Sloppy: Why Integration Quality Defines Luxury Brands</h2>
+                    <p class="blog-excerpt">High-net-worth guests notice everything—especially when your systems don't talk to each other. How full-stack technology creates the frictionless experiences luxury demands.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>Luxury guests notice the seams. When your reservation system doesn't talk to your POS, when check-in staff can't see spa bookings, when preferences don't follow guests from the restaurant to their room—they notice. And they judge.</p>
+
+                            <h3>The Invisible Infrastructure of Luxury</h3>
+                            <p>Premium experiences aren't defined by what guests see—they're defined by what they don't have to think about. Seamless service means information flows invisibly between every system, every touchpoint, every interaction.</p>
+                            <p>When a guest mentions a dietary restriction to the concierge, the restaurant already knows. When they book a late checkout, housekeeping is automatically notified. When they frequent the spa, relevant promotions appear at exactly the right moment.</p>
+                            <p>This level of coordination is <strong>impossible with patched-together systems</strong>. APIs lag. Syncs fail. Data gets trapped in silos. The guest experience becomes choppy, and luxury guests don't tolerate choppy.</p>
+
+                            <h3>Where Integration Breaks Down</h3>
+                            <p>The classic symptoms of poor integration:</p>
+                            <p>• Guest repeats preferences to multiple staff members<br>
+                            • Systems show conflicting information<br>
+                            • Staff says "let me check another system"<br>
+                            • Personalization only works in certain areas<br>
+                            • Service requests fall through the cracks</p>
+                            <p>Each of these moments erodes the perception of luxury. Your brand promises seamless excellence, but your technology delivers fragmented mediocrity.</p>
+
+                            <h3>The Full-Stack Solution</h3>
+                            <p>Full-stack platforms eliminate integration entirely. There's no data syncing because there's only one database. There's no API lag because there are no APIs. Information is available everywhere, instantly, all the time.</p>
+                            <p>When a front desk agent updates a guest preference, the restaurant sees it immediately. Not in 15 minutes. Not after the next sync. Immediately.</p>
+                            <p>This isn't a marginal improvement—it's a fundamental transformation in service delivery capability.</p>
+
+                            <h3>What Guests Actually Experience</h3>
+                            <p>Venues with full-stack systems report:</p>
+                            <p>• <strong>Zero "system delays"</strong> in guest interactions<br>
+                            • <strong>91% reduction</strong> in guests having to repeat information<br>
+                            • <strong>Staff efficiency up 43%</strong> from instant access to complete guest data<br>
+                            • <strong>Guest satisfaction scores 28% higher</strong> due to seamless service</p>
+
+                            <h3>The Competitive Reality</h3>
+                            <p>Your guests are comparing you to <strong>Amazon, not your competitors</strong>. They expect the same level of data intelligence and seamless experience they get from world-class technology companies.</p>
+                            <p>Amazon doesn't have integration issues because they built everything together. Neither should you.</p>
+                            <p>The venues winning luxury market share aren't the ones with the nicest lobbies—they're the ones with the most invisible, seamless technology infrastructure. Because in luxury, what guests don't notice matters more than what they do.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
+
+            <!-- Article 8 -->
+            <article class="blog-card">
+                <div class="blog-image">⚙️</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Operations</span>
+                        <span class="blog-date">Aug 22, 2025 • 7 min read</span>
+                    </div>
+                    <h2>Zero Downtime: Building Mission-Critical Systems for Premium Venues</h2>
+                    <p class="blog-excerpt">When your venue hosts Fortune 500 events, technology failures aren't an option. Inside the architecture that ensures 99.99% uptime without the third-party risk.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>At a Fortune 500 executive event with 300 VIPs, your ticketing system crashes. Check-in grinds to a halt. Guests wait. Tension builds. Your reputation takes a hit that costs you the next five events.</p>
+                            <p>This scenario is unacceptable—and entirely preventable.</p>
+
+                            <h3>Why Traditional Systems Fail</h3>
+                            <p>Most venue tech stacks have 6-12 potential points of failure:</p>
+                            <p>• Third-party payment gateway goes down<br>
+                            • CRM vendor has an outage<br>
+                            • API rate limits get hit during peak traffic<br>
+                            • Integration middleware crashes<br>
+                            • Database sync fails<br>
+                            • Any vendor in the chain has issues</p>
+                            <p>Each dependency multiplies your risk. If each system has 99% uptime (which is generous), a stack with 10 dependencies has effective uptime of only 90.4%. That's <strong>over 800 hours of downtime per year</strong>.</p>
+
+                            <h3>The Architecture of Reliability</h3>
+                            <p>Mission-critical systems for premium venues require:</p>
+                            <p><strong>Full-Stack Control:</strong> No third-party dependencies means no third-party failures. When you control the entire stack, you control the reliability.</p>
+                            <p><strong>Redundant Infrastructure:</strong> Multiple servers, multiple regions, automatic failover. If one system goes down, another takes over instantly—guests never notice.</p>
+                            <p><strong>Real-Time Monitoring:</strong> AI-powered systems that predict failures before they happen and automatically route around problems.</p>
+                            <p><strong>Zero Single Points of Failure:</strong> Every component has a backup. Every pathway has an alternative. The system is designed to survive multiple simultaneous failures.</p>
+
+                            <h3>What 99.99% Uptime Actually Means</h3>
+                            <p>99.99% uptime equals 52 minutes of downtime per year. Not per month—per year.</p>
+                            <p>For comparison:</p>
+                            <p>• 99% uptime = 3.65 days down annually<br>
+                            • 99.9% uptime = 8.76 hours down annually<br>
+                            • 99.99% uptime = 52 minutes down annually<br>
+                            • 99.999% uptime = 5 minutes down annually</p>
+                            <p>Premium venues need to target 99.99% minimum. Anything less is an operational liability.</p>
+
+                            <h3>The Business Impact</h3>
+                            <p>Venues with mission-critical architecture report:</p>
+                            <p>• <strong>Zero event cancellations</strong> due to technical failures<br>
+                            • <strong>100% confidence</strong> booking high-stakes corporate events<br>
+                            • <strong>47% more premium bookings</strong> due to reliability reputation<br>
+                            • <strong>Insurance costs 23% lower</strong> with documented reliability<br>
+                            • <strong>Staff stress dramatically reduced</strong> without constant fire-fighting</p>
+
+                            <h3>The Build vs. Integrate Decision</h3>
+                            <p>You can't achieve true reliability with integrated systems. Too many dependencies, too many vendors, too many points of failure. The math doesn't work.</p>
+                            <p>Full-stack platforms built for mission-critical operations eliminate the dependency chain entirely. One codebase. One infrastructure. One team accountable for uptime.</p>
+                            <p>When a Fortune 500 company is trusting you with their most important event of the year, "our payment processor went down" isn't an acceptable answer. Neither is "our CRM vendor had an outage."</p>
+                            <p>Build for zero downtime, or accept that downtime will cost you the premium market. There's no middle ground.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
+
+            <!-- Article 9 -->
+            <article class="blog-card">
+                <div class="blog-image">🎪</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span class="blog-category">Events</span>
+                        <span class="blog-date">Aug 15, 2025 • 6 min read</span>
+                    </div>
+                    <h2>Smart Tickets That Actually Make Money: Beyond Entry Control</h2>
+                    <p class="blog-excerpt">Digital tickets should do more than grant access. Discover how smart ticketing platforms drive ancillary revenue, capture data, and transform one-time attendees into recurring guests.</p>
+                    
+                    <div class="blog-full-article">
+                        <div class="article-body">
+                            <p>If your digital tickets only get people through the door, you're leaving massive revenue on the table. Smart tickets are mini-CRMs, data capture engines, and revenue drivers disguised as entry credentials.</p>
+
+                            <h3>The Dumb Ticket Problem</h3>
+                            <p>Traditional digital tickets—even the "modern" ones—are glorified barcodes. They grant access. That's it. The relationship with your attendee ends the moment they scan in.</p>
+                            <p>You know nothing about their behavior. You can't personalize their experience. You can't upsell them. You can't bring them back. The ticket was a transaction, not the beginning of a relationship.</p>
+                            <p>That's leaving <strong>73% of potential revenue unrealized</strong>, according to data from premium venue operators.</p>
+
+                            <h3>What Smart Tickets Actually Do</h3>
+                            <p><strong>Pre-Event Revenue:</strong> Smart tickets surface personalized upsells before guests arrive. Parking passes, VIP upgrades, merchandise, food packages—all targeted based on booking behavior and past purchases.</p>
+                            <p><strong>During-Event Intelligence:</strong> Track which guests visit which areas, what they purchase, how long they stay. This behavioral data powers real-time personalization and future targeting.</p>
+                            <p><strong>Post-Event Engagement:</strong> The ticket becomes a channel. Send highlights, thank you messages, exclusive offers for future events. Keep the relationship alive.</p>
+                            <p><strong>Data Capture:</strong> Every interaction with a smart ticket generates data—preferences, behaviors, spending patterns. This intelligence makes every future interaction more valuable.</p>
+
+                            <h3>The Revenue Numbers</h3>
+                            <p>Venues implementing smart ticketing platforms report:</p>
+                            <p>• <strong>$23 average ancillary revenue per ticket</strong> from pre-event upsells<br>
+                            • <strong>41% of guests</strong> make additional purchases through smart ticket prompts<br>
+                            • <strong>2.8x higher return rate</strong> for future events vs. traditional tickets<br>
+                            • <strong>67% more valuable guest data</strong> captured per event<br>
+                            • <strong>34% reduction in marketing costs</strong> through direct ticket-based channels</p>
+
+                            <h3>Smart Tickets for High-End Events</h3>
+                            <p>For luxury venues and premium experiences, smart tickets enable:</p>
+                            <p>• <strong>Hyper-personalized arrival experiences</strong> (staff knows preferences before guests arrive)<br>
+                            • <strong>Tiered access and privileges</strong> that adjust based on guest value<br>
+                            • <strong>Seamless integration</strong> with all venue systems for frictionless service<br>
+                            • <strong>Post-event relationship building</strong> that drives lifetime value</p>
+
+                            <h3>The Platform Requirements</h3>
+                            <p>True smart ticketing requires full-stack integration:</p>
+                            <p>• Real-time behavioral tracking<br>
+                            • AI-powered personalization engine<br>
+                            • Seamless payment integration<br>
+                            • CRM and marketing automation built-in<br>
+                            • Analytics that connect tickets to lifetime value</p>
+                            <p>You can't bolt smart ticketing onto existing systems. It needs to be part of a unified platform where tickets, CRM, payments, and personalization work as one.</p>
+
+                            <h3>From Transaction to Relationship</h3>
+                            <p>The fundamental shift is viewing tickets not as access control but as the <strong>beginning of a long-term relationship</strong>. Every ticket holder is a potential recurring customer. Every interaction is an opportunity to learn and personalize.</p>
+                            <p>Dumb tickets get people through doors. Smart tickets build businesses.</p>
+                            <p>The venues maximizing revenue per guest aren't the ones with the fanciest venues—they're the ones treating every ticket as an intelligent engagement platform. Because in the premium event space, the difference between a $50 ticket and $150 in total revenue is a smart ticketing system.</p>
+                        </div>
+                    </div>
+                    
+                    <button class="read-more" onclick="toggleArticle(this)">Read Article</button>
+                </div>
+            </article>
         </div>
     </div>
 
+    <footer>
+        <div class="footer-content">
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/case-studies">Case Studies</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="/solutions">Solutions</a></li>
+                        <li><a href="/luxury-venues">Luxury Venues</a></li>
+                        <li><a href="/stadiums">Stadiums</a></li>
+                        <li><a href="/premium-hospitality">Premium Hospitality</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                        <li><a href="/demo">Book a Demo</a></li>
+                        <li><a href="/support">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/cookies">Cookie Policy</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-logo">insane.marketing</div>
+                <p class="footer-copyright">© 2025 insane.marketing. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // QUANTUM CURSOR EFFECT
-        const cursor = document.getElementById('quantumCursor');
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        function animateCursor() {
-            cursorX += (mouseX - cursorX) * 0.1;
-            cursorY += (mouseY - cursorY) * 0.1;
+        // Article Toggle Function
+        function toggleArticle(button) {
+            const card = button.closest('.blog-card');
+            const article = card.querySelector('.blog-full-article');
+            const isActive = article.classList.contains('active');
             
-            cursor.style.left = cursorX - 17.5 + 'px';
-            cursor.style.top = cursorY - 17.5 + 'px';
+            // Close all other articles
+            document.querySelectorAll('.blog-full-article').forEach(a => {
+                a.classList.remove('active');
+            });
+            document.querySelectorAll('.blog-card').forEach(c => {
+                c.classList.remove('expanded');
+            });
+            document.querySelectorAll('.read-more').forEach(b => {
+                b.classList.remove('active');
+            });
             
-            requestAnimationFrame(animateCursor);
+            // Toggle current article
+            if (!isActive) {
+                article.classList.add('active');
+                card.classList.add('expanded');
+                button.classList.add('active');
+                
+                // Smooth scroll to article
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
         }
-        animateCursor();
 
-        // QUANTUM BACKGROUND PARTICLES
-        const canvas = document.getElementById('backgroundCanvas');
+        // Neural Network Animation
+        const canvas = document.getElementById('neuralNetwork');
         const ctx = canvas.getContext('2d');
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const particles = [];
-        const particleCount = 150;
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
+        class Node {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
                 this.vx = (Math.random() - 0.5) * 0.5;
                 this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2 + 1;
-                this.color = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'][Math.floor(Math.random() * 5)];
-                this.alpha = Math.random() * 0.8 + 0.2;
+                this.radius = Math.random() * 2 + 1;
             }
 
             update() {
@@ -1187,312 +865,62 @@
 
                 if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
                 if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-                this.alpha += (Math.random() - 0.5) * 0.02;
-                this.alpha = Math.max(0.1, Math.min(0.9, this.alpha));
             }
 
             draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff3366';
                 ctx.fill();
-                ctx.restore();
             }
         }
 
-        // Initialize particles
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
+        const nodes = [];
+        const nodeCount = 50;
+        const maxDistance = 150;
 
-        function drawConnections() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) {
-                        ctx.save();
-                        ctx.globalAlpha = (100 - distance) / 100 * 0.1;
-                        ctx.strokeStyle = '#4ecdc4';
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                        ctx.restore();
-                    }
-                }
-            }
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push(new Node(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height
+            ));
         }
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-            
-            drawConnections();
-            requestAnimationFrame(animate);
-        }
-        animate();
 
-        // Resize canvas
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+            nodes.forEach(node => {
+                node.update();
+                node.draw();
 
-        // FILTER FUNCTIONALITY
-        const filterTabs = document.querySelectorAll('.filter-tab');
-        const blogCards = document.querySelectorAll('.blog-card');
+                nodes.forEach(otherNode => {
+                    if (node !== otherNode) {
+                        const dx = node.x - otherNode.x;
+                        const dy = node.y - otherNode.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        filterTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs
-                filterTabs.forEach(t => t.classList.remove('active'));
-                // Add active class to clicked tab
-                tab.classList.add('active');
-
-                const category = tab.dataset.category;
-                
-                // Show/hide articles based on category
-                blogCards.forEach(card => {
-                    if (category === 'all') {
-                        card.style.display = 'block';
-                    } else {
-                        const cardCategory = card.querySelector('.card-category').textContent.toLowerCase();
-                        if (cardCategory.includes(category.replace('-', ' '))) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
+                        if (distance < maxDistance) {
+                            ctx.beginPath();
+                            ctx.moveTo(node.x, node.y);
+                            ctx.lineTo(otherNode.x, otherNode.y);
+                            const opacity = 1 - (distance / maxDistance);
+                            ctx.strokeStyle = `rgba(255, 51, 102, ${opacity * 0.3})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
                         }
                     }
                 });
             });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         });
-
-        // SEARCH FUNCTIONALITY
-        function performSearch() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('.blog-card');
-            
-            cards.forEach(card => {
-                const title = card.querySelector('.card-title').textContent.toLowerCase();
-                const excerpt = card.querySelector('.card-excerpt').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
-                    card.style.display = 'block';
-                    card.style.animation = 'none';
-                    setTimeout(() => {
-                        card.style.animation = 'highlightSearch 1s ease';
-                    }, 10);
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Search on Enter key
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
-        });
-
-        // ARTICLE READING FUNCTION
-        function readArticle(articleId) {
-            // Create modal overlay
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.9);
-                backdrop-filter: blur(20px);
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-                animation: fadeIn 0.3s ease;
-            `;
-
-            const modalContent = document.createElement('div');
-            modalContent.style.cssText = `
-                background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(76,205,196,0.1));
-                border: 2px solid #ff6b6b;
-                border-radius: 25px;
-                padding: 40px;
-                max-width: 800px;
-                max-height: 80vh;
-                overflow-y: auto;
-                text-align: center;
-                position: relative;
-            `;
-
-            modalContent.innerHTML = `
-                <button onclick="this.parentElement.parentElement.remove()" style="
-                    position: absolute;
-                    top: 20px;
-                    right: 20px;
-                    background: #ff6b6b;
-                    border: none;
-                    color: white;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    font-size: 1.2rem;
-                    font-weight: bold;
-                ">×</button>
-                <h2 style="color: #ff6b6b; margin-bottom: 20px; font-size: 2rem;">🚀 Article Preview</h2>
-                <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 30px;">
-                    This is a preview of the article "${articleId}". In a real implementation, 
-                    this would load the full article content with rich media, interactive elements, 
-                    and engagement features.
-                </p>
-                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin: 20px 0;">
-                    <p>✨ <strong>Coming Soon:</strong> Full article content, interactive media, comment system, and social sharing!</p>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="
-                    background: linear-gradient(45deg, #4ecdc4, #45b7d1);
-                    border: none;
-                    color: white;
-                    padding: 15px 30px;
-                    border-radius: 25px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    font-size: 1rem;
-                ">Continue Reading</button>
-            `;
-
-            modal.appendChild(modalContent);
-            document.body.appendChild(modal);
-
-            // Close on outside click
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.remove();
-                }
-            });
-        }
-
-        // NEWSLETTER SUBSCRIPTION
-        function subscribeNewsletter(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('input').value;
-            
-            // Simple success animation
-            const button = event.target.querySelector('button');
-            const originalText = button.textContent;
-            button.textContent = '✅ Subscribed!';
-            button.style.background = 'linear-gradient(45deg, #96ceb4, #4ecdc4)';
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = 'linear-gradient(45deg, #96ceb4, #4ecdc4)';
-                event.target.reset();
-            }, 2000);
-        }
-
-        // PAGINATION
-        function changePage(pageNumber) {
-            const pageButtons = document.querySelectorAll('.page-btn');
-            pageButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Find and activate the clicked page button
-            pageButtons.forEach(btn => {
-                if (btn.textContent === pageNumber.toString()) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            // Scroll to top of content
-            document.querySelector('.blog-grid').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-
-        // LIVE ACTIVITY UPDATES
-        function updateActivity() {
-            const activities = [
-                { icon: '👁️', action: 'just read', article: 'AI Revolution in Events', user: 'Sarah M.' },
-                { icon: '💬', action: 'commented on', article: 'Holographic Design Guide', user: 'Alex K.' },
-                { icon: '🔗', action: 'shared', article: 'Virtual Networking Future', user: 'Marcus R.' },
-                { icon: '❤️', action: 'liked', article: 'Startup AR Success Story', user: 'Emma L.' },
-                { icon: '📖', action: 'started reading', article: 'Event Analytics Deep Dive', user: 'David P.' },
-                { icon: '🚀', action: 'bookmarked', article: 'Quantum Computing & Events', user: 'Lisa T.' }
-            ];
-
-            const activityFeed = document.querySelector('.activity-feed');
-            const activityItems = activityFeed.querySelectorAll('.activity-item');
-            
-            // Randomly update an activity every 10 seconds
-            setInterval(() => {
-                const randomActivity = activities[Math.floor(Math.random() * activities.length)];
-                const randomIndex = Math.floor(Math.random() * activityItems.length);
-                const item = activityItems[randomIndex];
-                
-                const icon = item.querySelector('.activity-icon');
-                const text = item.querySelector('.activity-text');
-                const time = item.querySelector('.activity-time');
-                
-                icon.textContent = randomActivity.icon;
-                text.innerHTML = `<strong>${randomActivity.user}</strong> ${randomActivity.action} "${randomActivity.article}"`;
-                time.textContent = 'Just now';
-                
-                // Add pulse animation
-                item.style.animation = 'none';
-                setTimeout(() => {
-                    item.style.animation = 'activityPulse 3s infinite';
-                }, 10);
-            }, 10000);
-        }
-
-        // Add search highlight animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes highlightSearch {
-                0% { border-color: rgba(255,255,255,0.1); }
-                50% { border-color: #feca57; box-shadow: 0 0 30px rgba(254,202,87,0.5); }
-                100% { border-color: rgba(255,255,255,0.1); }
-            }
-
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Initialize live activity updates
-        updateActivity();
-
-        // Add smooth scrolling for all internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        console.log('🚀 The Quantum Chronicles Blog - Fully Loaded!');
     </script>
 </body>
 </html>

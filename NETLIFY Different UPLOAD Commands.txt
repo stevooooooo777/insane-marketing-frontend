@@ -16,3 +16,15 @@ All Files:
 git add .
 git commit -m "Update all files"
 git push origin main
+
+
+FOLDER
+git add foldername/
+git commit -m "Update folder contents"
+git push origin main
+
+
+Example - Deploy your "css" folder:
+git add css/
+git commit -m "Update CSS files"
+git push origin main
