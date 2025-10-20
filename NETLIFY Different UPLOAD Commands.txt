@@ -1,0 +1,18 @@
+Netlify Deployment Commands
+
+1 File only:
+git add codeguard.html
+git commit -m "Update codeguard with copyable fix modal"
+git push origin main
+
+
+2 or More Specific Files:
+git add codeguard.html config-client.js
+git commit -m "Update codeguard and config files"
+git push origin main
+
+
+All Files:
+git add .
+git commit -m "Update all files"
+git push origin main
