@@ -643,19 +643,32 @@ console.log('Password captured?', password ? 'YES' : 'NO', 'Length:', password?.
             console.log('Signup response:', data);
             
             if (response.ok && data.success) {
-                localStorage.setItem('qr_user_token', data.token);
-                localStorage.setItem('user_email', data.user.email);
-                localStorage.setItem('user_restaurant_name', data.user.restaurant_name);
-                localStorage.setItem('user_restaurant_id', data.user.restaurant_id);
-                localStorage.setItem('user_type', 'restaurant');
-                localStorage.setItem('user_name', data.user.full_name);
-                localStorage.setItem('needs_venue_setup', 'true');
-                
-                showSuccess('signupSuccess', '✅ Account created! Setting up your dashboard...');
-                
-                setTimeout(() => {
-                    window.location.href = 'venue-setup.html';
-                }, 1500);
+    localStorage.setItem('qr_user_token', data.token);
+    localStorage.setItem('user_email', data.user.email);
+    localStorage.setItem('user_restaurant_name', data.user.restaurant_name);
+    localStorage.setItem('user_restaurant_id', data.user.restaurant_id);
+    localStorage.setItem('user_type', 'restaurant');
+    localStorage.setItem('user_name', data.user.full_name);
+    
+    // ✅ Use backend response to set setup status (same as login)
+    if (data.user.needsSetup) {
+        localStorage.setItem('needs_venue_setup', 'true');
+        localStorage.setItem('venue_setup_complete', 'false');
+    } else {
+        localStorage.setItem('needs_venue_setup', 'false');
+        localStorage.setItem('venue_setup_complete', 'true');
+    }
+    
+    showSuccess('signupSuccess', '✅ Account created! Setting up your dashboard...');
+    
+    setTimeout(() => {
+        // ✅ Check backend response for redirect (same as login)
+        if (data.user.needsSetup) {
+            window.location.href = 'venue-setup.html';
+        } else {
+            window.location.href = 'welcome.html';
+        }
+    }, 1500);
                 
             } else {
                 throw new Error(data.message || 'Registration failed');
