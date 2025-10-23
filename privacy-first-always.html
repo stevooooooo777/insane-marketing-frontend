@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy-First Guest Systems | Insane.marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInDown 1s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            text-align: center;
+            color: #a8b2d1;
+            margin-bottom: 40px;
+            max-width: 800px;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero-statement {
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            color: #ffd700;
+            margin-bottom: 60px;
+            max-width: 900px;
+            line-height: 1.4;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        /* 3D Carousel Container */
+        .carousel-section {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto 80px;
+            padding: 40px 20px;
+        }
+
+        .carousel-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 50px;
+            color: #667eea;
+        }
+
+        .carousel-container {
+            perspective: 1200px;
+            height: 500px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .carousel {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            animation: rotate 40s infinite linear;
+        }
+
+        .carousel:hover {
+            animation-play-state: paused;
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 350px;
+            height: 450px;
+            left: 50%;
+            top: 50%;
+            margin-left: -175px;
+            margin-top: -225px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            transform-style: preserve-3d;
+            backface-visibility: visible;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-item:hover {
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 30px 80px rgba(102, 126, 234, 0.4);
+            transform: scale(1.05) translateZ(50px);
+        }
+
+        .scenario-icon {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .scenario-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .scenario-description {
+            font-size: 1rem;
+            color: #a8b2d1;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .scenario-impact {
+            padding: 15px;
+            background: rgba(255, 59, 48, 0.1);
+            border-left: 4px solid #ff3b30;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .scenario-solution {
+            padding: 15px;
+            background: rgba(52, 199, 89, 0.1);
+            border-left: 4px solid #34c759;
+            border-radius: 8px;
+        }
+
+        .impact-label, .solution-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .impact-label {
+            color: #ff3b30;
+        }
+
+        .solution-label {
+            color: #34c759;
+        }
+
+        @keyframes rotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        /* Position items in circle */
+        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(600px); }
+        .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(600px); }
+        .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(600px); }
+        .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(600px); }
+        .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(600px); }
+        .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(600px); }
+        .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(600px); }
+        .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(600px); }
+
+        /* The Truth Section */
+        .truth-section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .truth-title {
+            font-size: 2.5rem;
+            text-align: center;
+            color: #ffd700;
+            margin-bottom: 40px;
+        }
+
+        .truth-statement {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #a8b2d1;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 40px;
+        }
+
+        .truth-highlight {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #a8b2d1;
+        }
+
+        /* Solution Features */
+        .features-section {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 40px 20px;
+        }
+
+        .features-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #667eea;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            color: #a8b2d1;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-text {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: #fff;
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: transparent;
+            color: #fff;
+            border-color: #fff;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-statement {
+                font-size: 1.3rem;
+            }
+
+            .carousel-container {
+                height: 600px;
+            }
+
+            .carousel-item {
+                width: 300px;
+                height: 400px;
+                margin-left: -150px;
+                margin-top: -200px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1 class="hero-title">Privacy-First Guest Systems</h1>
+        <p class="hero-subtitle">End-to-end protection for the guests who value it most</p>
+        <p class="hero-statement">
+            High-net-worth individuals and VIPs don't want "personalized experiences"<br>
+            They want invisible service with absolute privacy
+        </p>
+    </div>
+
+    <div class="carousel-section">
+        <h2 class="carousel-title">Scenarios Your Privacy-First System Prevents</h2>
+        <div class="carousel-container">
+            <div class="carousel">
+                <!-- Scenario 1 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">📸</div>
+                    <h3 class="scenario-title">The Photo Recognition Disaster</h3>
+                    <p class="scenario-description">Guest recognition system identifies celebrity couple, sends "welcome back" alert to all staff iPads...</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>Guest checks out immediately. Social media post: "Never felt less safe at a hotel."</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>No facial recognition. No guest identification. Anonymous service excellence.</div>
+                    </div>
+                </div>
+
+                <!-- Scenario 2 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">📱</div>
+                    <h3 class="scenario-title">The Marketing Database Breach</h3>
+                    <p class="scenario-description">CRM syncs guest preferences to cloud marketing platform. Data exposed in third-party breach...</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>UHNW guest's dietary restrictions and room preferences leaked. Lawsuit imminent.</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>Zero third-party integrations. Your data never leaves your venue. Period.</div>
+                    </div>
+                </div>
+
+                <!-- Scenario 3 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">💳</div>
+                    <h3 class="scenario-title">The Payment History Leak</h3>
+                    <p class="scenario-description">Integrated POS system stores purchase history. Staff member recognizes guest's spending patterns...</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>Guest confronts management: "Your staff know exactly what I order. How?"</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>No purchase history stored. Each interaction is fresh and anonymous.</div>
+                    </div>
+                </div>
+
+                <!-- Scenario 4 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">📧</div>
+                    <h3 class="scenario-title">The Email Campaign Nightmare</h3>
+                    <p class="scenario-description">Guest database automatically adds VIP to marketing emails. "Based on your last visit..."</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>Security team calls venue: "How did you get this email? Who else has it?"</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>Zero marketing integration. No email capture. No contact without explicit request.</div>
+                    </div>
+                </div>
+
+                <!-- Scenario 5 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">🔍</div>
+                    <h3 class="scenario-title">The Google Review Prompt</h3>
+                    <p class="scenario-description">Automated system sends post-visit survey linked to guest profile. "How was your stay, Mr. [Name]?"</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>Private equity principal: "You just confirmed I was there. Unacceptable."</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>No automated follow-ups. No digital paper trail. Complete discretion.</div>
+                    </div>
+                </div>
+
+                <!-- Scenario 6 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">🌐</div>
+                    <h3 class="scenario-title">The WiFi Tracking Crisis</h3>
+                    <p class="scenario-description">Guest WiFi portal requires registration. Analytics platform tracks device movements across property...</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>C-suite executive discovers venue knows every area visited, time spent, patterns. Never returns.</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>QR code access. No registration. No tracking. No digital footprint.</div>
+                    </div>
+                </div>
+
+                <!-- Scenario 7 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">👥</div>
+                    <h3 class="scenario-title">The Staff Gossip Problem</h3>
+                    <p class="scenario-description">Centralized reservation system shows guest notes visible to 50+ staff members...</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>"Strict about privacy" note leads to staff discussing the "paranoid VIP in suite 401."</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>Mission control shows service needs only. Zero personal information. No guest notes.</div>
+                    </div>
+                </div>
+
+                <!-- Scenario 8 -->
+                <div class="carousel-item">
+                    <div class="scenario-icon">🎯</div>
+                    <h3 class="scenario-title">The Upsell Disaster</h3>
+                    <p class="scenario-description">"Smart" system identifies high-value guest, sends targeted upgrade offers to room iPad...</p>
+                    <div class="scenario-impact">
+                        <div class="impact-label">The Damage</div>
+                        <div>Hedge fund manager: "Your system profiled me. This is exactly why I value anonymity."</div>
+                    </div>
+                    <div class="scenario-solution">
+                        <div class="solution-label">Privacy-First</div>
+                        <div>No profiling. No targeting. No assumptions. Just excellence for everyone.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="truth-section">
+        <h2 class="truth-title">The Privacy Paradox</h2>
+        <p class="truth-statement">
+            The hospitality industry is obsessed with "personalization" - collecting guest data, 
+            tracking preferences, building profiles. But the guests who can afford luxury don't want to be known. 
+            They want to be anonymous. They want to disappear.
+        </p>
+        <div class="truth-highlight">
+            Privacy IS the luxury
+        </div>
+        <p class="truth-statement">
+            A billionaire doesn't want you to remember their favorite wine.<br>
+            They want to order it without leaving a digital trace that they were ever there.<br>
+            That's what separates true luxury from premium service.
+        </p>
+        <p class="truth-statement" style="margin-top: 40px; font-size: 1.4rem; color: #ffd700;">
+            But here's the breakthrough: You can still anticipate their needs.
+        </p>
+        <p class="truth-statement">
+            Our AI analyzes <strong>anonymous behavioral patterns</strong> in real-time:<br>
+            "Table 6 viewed menu twice - ready to order"<br>
+            "VIP box ordering drinks every 20 minutes - send server now"<br>
+            "Room 308 just scanned room service - kitchen prep alert"
+        </p>
+        <div class="truth-highlight" style="background: rgba(52, 199, 89, 0.1); border: 2px solid #34c759;">
+            Predictive service WITHOUT surveillance
+        </div>
+    </div>
+
+    <div class="stats-grid" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Personal Data Stored</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Third-Party Integrations</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Anonymous Analytics</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Predictive Intelligence</div>
+        </div>
+    </div>
+
+    <div class="features-section">
+        <h2 class="features-title">How Privacy-First Actually Works</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Zero Personal Data</h3>
+                <p class="feature-description">
+                    We track behavior, not people. "Table 6 ready to order" not "John Smith prefers red wine." 
+                    Anonymous patterns enable predictive service without storing who anyone is.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🚫</div>
+                <h3 class="feature-title">No Marketing Capture</h3>
+                <p class="feature-description">
+                    Guest QR codes work without registration. No email collection. No phone numbers. 
+                    No newsletter signups. No way to contact guests unless they explicitly request it.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👻</div>
+                <h3 class="feature-title">Anonymous Interaction</h3>
+                <p class="feature-description">
+                    Mission control sees "Table 12" or "Room 308" - never names, never faces, never profiles. 
+                    Staff delivers excellence without knowing who they're serving.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3 class="feature-title">Isolated Systems</h3>
+                <p class="feature-description">
+                    Your data lives on your servers only. No cloud syncing. No third-party analytics. 
+                    No integration with CRM, POS, or marketing platforms. Complete isolation.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎭</div>
+                <h3 class="feature-title">Staff Privacy Training</h3>
+                <p class="feature-description">
+                    Your team sees only what they need: service requests, not identities. 
+                    Mission control designed for discretion, not data collection.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3 class="feature-title">AI Predictive Analytics</h3>
+                <p class="feature-description">
+                    Advanced AI analyzes anonymous behavioral patterns: "Table 6 viewed menu twice - ready to order." 
+                    "VIP box ordering every 20 mins - send server now." Anticipate needs without knowing identities.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Real-Time Intelligence</h3>
+                <p class="feature-description">
+                    Mission control shows behavioral insights, not personal data. AI predicts service needs 
+                    from anonymous patterns. Perfect timing without invasion. Intelligence without surveillance.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="truth-section">
+        <h2 class="truth-title">The Real Question</h2>
+        <p class="truth-statement">
+            Every other hospitality system is built around data collection. They track. They profile. 
+            They "personalize." They turn your guests into data points.
+        </p>
+        <div class="truth-highlight">
+            Can you afford to lose the guests who notice?
+        </div>
+        <p class="truth-statement">
+            Because ultra-high-net-worth individuals, celebrities, executives, and VIPs do notice. 
+            They see the targeted offers. They notice when staff "know too much." 
+            They feel the surveillance masquerading as service.
+        </p>
+        <p class="truth-statement">
+            And they choose venues that respect their privacy.
+        </p>
+        
+        <div style="margin-top: 60px; padding: 40px; background: rgba(52, 199, 89, 0.05); border-radius: 15px; border: 2px solid rgba(52, 199, 89, 0.3);">
+            <h3 style="color: #34c759; font-size: 2rem; margin-bottom: 30px; text-align: center;">The Privacy-First Difference</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px;">
+                <div style="padding: 25px; background: rgba(255, 59, 48, 0.1); border-radius: 12px; border-left: 4px solid #ff3b30;">
+                    <h4 style="color: #ff3b30; font-size: 1.3rem; margin-bottom: 15px;">❌ Traditional Analytics</h4>
+                    <p style="color: #a8b2d1; line-height: 1.6;">
+                        "John Smith, CEO, visited 3 times this month"<br>
+                        "Prefers table 14, always orders Château Margaux"<br>
+                        "Birthday next week - send promotional email"<br>
+                        "High lifetime value - upsell suite upgrade"
+                    </p>
+                </div>
+                
+                <div style="padding: 25px; background: rgba(52, 199, 89, 0.1); border-radius: 12px; border-left: 4px solid #34c759;">
+                    <h4 style="color: #34c759; font-size: 1.3rem; margin-bottom: 15px;">✅ Privacy-First Analytics</h4>
+                    <p style="color: #a8b2d1; line-height: 1.6;">
+                        "Table 6 viewed menu twice - ready to order"<br>
+                        "VIP box ordering drinks every 20 mins - send server"<br>
+                        "Room 308 scanned room service - kitchen alert"<br>
+                        "Outdoor area activity up 40% - deploy extra staff"
+                    </p>
+                </div>
+            </div>
+            
+            <p style="text-align: center; font-size: 1.3rem; color: #ffd700; font-weight: 600; margin-top: 30px;">
+                Same intelligence. Zero personal data. Complete privacy.
+            </p>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2 class="cta-title">Privacy IS Your Competitive Advantage</h2>
+        <p class="cta-text">
+            While everyone else is collecting data, you're offering something rare: complete discretion.
+        </p>
+        <a href="https://insane.marketing" class="cta-button">Discover Privacy-First Systems</a>
+    </div>
+
+    <script>
+        // Dynamic card BACKGROUND opacity - backgrounds solid when facing viewer, transparent at back
+        // Text stays fully readable at all times
+        function updateCardBackgrounds() {
+            const items = document.querySelectorAll('.carousel-item');
+            const carousel = document.querySelector('.carousel');
+            
+            items.forEach((item, index) => {
+                // Get the computed transform matrix
+                const style = window.getComputedStyle(item);
+                const transform = style.transform;
+                
+                // Parse the matrix to get Z position
+                let zPosition = 0;
+                if (transform && transform !== 'none') {
+                    const values = transform.split('(')[1].split(')')[0].split(',');
+                    if (values.length === 16) {
+                        // 3D matrix - get Z translation (index 14)
+                        zPosition = parseFloat(values[14]);
+                    }
+                }
+                
+                // Also check horizontal center distance
+                const rect = item.getBoundingClientRect();
+                const centerX = window.innerWidth / 2;
+                const itemCenterX = rect.left + rect.width / 2;
+                const distanceFromCenter = Math.abs(itemCenterX - centerX);
+                const maxDistance = window.innerWidth / 2;
+                const normalizedDistance = Math.min(distanceFromCenter / maxDistance, 1);
+                
+                // Cards with positive/larger Z (closer to viewer) = facing front
+                // Cards with negative/smaller Z (further from viewer) = at back
+                // Use Z-position as primary factor
+                
+                //  Get item visibility and size to determine front vs back
+                const itemSize = rect.width;
+                const avgSize = 350; // Expected size
+                const sizeFactor = itemSize / avgSize; // Larger = closer/front
+                
+                // Combine size (which indicates Z-depth) with horizontal distance
+                // Cards that are LARGER are closer (front) - should be more opaque
+                // Cards that are SMALLER are further (back) - should be less opaque
+                const frontFactor = Math.max(0, Math.min(1.5, sizeFactor)) / 1.5; // 0 to 1
+                
+                // Invert so 1 = front (large/close), 0 = back (small/far)
+                const isInFront = frontFactor;
+                
+                // EXTREME differentiation: Front card is THE ONLY focus
+                const maxBgOpacity = 0.95;  // Nearly completely solid for front card
+                const minBgOpacity = 0.02;  // Almost invisible for back cards
+                const bgOpacity = minBgOpacity + (isInFront * (maxBgOpacity - minBgOpacity));
+                
+                // Border opacity - extreme difference
+                const maxBorderOpacity = 1.0;   // Fully visible border on front
+                const minBorderOpacity = 0.08;  // Nearly invisible on back
+                const borderOpacity = minBorderOpacity + (isInFront * (maxBorderOpacity - minBorderOpacity));
+                
+                // TEXT/CONTENT opacity - EXTREME dimming on back cards
+                const maxTextOpacity = 1.0;    // Full visibility for front card
+                const minTextOpacity = 0.08;   // Nearly invisible for back cards (extreme!)
+                const textOpacity = minTextOpacity + (isInFront * (maxTextOpacity - minTextOpacity));
+                
+                // Update background and border
+                item.style.background = `linear-gradient(135deg, rgba(102, 126, 234, ${bgOpacity}) 0%, rgba(118, 75, 162, ${bgOpacity}) 100%)`;
+                item.style.borderColor = `rgba(102, 126, 234, ${borderOpacity})`;
+                item.style.transition = 'background 0.3s ease, border-color 0.3s ease';
+                
+                // Dim ALL text content on back cards to reduce visual distraction
+                const contentElements = item.querySelectorAll('.scenario-icon, .scenario-title, .scenario-description, .scenario-impact, .scenario-solution, .impact-label, .solution-label');
+                contentElements.forEach(el => {
+                    el.style.opacity = textOpacity;
+                    el.style.transition = 'opacity 0.3s ease';
+                });
+            });
+        }
+        
+        // Update continuously for smooth animation
+        function animate() {
+            updateCardBackgrounds();
+            requestAnimationFrame(animate);
+        }
+        
+        // Start the animation
+        animate();
+        
+        // Update on window resize
+        window.addEventListener('resize', updateCardBackgrounds);
+    </script>
+</body>
+</html>
