@@ -70,11 +70,11 @@
 
         /* Journey Map Container */
         .journey-map-container {
-            max-width: 1800px;
+            max-width: 2000px;
             margin: 50px auto;
-            padding: 40px 20px;
+            padding: 80px 40px;
             position: relative;
-            min-height: 1100px;
+            min-height: 1400px;
         }
 
         /* Central Hub - Privacy Protected */
@@ -252,14 +252,14 @@
         }
 
         /* Positioning */
-        .loc-suite { top: 20px; left: 50%; transform: translateX(-50%); }
-        .loc-pool { top: 120px; right: 150px; }
-        .loc-bar { top: 50%; right: 20px; transform: translateY(-50%); }
-        .loc-casino { bottom: 120px; right: 200px; }
-        .loc-restaurant { bottom: 20px; left: 50%; transform: translateX(-50%); }
-        .loc-spa { bottom: 120px; left: 200px; }
-        .loc-grounds { top: 50%; left: 20px; transform: translateY(-50%); }
-        .loc-vip { top: 120px; left: 150px; }
+        .loc-suite { top: 50px; left: 50%; transform: translateX(-50%); }
+        .loc-pool { top: 200px; right: 250px; }
+        .loc-bar { top: 50%; right: 100px; transform: translateY(-50%); }
+        .loc-casino { bottom: 200px; right: 300px; }
+        .loc-restaurant { bottom: 50px; left: 50%; transform: translateX(-50%); }
+        .loc-spa { bottom: 200px; left: 300px; }
+        .loc-grounds { top: 50%; left: 100px; transform: translateY(-50%); }
+        .loc-vip { top: 200px; left: 250px; }
 
         /* Connection Glow Lines */
         .glow-connection {
@@ -358,28 +358,45 @@
         }
 
         /* Responsive */
-        @media (max-width: 1400px) {
-            .experience-location { width: 250px; padding: 25px; }
-            .loc-pool { right: 100px; }
-            .loc-bar { right: 15px; }
-            .loc-casino { right: 150px; }
-            .loc-spa { left: 150px; }
-            .loc-grounds { left: 15px; }
-            .loc-vip { left: 100px; }
+        @media (max-width: 1600px) {
+            .journey-map-container {
+                padding: 60px 30px;
+                min-height: 1300px;
+            }
+            .experience-location { width: 260px; padding: 25px; }
+            .loc-pool { right: 180px; }
+            .loc-bar { right: 80px; }
+            .loc-casino { right: 220px; }
+            .loc-spa { left: 220px; }
+            .loc-grounds { left: 80px; }
+            .loc-vip { left: 180px; }
         }
 
-        @media (max-width: 1024px) {
-            .hero h1 { font-size: 2.5rem; }
-            .hero-tagline { font-size: 1.5rem; }
-            .hero-subtitle { font-size: 1.1rem; }
+        @media (max-width: 1400px) {
+            .journey-map-container {
+                min-height: 1200px;
+            }
+            .experience-location { width: 240px; padding: 20px; }
+            .loc-pool { right: 120px; }
+            .loc-bar { right: 50px; }
+            .loc-casino { right: 150px; }
+            .loc-spa { left: 150px; }
+            .loc-grounds { left: 50px; }
+            .loc-vip { left: 120px; }
+        }
+
+        @media (max-width: 1200px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero-tagline { font-size: 1.6rem; }
             
+            /* Switch to vertical stacked layout */
             .journey-map-container {
                 min-height: auto;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 30px;
-                padding-top: 20px;
+                gap: 40px;
+                padding: 40px 20px;
             }
 
             .privacy-hub {
@@ -387,8 +404,9 @@
                 top: auto;
                 left: auto;
                 transform: none;
-                margin: 20px auto;
-                max-width: 350px;
+                margin: 0 auto;
+                width: 100%;
+                max-width: 400px;
             }
 
             .experience-location {
@@ -399,17 +417,39 @@
                 bottom: auto !important;
                 transform: none !important;
                 margin: 0 auto;
-                max-width: 350px;
+                width: 100%;
+                max-width: 400px;
             }
 
             .info-sidebar {
-                margin: 30px auto;
-                max-width: 350px;
-                padding: 25px;
+                margin: 40px auto;
+                max-width: 500px;
+                padding: 30px;
             }
 
             .benefits-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero-tagline { font-size: 1.3rem; }
+            .hero-subtitle { font-size: 1rem; }
+            
+            .privacy-hub {
+                max-width: 350px;
+                padding: 25px;
+            }
+
+            .experience-location {
+                max-width: 350px;
+                padding: 25px;
+            }
+
+            .info-sidebar {
+                max-width: 350px;
+                padding: 25px;
             }
         }
     </style>
