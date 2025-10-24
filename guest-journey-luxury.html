@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Privacy-First Journey | insane.marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a15 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px 20px 30px;
+            animation: fadeInDown 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .hero-tagline {
+            font-size: 2rem;
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #a8b2d1;
+            max-width: 900px;
+            margin: 0 auto 15px;
+            line-height: 1.6;
+        }
+
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: rgba(52, 199, 89, 0.15);
+            border: 2px solid rgba(52, 199, 89, 0.4);
+            border-radius: 50px;
+            font-size: 1rem;
+            color: #34c759;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .shield-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Journey Map Container */
+        .journey-map-container {
+            max-width: 1800px;
+            margin: 50px auto;
+            padding: 40px 20px;
+            position: relative;
+            min-height: 1100px;
+        }
+
+        /* Central Hub - Privacy Protected */
+        .privacy-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            padding: 35px;
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.15) 0%, rgba(52, 199, 89, 0.05) 100%);
+            border: 3px solid rgba(52, 199, 89, 0.5);
+            border-radius: 25px;
+            box-shadow: 0 0 60px rgba(52, 199, 89, 0.4), 0 0 100px rgba(52, 199, 89, 0.2);
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: privacyGlow 4s infinite;
+            text-align: center;
+        }
+
+        .privacy-hub:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 0 80px rgba(52, 199, 89, 0.6), 0 0 120px rgba(52, 199, 89, 0.4);
+        }
+
+        .hub-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .hub-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #34c759;
+            margin-bottom: 10px;
+        }
+
+        .hub-promise {
+            font-size: 1rem;
+            color: #a8b2d1;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .hub-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hub-feature {
+            font-size: 0.9rem;
+            color: #34c759;
+            font-weight: 600;
+        }
+
+        /* Guest Experience Locations */
+        .experience-location {
+            position: absolute;
+            width: 280px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .experience-location:hover {
+            transform: translateY(-15px) scale(1.03);
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 25px 70px rgba(102, 126, 234, 0.5);
+            z-index: 20;
+        }
+
+        .location-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .location-icon {
+            font-size: 3rem;
+        }
+
+        .location-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .experience-emotion {
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid #ffd700;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .emotion-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .emotion-text {
+            font-size: 1rem;
+            color: #fff;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .privacy-benefit {
+            padding: 15px;
+            background: rgba(52, 199, 89, 0.1);
+            border-left: 4px solid #34c759;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .benefit-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #34c759;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .benefit-text {
+            font-size: 0.95rem;
+            color: #a8b2d1;
+            line-height: 1.5;
+        }
+
+        .access-options {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .access-chip {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chip-device {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.4);
+        }
+
+        .chip-mobile {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            border: 1px solid rgba(78, 205, 196, 0.4);
+        }
+
+        .chip-card {
+            background: rgba(255, 217, 61, 0.2);
+            color: #ffd93d;
+            border: 1px solid rgba(255, 217, 61, 0.4);
+        }
+
+        /* Positioning */
+        .loc-suite { top: 20px; left: 50%; transform: translateX(-50%); }
+        .loc-pool { top: 120px; right: 150px; }
+        .loc-bar { top: 50%; right: 20px; transform: translateY(-50%); }
+        .loc-casino { bottom: 120px; right: 200px; }
+        .loc-restaurant { bottom: 20px; left: 50%; transform: translateX(-50%); }
+        .loc-spa { bottom: 120px; left: 200px; }
+        .loc-grounds { top: 50%; left: 20px; transform: translateY(-50%); }
+        .loc-vip { top: 120px; left: 150px; }
+
+        /* Connection Glow Lines */
+        .glow-connection {
+            position: absolute;
+            background: radial-gradient(ellipse, rgba(52, 199, 89, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+            animation: glowPulse 4s infinite;
+        }
+
+        /* Info Sidebar */
+        .info-sidebar {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 40px;
+            background: rgba(10, 10, 21, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(52, 199, 89, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .sidebar-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #34c759;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 25px;
+            background: rgba(52, 199, 89, 0.05);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(52, 199, 89, 0.5);
+            box-shadow: 0 10px 30px rgba(52, 199, 89, 0.2);
+        }
+
+        .benefit-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .benefit-content h4 {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .benefit-content p {
+            font-size: 0.85rem;
+            color: #a8b2d1;
+            line-height: 1.5;
+        }
+
+        /* Animations */
+        @keyframes privacyGlow {
+            0%, 100% { box-shadow: 0 0 60px rgba(52, 199, 89, 0.4), 0 0 100px rgba(52, 199, 89, 0.2); }
+            50% { box-shadow: 0 0 80px rgba(52, 199, 89, 0.6), 0 0 120px rgba(52, 199, 89, 0.4); }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateY(-50%) translateX(50px); }
+            to { opacity: 1; transform: translateY(-50%) translateX(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .experience-location { width: 250px; padding: 25px; }
+            .loc-pool { right: 100px; }
+            .loc-bar { right: 15px; }
+            .loc-casino { right: 150px; }
+            .loc-spa { left: 150px; }
+            .loc-grounds { left: 15px; }
+            .loc-vip { left: 100px; }
+        }
+
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero-tagline { font-size: 1.5rem; }
+            .hero-subtitle { font-size: 1.1rem; }
+            
+            .journey-map-container {
+                min-height: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+                padding-top: 20px;
+            }
+
+            .privacy-hub {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin: 20px auto;
+                max-width: 350px;
+            }
+
+            .experience-location {
+                position: relative !important;
+                left: auto !important;
+                right: auto !important;
+                top: auto !important;
+                bottom: auto !important;
+                transform: none !important;
+                margin: 0 auto;
+                max-width: 350px;
+            }
+
+            .info-sidebar {
+                margin: 30px auto;
+                max-width: 350px;
+                padding: 25px;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>insane.marketing</h1>
+        <p class="hero-tagline">Luxury service everywhere.<br>Your identity nowhere.</p>
+        <p class="hero-subtitle">
+            Experience seamless VIP treatment across every corner of the venue—without leaving a single trace of who you are.
+        </p>
+        <div class="privacy-badge">
+            <span class="shield-icon">🛡️</span>
+            <span>Complete Privacy Protected</span>
+        </div>
+    </div>
+
+    <div class="journey-map-container">
+        <!-- Central Privacy Hub -->
+        <div class="privacy-hub">
+            <div class="hub-icon">🔒</div>
+            <div class="hub-title">Privacy-First Promise</div>
+            <p class="hub-promise">
+                Every interaction. Every location. Zero data collection.
+            </p>
+            <div class="hub-features">
+                <div class="hub-feature">✓ No Personal Data Stored</div>
+                <div class="hub-feature">✓ Anonymous Service</div>
+                <div class="hub-feature">✓ Complete Discretion</div>
+                <div class="hub-feature">✓ Zero Surveillance</div>
+            </div>
+        </div>
+
+        <!-- Suite Experience -->
+        <div class="experience-location loc-suite">
+            <div class="location-header">
+                <div class="location-icon">🏨</div>
+                <div class="location-name">Your Suite</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"I can relax. No one knows I'm here. Pure privacy."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Tablet activates instantly—no login, no registration, no profile created</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Luxury Advantage</div>
+                <div class="benefit-text">Family scans personal cards to their phones—everyone gets VIP access</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-device">TABLET</span>
+                <span class="access-chip chip-mobile">MOBILE</span>
+            </div>
+        </div>
+
+        <!-- Pool Experience -->
+        <div class="experience-location loc-pool">
+            <div class="location-header">
+                <div class="location-icon">🏊</div>
+                <div class="location-name">Poolside</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"I never have to move. Service comes to me."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Order from your lounger—no staff asking your name or room number</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Mobile Freedom</div>
+                <div class="benefit-text">Carry venue access in your pocket. Order anywhere, anytime.</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-mobile">MOBILE</span>
+            </div>
+        </div>
+
+        <!-- Bar Experience -->
+        <div class="experience-location loc-bar">
+            <div class="location-header">
+                <div class="location-icon">🍸</div>
+                <div class="location-name">Rooftop Bar</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"Anonymous luxury. I'm just another guest."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Scan QR code, order drinks—system never asks who you are</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Safety First</div>
+                <div class="benefit-text">No bartender knows your tab history or preferences—fresh start every time</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-card">QR SCAN</span>
+                <span class="access-chip chip-mobile">MOBILE</span>
+            </div>
+        </div>
+
+        <!-- Casino Experience -->
+        <div class="experience-location loc-casino">
+            <div class="location-header">
+                <div class="location-icon">🎰</div>
+                <div class="location-name">VIP Gaming</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"Total focus. No interruptions. Perfect service."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Staff sees "Table 6 needs service"—not your name, not your history</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Uninterrupted Excellence</div>
+                <div class="benefit-text">Order between hands without leaving your seat—service flows to you</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-mobile">MOBILE</span>
+                <span class="access-chip chip-device">KIOSK</span>
+            </div>
+        </div>
+
+        <!-- Restaurant Experience -->
+        <div class="experience-location loc-restaurant">
+            <div class="location-header">
+                <div class="location-icon">🍽️</div>
+                <div class="location-name">Fine Dining</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"Effortless elegance. No awkward questions."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Browse menu privately—no server tracking what you viewed or how long</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Discreet Convenience</div>
+                <div class="benefit-text">Order at your pace—charges go to room without verbal confirmation</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-device">TABLE</span>
+                <span class="access-chip chip-card">QR MENU</span>
+            </div>
+        </div>
+
+        <!-- Spa Experience -->
+        <div class="experience-location loc-spa">
+            <div class="location-header">
+                <div class="location-icon">🧖</div>
+                <div class="location-name">Luxury Spa</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"Pure relaxation. Complete anonymity."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Phone died? Use backup card—access never compromised</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Seamless Recovery</div>
+                <div class="benefit-text">No tech barriers. No asking staff for help. Instant failsafe access.</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-card">BACKUP</span>
+                <span class="access-chip chip-device">KIOSK</span>
+            </div>
+        </div>
+
+        <!-- Grounds Experience -->
+        <div class="experience-location loc-grounds">
+            <div class="location-header">
+                <div class="location-icon">🌳</div>
+                <div class="location-name">Gardens</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"Freedom to roam. Service follows me."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Walk anywhere—system tracks location generically, never identifies you</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Venue-Wide Mobility</div>
+                <div class="benefit-text">From gardens to gym to pool—your access travels with you invisibly</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-mobile">MOBILE</span>
+                <span class="access-chip chip-card">QR CODE</span>
+            </div>
+        </div>
+
+        <!-- VIP Box Experience -->
+        <div class="experience-location loc-vip">
+            <div class="location-header">
+                <div class="location-icon">💎</div>
+                <div class="location-name">Private Box</div>
+            </div>
+            <div class="experience-emotion">
+                <div class="emotion-label">The Feeling</div>
+                <div class="emotion-text">"Ultimate privacy. My sanctuary."</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Privacy Protected</div>
+                <div class="benefit-text">Multiple guests, multiple devices—all anonymous, all simultaneous</div>
+            </div>
+            <div class="privacy-benefit">
+                <div class="benefit-label">Elite Experience</div>
+                <div class="benefit-text">Tablet for quick orders, phones for personal access—zero friction, zero data</div>
+            </div>
+            <div class="access-options">
+                <span class="access-chip chip-device">TABLET</span>
+                <span class="access-chip chip-mobile">MOBILE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits Sidebar -->
+    <div class="info-sidebar">
+        <div class="sidebar-title">Why Guests Choose Us</div>
+        
+        <div class="benefits-grid">
+            <div class="benefit-item">
+                <div class="benefit-icon">🛡️</div>
+                <div class="benefit-content">
+                    <h4>Complete Anonymity</h4>
+                    <p>No names, no faces, no profiles—just exceptional service</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">📱</div>
+                <div class="benefit-content">
+                    <h4>Total Flexibility</h4>
+                    <p>Use venue devices, your phone, or backup cards—your choice</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">🔒</div>
+                <div class="benefit-content">
+                    <h4>Zero Data Trail</h4>
+                    <p>Nothing stored, nothing tracked, nothing to leak</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">✨</div>
+                <div class="benefit-content">
+                    <h4>Instant Access</h4>
+                    <p>No logins, no downloads, no setup—just tap and go</p>
+                </div>
+            </div>
+
+            <div class="benefit-item">
+                <div class="benefit-icon">🌍</div>
+                <div class="benefit-content">
+                    <h4>Venue-Wide Service</h4>
+                    <p>Every location, every amenity, one seamless experience</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
