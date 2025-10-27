@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Table Experience - Restaurant Intelligence</title>
+    <title>3D Guests Experience - Intelligence Control Center</title>
     <style>
         * {
             margin: 0;
@@ -318,7 +318,7 @@
     <div id="carousel-container"></div>
     
     <div class="ui-overlay">
-        <div style="font-weight: bold; margin-bottom: 5px;">🍽️ <span id="tableNumber">Table 1</span></div>
+        <div style="font-weight: bold; margin-bottom: 5px;">🍽️ <span id="tableNumber">Suite 1</span></div>
         <div style="font-size: 0.9rem; opacity: 0.8;">Tap Cards to Explore</div>
         <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 5px;">Powered by Insane.Marketing</div>
         <div class="service-feedback">
@@ -330,9 +330,9 @@
 
     <div class="restaurant-info">
         <div style="font-weight: bold; margin-bottom: 5px;" id="restaurantName">Loading...</div>
-        <div style="font-size: 0.9rem; opacity: 0.8;">Welcome to Your Table!</div>
+        <div style="font-size: 0.9rem; opacity: 0.8;">Welcome </div>
         <div class="food-feedback">
-            <span class="feedback-label">Food:</span>
+            <span class="feedback-label">Overall:</span>
             <span class="feedback-icon" onclick="rateFeedback('food', 'up')">👍</span>
             <span class="feedback-icon" onclick="rateFeedback('food', 'down')">👎</span>
         </div>
@@ -352,8 +352,8 @@
         <div class="card-title" id="cardTitle">Digital Menu</div>
         <div class="card-description" id="cardDescription">Browse our menu with photos, descriptions, and prices</div>
         <div class="action-buttons">
-            <button class="action-btn" onclick="showQRCode()">Scan the QR</button>
-            <button class="action-btn secondary" onclick="directAction()">Scanless QR</button>
+            <button class="action-btn" onclick="showQRCode()">Scan to Mobile</button>
+            <button class="action-btn secondary" onclick="directAction()">Scanless for Here </button>
         </div>
     </div>
 
@@ -368,7 +368,7 @@
         <div class="qr-content">
             <button class="close-btn" onclick="closeQRModal()">×</button>
             <h2 style="margin-bottom: 15px; color: #333;" id="modalTitle">Digital Menu</h2>
-            <p style="color: #666; margin-bottom: 20px;" id="modalDescription">Scan this QR code with your phone camera</p>
+            <p style="color: #666; margin-bottom: 20px;" id="modalDescription">Scan this private code with your phone camera</p>
             
             <div class="qr-code-container">
                 <div class="qr-code" id="qrCodeDisplay">
@@ -543,7 +543,7 @@
                 {
                     id: 'wifi',
                 // title: "Free WiFi",
-                    description: "Connect to our complimentary high-speed internet",
+                    description: "Connect to our complimentary secure-high-speed internet",
                     color: 0x4ecdc4,
                     icon: "📶",
                     qrType: 'wifi',
@@ -574,7 +574,7 @@
                 contextualCards.push({
                     id: 'events',
                    // title: "Local Events",
-                    description: "Explore the Community for Things to Do",
+                    description: "Explore the Local Community Ammenities",
                     color: 0x26de81,
                     icon: "⚡",
                     qrType: 'events',
@@ -658,7 +658,7 @@
             contextualCards.push({
                 id: 'service',
                // title: "Call Server",
-                description: "Need assistance? Alert your server instantly",
+                description: "Need assistance? Privately alert service staff",
                 color: 0xa29bfe,
                 icon: "🔔",
                 qrType: 'service',
