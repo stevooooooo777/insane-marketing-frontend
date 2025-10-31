@@ -7,6 +7,15 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@300;400;600&display=swap');
 
+        /* ===== FINE DINING COLOR PALETTE ===== */
+        :root {
+            --dining-burgundy: #722F37;
+            --dining-gold: #D4AF37;
+            --dining-warm: #B8860B;
+            --dining-dark: #190F0F;
+            --dining-accent: rgba(139, 69, 19, 0.6);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -157,7 +166,13 @@
                 0 0 120px rgba(212, 175, 55, 0.08),
                 inset 0 1px 0 rgba(255, 255, 255, 0.05),
                 inset 0 -1px 0 rgba(212, 175, 55, 0.1);
-            animation: sceneEntry 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+            animation: sceneSuiteFade 80s ease-in-out infinite;
+        }
+
+        @keyframes sceneSuiteFade {
+            0%, 48% { opacity: 1; }
+            49%, 97% { opacity: 0; }
+            98%, 100% { opacity: 1; }
         }
 
         @keyframes sceneEntry {
@@ -183,6 +198,194 @@
                 0 10px 40px rgba(0, 0, 0, 0.5),
                 0 0 60px rgba(212, 175, 55, 0.15);
             z-index: 100;
+        }
+
+        /* Timeline content switching */
+        .timeline-suite, .timeline-dining {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 0;
+            padding: 20px 30px;
+        }
+
+        .timeline-suite {
+            opacity: 1;
+            animation: timelineSuiteFade 80s ease-in-out infinite;
+        }
+
+        .timeline-dining {
+            opacity: 0;
+            animation: timelineDiningFade 80s ease-in-out infinite;
+        }
+
+        @keyframes timelineSuiteFade {
+            0%, 48% { opacity: 1; }
+            49%, 97% { opacity: 0; }
+            98%, 100% { opacity: 1; }
+        }
+
+        @keyframes timelineDiningFade {
+            0%, 48% { opacity: 0; }
+            49%, 97% { opacity: 1; }
+            98%, 100% { opacity: 0; }
+        }
+
+        /* Scenario Selector */
+        .scenario-selector {
+            position: absolute;
+            top: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 101;
+        }
+
+        .scenario-btn {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, 
+                rgba(10, 10, 21, 0.9) 0%,
+                rgba(26, 26, 37, 0.9) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            color: rgba(212, 175, 55, 0.7);
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-btn:hover {
+            border-color: rgba(212, 175, 55, 0.6);
+            color: rgba(212, 175, 55, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(212, 175, 55, 0.2);
+        }
+
+        .scenario-btn.active {
+            background: linear-gradient(135deg, 
+                rgba(212, 175, 55, 0.2) 0%,
+                rgba(184, 134, 11, 0.2) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.8);
+            color: rgba(212, 175, 55, 1);
+            box-shadow: 
+                0 8px 25px rgba(212, 175, 55, 0.3),
+                0 0 40px rgba(212, 175, 55, 0.2);
+        }
+
+        .scenario-btn.active:hover {
+            transform: translateY(0);
+        }
+
+        .scenario-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Scene Identifier Labels */
+        .scene-identifier {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: rgba(212, 175, 55, 0.7);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            z-index: 8;
+        }
+
+        .identifier-suite {
+            opacity: 1;
+            animation: identifierSuiteFade 80s ease-in-out infinite;
+        }
+
+        .identifier-dining {
+            opacity: 0;
+            animation: identifierDiningFade 80s ease-in-out infinite;
+        }
+
+        @keyframes identifierSuiteFade {
+            0%, 48% { opacity: 0.7; }
+            49%, 97% { opacity: 0; }
+            98%, 100% { opacity: 0.7; }
+        }
+
+        @keyframes identifierDiningFade {
+            0%, 48% { opacity: 0; }
+            49%, 97% { opacity: 0.7; }
+            98%, 100% { opacity: 0; }
+        }
+
+        /* Scenario Selector */
+        .scenario-selector {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 101;
+        }
+
+        .scenario-btn {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, 
+                rgba(10, 10, 21, 0.7) 0%,
+                rgba(26, 26, 37, 0.7) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(212, 175, 55, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .scenario-btn:hover {
+            border-color: rgba(212, 175, 55, 0.6);
+            color: rgba(212, 175, 55, 0.9);
+            background: linear-gradient(135deg, 
+                rgba(10, 10, 21, 0.85) 0%,
+                rgba(26, 26, 37, 0.85) 100%);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 25px rgba(212, 175, 55, 0.2),
+                0 0 40px rgba(212, 175, 55, 0.15);
+        }
+
+        .scenario-btn.active {
+            border-color: rgba(212, 175, 55, 0.8);
+            color: rgba(212, 175, 55, 1);
+            background: linear-gradient(135deg, 
+                rgba(114, 47, 55, 0.3) 0%,
+                rgba(26, 26, 37, 0.9) 100%);
+            box-shadow: 
+                0 8px 30px rgba(212, 175, 55, 0.3),
+                0 0 50px rgba(212, 175, 55, 0.2);
+        }
+
+        .scenario-btn .emoji {
+            font-size: 1.2rem;
+            filter: grayscale(0.3);
+        }
+
+        .scenario-btn.active .emoji {
+            filter: grayscale(0);
         }
 
         .timeline-content {
@@ -754,7 +957,7 @@
                 0 0 80px rgba(212, 175, 55, 0.2);
             z-index: 90;
             opacity: 0;
-            animation: panelPulse 40s ease-in-out infinite;
+            animation: panelPulse 80s ease-in-out infinite;
         }
 
         @keyframes panelPulse {
@@ -774,10 +977,54 @@
                 opacity: 0;
                 transform: translateX(30px);
             }
-            44%, 100% {
+            44%, 58% {
                 opacity: 0;
                 transform: translateX(30px);
             }
+            59%, 60% {
+                opacity: 0.75;
+                transform: translateX(0);
+            }
+            61%, 84% {
+                opacity: 0.75;
+                transform: translateX(0);
+            }
+            85%, 87% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            88%, 100% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+        }
+
+        /* Panel content switching */
+        .panel-suite, .panel-dining {
+            position: absolute;
+            width: calc(100% - 50px);
+            left: 25px;
+            top: 25px;
+        }
+
+        .panel-suite {
+            opacity: 1;
+            animation: panelSuiteFade 80s ease-in-out infinite;
+        }
+
+        .panel-dining {
+            opacity: 0;
+            animation: panelDiningFade 80s ease-in-out infinite;
+        }
+
+        @keyframes panelSuiteFade {
+            0%, 43% { opacity: 1; }
+            44%, 100% { opacity: 0; }
+        }
+
+        @keyframes panelDiningFade {
+            0%, 43% { opacity: 0; }
+            44%, 100% { opacity: 1; }
         }
 
         .queue-header {
@@ -969,7 +1216,426 @@
             65%, 100% { opacity: 0; transform: translateY(-10px); }
         }
 
-        /* Premium Legend */
+        /* ===== FINE DINING SCENE ===== */
+        .scene-dining {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 1500px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: sceneDiningFade 80s ease-in-out infinite;
+        }
+
+        @keyframes sceneDiningFade {
+            0%, 2% { opacity: 0; }
+            3%, 48% { opacity: 0; }
+            49%, 97% { opacity: 1; }
+            98%, 100% { opacity: 0; }
+        }
+
+        /* The Reception (Fine Dining starting point) */
+        .reception {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            padding: 40px;
+            background: linear-gradient(135deg, 
+                var(--dining-dark) 0%,
+                var(--dining-burgundy) 100%);
+            border: 3px solid var(--dining-gold);
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 
+                0 20px 60px rgba(114, 47, 55, 0.5),
+                0 0 100px rgba(212, 175, 55, 0.3);
+            z-index: 10;
+        }
+
+        .reception-label {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--dining-gold);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .reception-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .host-stand {
+            font-size: 3rem;
+        }
+
+        /* Fine Dining Destinations */
+        .destination-dining {
+            position: absolute;
+            width: 140px;
+            padding: 25px;
+            background: linear-gradient(135deg, 
+                rgba(114, 47, 55, 0.25) 0%,
+                rgba(25, 15, 15, 0.25) 100%);
+            border: 2px solid var(--dining-gold);
+            border-radius: 25px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 15px 45px rgba(114, 47, 55, 0.4),
+                0 0 80px rgba(212, 175, 55, 0.2);
+            z-index: 5;
+            animation: destinationFloatDining 6s ease-in-out infinite;
+        }
+
+        @keyframes destinationFloatDining {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .destination-dining .destination-icon {
+            font-size: 4rem;
+            filter: drop-shadow(0 8px 25px rgba(212, 175, 55, 0.4));
+            animation: iconBreathDining 3s ease-in-out infinite;
+        }
+
+        @keyframes iconBreathDining {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .destination-dining .destination-name {
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--dining-gold);
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+        }
+
+        /* Fine Dining Destination Positions - 3 Levels */
+        /* Level 1 - Arrival Experience */
+        .dest-aperitif { top: 550px; left: 120px; animation-delay: 0s; }
+        .dest-wine-cellar { top: 550px; left: 50%; transform: translateX(-50%); animation-delay: 0.5s; }
+        .dest-amuse { top: 550px; right: 120px; animation-delay: 1s; }
+        
+        /* Level 2 - Main Dining */
+        .dest-private-room { top: 850px; left: 180px; animation-delay: 1.5s; }
+        .dest-chefs-table { top: 850px; left: 50%; transform: translateX(-50%); animation-delay: 2s; }
+        .dest-grand-salon { top: 850px; right: 180px; animation-delay: 2.5s; }
+        
+        /* Level 3 - After Experience */
+        .dest-digestif { bottom: 400px; left: 180px; animation-delay: 3s; }
+        .dest-rooftop { bottom: 400px; left: 50%; transform: translateX(-50%); animation-delay: 3.5s; }
+        .dest-dessert { bottom: 400px; right: 180px; animation-delay: 4s; }
+
+        /* Fine Dining Tables/Rooms with Venue Tablets */
+        .table-station {
+            position: absolute;
+            width: 160px;
+            padding: 25px;
+            background: linear-gradient(135deg, 
+                rgba(114, 47, 55, 0.3) 0%,
+                rgba(25, 15, 15, 0.3) 100%);
+            border: 2px solid var(--dining-gold);
+            border-radius: 25px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 15px 45px rgba(114, 47, 55, 0.4),
+                0 0 80px rgba(212, 175, 55, 0.2);
+            z-index: 5;
+        }
+
+        .table-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dining-gold);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .venue-tablet {
+            width: 100%;
+            height: 90px;
+            background: linear-gradient(135deg, var(--dining-dark) 0%, #1a1a25 100%);
+            border: 2px solid var(--dining-gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--dining-gold);
+            line-height: 1.3;
+            padding: 8px;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Table Positions - 2 Levels */
+        .table-1 { top: 650px; left: 150px; }
+        .table-2 { top: 650px; left: 50%; transform: translateX(-50%); }
+        .table-3 { top: 650px; right: 150px; }
+        .private-room-1 { top: 1000px; left: 200px; }
+        .chefs-table-spot { top: 1000px; left: 50%; transform: translateX(-50%); }
+        .private-room-2 { top: 1000px; right: 200px; }
+
+        /* Service Staff Characters */
+        .service-staff {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, 
+                var(--dining-burgundy) 0%,
+                var(--dining-dark) 100%);
+            border: 3px solid var(--dining-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            opacity: 0;
+            z-index: 20;
+            box-shadow: 
+                0 10px 30px rgba(212, 175, 55, 0.4),
+                0 0 50px rgba(212, 175, 55, 0.3);
+        }
+
+        .service-staff::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: staffGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes staffGlow {
+            0%, 100% { transform: scale(0.9); opacity: 0.4; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        /* Service Staff Journeys */
+        .staff-chef { animation: chefJourney 40s ease-in-out infinite; }
+        .staff-sommelier { animation: sommelierJourney 40s ease-in-out infinite; }
+        .staff-server { animation: serverJourney 40s ease-in-out infinite; }
+        .staff-maitre { animation: maitreJourney 40s ease-in-out infinite; }
+
+        @keyframes chefJourney {
+            0%, 5% { top: 120px; left: 50%; opacity: 0; }
+            6%, 25% { top: 700px; left: 150px; opacity: 1; }
+            26%, 30% { top: 700px; left: 150px; opacity: 1; }
+            31%, 50% { top: 1050px; left: 50%; transform: translateX(-50%); opacity: 1; }
+            51%, 55% { top: 1050px; left: 50%; transform: translateX(-50%); opacity: 1; }
+            56%, 75% { top: 1050px; left: 200px; opacity: 1; }
+            76%, 100% { top: 1050px; left: 200px; opacity: 1; }
+        }
+
+        @keyframes sommelierJourney {
+            0%, 8% { top: 120px; left: 48%; opacity: 0; }
+            9%, 28% { top: 700px; left: 50%; transform: translateX(-50%); opacity: 1; }
+            29%, 33% { top: 700px; left: 50%; transform: translateX(-50%); opacity: 1; }
+            34%, 53% { top: 1050px; right: 200px; left: auto; opacity: 1; }
+            54%, 58% { top: 1050px; right: 200px; left: auto; opacity: 1; }
+            59%, 78% { top: 700px; right: 150px; left: auto; opacity: 1; }
+            79%, 100% { top: 700px; right: 150px; left: auto; opacity: 1; }
+        }
+
+        @keyframes serverJourney {
+            0%, 10% { top: 120px; left: 52%; opacity: 0; }
+            11%, 30% { top: 700px; right: 150px; left: auto; opacity: 1; }
+            31%, 35% { top: 700px; right: 150px; left: auto; opacity: 1; }
+            36%, 55% { top: 700px; left: 150px; opacity: 1; }
+            56%, 60% { top: 700px; left: 150px; opacity: 1; }
+            61%, 80% { top: 700px; left: 50%; transform: translateX(-50%); opacity: 1; }
+            81%, 100% { top: 700px; left: 50%; transform: translateX(-50%); opacity: 1; }
+        }
+
+        @keyframes maitreJourney {
+            0%, 12% { top: 120px; left: 54%; opacity: 0; }
+            13%, 32% { top: 1050px; left: 200px; opacity: 1; }
+            33%, 37% { top: 1050px; left: 200px; opacity: 1; }
+            38%, 57% { top: 700px; right: 150px; left: auto; opacity: 1; }
+            58%, 62% { top: 700px; right: 150px; left: auto; opacity: 1; }
+            63%, 82% { top: 1050px; right: 200px; left: auto; opacity: 1; }
+            83%, 100% { top: 1050px; right: 200px; left: auto; opacity: 1; }
+        }
+
+        /* Fine Dining Table Narratives */
+        .narrative-dining {
+            position: absolute;
+            padding: 14px 22px;
+            background: linear-gradient(135deg, 
+                rgba(114, 47, 55, 0.15) 0%,
+                rgba(114, 47, 55, 0.08) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-left: 4px solid rgba(212, 175, 55, 0.8);
+            border-radius: 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(212, 175, 55, 0.95);
+            opacity: 0;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.2);
+            letter-spacing: 0.3px;
+            max-width: 280px;
+        }
+
+        /* Table narrative positions */
+        .narrative-table1 {
+            top: 800px;
+            left: 80px;
+            animation: narrativeTable1 40s infinite;
+        }
+
+        .narrative-table2 {
+            top: 800px;
+            left: 45%;
+            transform: translateX(-50%);
+            animation: narrativeTable2 40s infinite;
+        }
+
+        .narrative-table3 {
+            top: 800px;
+            right: 80px;
+            animation: narrativeTable3 40s infinite;
+        }
+
+        .narrative-private1 {
+            top: 1150px;
+            left: 120px;
+            animation: narrativePrivate1 40s infinite;
+        }
+
+        .narrative-chefs {
+            top: 1150px;
+            left: 48%;
+            transform: translateX(-50%);
+            animation: narrativeChefs 40s infinite;
+        }
+
+        .narrative-private2 {
+            top: 1150px;
+            right: 120px;
+            animation: narrativePrivate2 40s infinite;
+        }
+
+        @keyframes narrativeTable1 {
+            0%, 24% { opacity: 0; transform: translateY(10px); }
+            25%, 40% { opacity: 1; transform: translateY(0); }
+            41%, 100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        @keyframes narrativeTable2 {
+            0%, 27% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            28%, 43% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            44%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        }
+
+        @keyframes narrativeTable3 {
+            0%, 30% { opacity: 0; transform: translateY(10px); }
+            31%, 46% { opacity: 1; transform: translateY(0); }
+            47%, 100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        @keyframes narrativePrivate1 {
+            0%, 32% { opacity: 0; transform: translateY(10px); }
+            33%, 48% { opacity: 1; transform: translateY(0); }
+            49%, 100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        @keyframes narrativeChefs {
+            0%, 49% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            50%, 65% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            66%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        }
+
+        @keyframes narrativePrivate2 {
+            0%, 52% { opacity: 0; transform: translateY(10px); }
+            53%, 68% { opacity: 1; transform: translateY(0); }
+            69%, 100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Fine Dining AI Suggestions */
+        .ai-suggestion-dining {
+            position: absolute;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, 
+                rgba(138, 43, 226, 0.15) 0%,
+                rgba(75, 0, 130, 0.15) 100%);
+            border: 2px solid rgba(138, 43, 226, 0.4);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(200, 150, 255, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 8px 25px rgba(138, 43, 226, 0.3),
+                0 0 40px rgba(138, 43, 226, 0.2);
+            z-index: 25;
+            opacity: 0;
+            max-width: 220px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-dining-table1 {
+            top: 570px;
+            left: 150px;
+            animation: aiDiningTable1 40s ease-in-out infinite;
+        }
+
+        .ai-dining-table2 {
+            top: 570px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: aiDiningTable2 40s ease-in-out infinite;
+        }
+
+        .ai-dining-table3 {
+            top: 570px;
+            right: 150px;
+            animation: aiDiningTable3 40s ease-in-out infinite;
+        }
+
+        .ai-dining-chefs {
+            top: 920px;
+            left: 48%;
+            transform: translateX(-50%);
+            animation: aiDiningChefs 40s ease-in-out infinite;
+        }
+
+        @keyframes aiDiningTable1 {
+            0%, 20% { opacity: 0; transform: translateY(10px); }
+            21%, 35% { opacity: 1; transform: translateY(0); }
+            36%, 100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        @keyframes aiDiningTable2 {
+            0%, 23% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            24%, 38% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            39%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        }
+
+        @keyframes aiDiningTable3 {
+            0%, 26% { opacity: 0; transform: translateY(10px); }
+            27%, 41% { opacity: 1; transform: translateY(0); }
+            42%, 100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        @keyframes aiDiningChefs {
+            0%, 45% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            46%, 60% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            61%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .phone-tag-dining {
         .legend {
             margin-top: 100px;
             padding: 60px 80px;
@@ -1069,72 +1735,158 @@
     <div class="spotlight spotlight-2"></div>
 
     <div class="container">
+        <!-- Scenario Selector -->
+        <div class="scenario-selector">
+            <button class="scenario-btn active" data-scenario="suite">
+                <span class="emoji">🏨</span>
+                <span>Resort Suite</span>
+            </button>
+            <button class="scenario-btn" data-scenario="dining">
+                <span class="emoji">🍷</span>
+                <span>Fine Dining</span>
+            </button>
+        </div>
+
         <div class="hero">
-            
-            <h1>The Ultra-Luxury Experience</h1>
+           
+            <h1>The Luxury<br>Suite Experience</h1>
+            <p class="hero-subtitle">Family of Four · Privacy First</p>
             <p class="hero-description">
                 Watch as each family member explores your venue independently—seamlessly connected, 
-                completely anonymous, with absolute convenience - everywhere.
+                completely anonymous, absolutely luxurious.
             </p>
         </div>
 
-        <!-- Timeline Bar 
+        <!-- Scenario Selector -->
+        <div class="scenario-selector">
+            <button class="scenario-btn active" data-scenario="suite">
+                <span class="scenario-icon">🏨</span>
+                <span>Resort Suite</span>
+            </button>
+            <button class="scenario-btn" data-scenario="dining">
+                <span class="scenario-icon">🍷</span>
+                <span>Fine Dining</span>
+            </button>
+        </div>
+
+        <!-- Timeline Bar
         <div class="timeline-bar">
-            <div class="timeline-content">
-                <div class="timeline-time">☀️ 10:30 AM</div>
-                <div class="timeline-progress">
-                    <div class="timeline-progress-bar"></div>
+            <!-- Suite Timeline -->
+            <div class="timeline-suite">
+                <div class="timeline-content">
+                    <div class="timeline-time">☀️ 10:30 AM</div>
+                    <div class="timeline-progress">
+                        <div class="timeline-progress-bar"></div>
+                    </div>
+                    <div class="timeline-label">→ Evening</div>
+                    <div class="timeline-time">8:00 PM 🌙</div>
                 </div>
-                <div class="timeline-label">→ Evening</div>
-                <div class="timeline-time">8:00 PM 🌙</div>
+            </div>    -->
+            <!-- Fine Dining Timeline 
+            <div class="timeline-dining">
+                <div class="timeline-content">
+                    <div class="timeline-time">🍸 7:30 PM</div>
+                    <div class="timeline-progress">
+                        <div class="timeline-progress-bar"></div>
+                    </div>
+                    <div class="timeline-label">→ Late Evening</div>
+                    <div class="timeline-time">11:00 PM 🌙</div>
+                </div>
             </div>
-        </div>       -->
+        </div>   -->
 
         <!-- Live Service Queue Panel -->
         <div class="service-queue-panel">
-            <div class="queue-header">
-                <div class="queue-pulse"></div>
-                AI SERVICE ORCHESTRATION
-            </div>
-            <div class="service-item">
-                <div class="service-request">🍾 Champagne Service</div>
-                <div class="service-status">
-                    <span>Bar Staff</span>
-                    <span class="status-arrow">→</span>
-                    <span>Table 7</span>
-                    <span class="service-eta">2:47</span>
+            <!-- Suite Services -->
+            <div class="panel-suite">
+                <div class="queue-header">
+                    <div class="queue-pulse"></div>
+                    AI SERVICE ORCHESTRATION
+                </div>
+                <div class="service-item">
+                    <div class="service-request">🍾 Champagne Service</div>
+                    <div class="service-status">
+                        <span>Bar Staff</span>
+                        <span class="status-arrow">→</span>
+                        <span>Table 7</span>
+                        <span class="service-eta">2:47</span>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-request">🚨 Medical Alert</div>
+                    <div class="service-status">
+                        <span>Dr. Chen</span>
+                        <span class="status-arrow">→</span>
+                        <span>Activities Area</span>
+                        <span class="service-eta urgent">Arriving</span>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-request">🚗 Concierge Pickup</div>
+                    <div class="service-status">
+                        <span>Driver #3</span>
+                        <span class="status-arrow">→</span>
+                        <span>Town Square</span>
+                        <span class="service-eta">15:20</span>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-request">💳 Bill Request</div>
+                    <div class="service-status">
+                        <span>Processing</span>
+                        <span class="status-arrow">→</span>
+                        <span>Cafe</span>
+                        <span class="service-eta">Ready</span>
+                    </div>
                 </div>
             </div>
-            <div class="service-item">
-                <div class="service-request">🚨 Medical Alert</div>
-                <div class="service-status">
-                    <span>Dr. Chen</span>
-                    <span class="status-arrow">→</span>
-                    <span>Activities Area</span>
-                    <span class="service-eta urgent">Arriving</span>
+            <!-- Fine Dining Services -->
+            <div class="panel-dining">
+                <div class="queue-header">
+                    <div class="queue-pulse"></div>
+                    AI SERVICE ORCHESTRATION
                 </div>
-            </div>
-            <div class="service-item">
-                <div class="service-request">🚗 Concierge Pickup</div>
-                <div class="service-status">
-                    <span>Driver #3</span>
-                    <span class="status-arrow">→</span>
-                    <span>Town Square</span>
-                    <span class="service-eta">15:20</span>
+                <div class="service-item">
+                    <div class="service-request">🍷 Wine Service</div>
+                    <div class="service-status">
+                        <span>Sommelier Jean</span>
+                        <span class="status-arrow">→</span>
+                        <span>Table 2</span>
+                        <span class="service-eta">2:30</span>
+                    </div>
                 </div>
-            </div>
-            <div class="service-item">
-                <div class="service-request">💳 Bill Request</div>
-                <div class="service-status">
-                    <span>Processing</span>
-                    <span class="status-arrow">→</span>
-                    <span>Cafe</span>
-                    <span class="service-eta">Ready</span>
+                <div class="service-item">
+                    <div class="service-request">👨‍🍳 Chef Visit</div>
+                    <div class="service-status">
+                        <span>Chef Marcus</span>
+                        <span class="status-arrow">→</span>
+                        <span>Private Room 1</span>
+                        <span class="service-eta">5 min</span>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-request">🍰 Dessert Prep</div>
+                    <div class="service-status">
+                        <span>Pastry Team</span>
+                        <span class="status-arrow">→</span>
+                        <span>Chef's Table</span>
+                        <span class="service-eta">8 min</span>
+                    </div>
+                </div>
+                <div class="service-item">
+                    <div class="service-request">🥃 Digestif Service</div>
+                    <div class="service-status">
+                        <span>Service Staff</span>
+                        <span class="status-arrow">→</span>
+                        <span>Table 3</span>
+                        <span class="service-eta">Ready</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="scene">
+            <div class="scene-identifier identifier-suite">Scenario 1: Resort Hospitality</div>
             <!-- Luxury Suite -->
             <div class="suite">
                 <div class="suite-label">The Suite</div>
@@ -1254,6 +2006,86 @@
             </div>
         </div>
 
+        <!-- Fine Dining Scene -->
+        <div class="scene-dining">
+            <div class="scene-identifier identifier-dining">Scenario 2: Fine Dining</div>
+            <!-- The Reception -->
+            <div class="reception">
+                <div class="reception-label">Étoile Noire</div>
+                <div class="reception-content">
+                    <div class="host-stand">🎩</div>
+                </div>
+            </div>
+
+            <!-- Tables & Rooms with Venue Tablets -->
+            <!-- Level 1 - Main Dining Tables -->
+            <div class="table-station table-1">
+                <div class="table-label">Table 1</div>
+                <div class="venue-tablet">3D<br>CAROUSEL</div>
+            </div>
+
+            <div class="table-station table-2">
+                <div class="table-label">Table 2</div>
+                <div class="venue-tablet">3D<br>CAROUSEL</div>
+            </div>
+
+            <div class="table-station table-3">
+                <div class="table-label">Table 3</div>
+                <div class="venue-tablet">3D<br>CAROUSEL</div>
+            </div>
+
+            <!-- Level 2 - Private Dining -->
+            <div class="table-station private-room-1">
+                <div class="table-label">Private Room 1</div>
+                <div class="venue-tablet">3D<br>CAROUSEL</div>
+            </div>
+
+            <div class="table-station chefs-table-spot">
+                <div class="table-label">Chef's Table</div>
+                <div class="venue-tablet">3D<br>CAROUSEL</div>
+            </div>
+
+            <div class="table-station private-room-2">
+                <div class="table-label">Private Room 2</div>
+                <div class="venue-tablet">3D<br>CAROUSEL</div>
+            </div>
+
+            <!-- Service Staff Characters -->
+            <div class="service-staff staff-chef">👨‍🍳</div>
+            <div class="service-staff staff-sommelier">🍷</div>
+            <div class="service-staff staff-server">🧑‍🍳</div>
+            <div class="service-staff staff-maitre">👨‍💼</div>
+
+            <!-- Table Narratives -->
+            <div class="narrative-dining narrative-table1">Requesting wine pairing with seafood course</div>
+            <div class="narrative-dining narrative-table2">Service request: Another bottle of Burgundy</div>
+            <div class="narrative-dining narrative-table3">This is extraordinary! Taking photos</div>
+            <div class="narrative-dining narrative-private1">Anniversary celebration - special presentation</div>
+            <div class="narrative-dining narrative-chefs">Chef visit requested for dessert prep</div>
+            <div class="narrative-dining narrative-private2">Can we extend reservation by 30 minutes?</div>
+
+            <!-- AI Predictions for Restaurant -->
+            <div class="ai-suggestion-dining ai-dining-table1">
+                <div class="ai-icon">🤖</div>
+                <div class="ai-text">Suggest: Sommelier visit for Course 3</div>
+            </div>
+
+            <div class="ai-suggestion-dining ai-dining-table2">
+                <div class="ai-icon">🤖</div>
+                <div class="ai-text">Recommend: Chef's tableside finish</div>
+            </div>
+
+            <div class="ai-suggestion-dining ai-dining-table3">
+                <div class="ai-icon">🤖</div>
+                <div class="ai-text">Alert: Table ready for dessert service</div>
+            </div>
+
+            <div class="ai-suggestion-dining ai-dining-chefs">
+                <div class="ai-icon">🤖</div>
+                <div class="ai-text">Suggest: Digestif service in 10 min</div>
+            </div>
+        </div>
+
         <!-- Legend -->
         <div class="legend">
             <div class="legend-title">How It Works</div>
@@ -1316,5 +2148,189 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Scenario switching functionality
+        const scenarioButtons = document.querySelectorAll('.scenario-btn');
+        const suiteScene = document.querySelector('.scene');
+        const diningScene = document.querySelector('.scene-dining');
+        const suiteTimeline = document.querySelector('.timeline-suite');
+        const diningTimeline = document.querySelector('.timeline-dining');
+        const suitePanel = document.querySelector('.panel-suite');
+        const diningPanel = document.querySelector('.panel-dining');
+        const suiteIdentifier = document.querySelector('.identifier-suite');
+        const diningIdentifier = document.querySelector('.identifier-dining');
+        const servicePanel = document.querySelector('.service-queue-panel');
+
+        let currentScenario = 'suite';
+
+        // Function to switch scenarios
+        function switchScenario(scenario) {
+            if (scenario === currentScenario) return;
+            
+            currentScenario = scenario;
+
+            // Update button states
+            scenarioButtons.forEach(btn => {
+                if (btn.dataset.scenario === scenario) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (scenario === 'suite') {
+                // Show Suite, hide Dining
+                suiteScene.style.opacity = '1';
+                suiteScene.style.animation = 'none';
+                diningScene.style.opacity = '0';
+                diningScene.style.animation = 'none';
+                
+                suiteTimeline.style.opacity = '1';
+                suiteTimeline.style.animation = 'none';
+                diningTimeline.style.opacity = '0';
+                diningTimeline.style.animation = 'none';
+                
+                suitePanel.style.opacity = '1';
+                suitePanel.style.animation = 'none';
+                diningPanel.style.opacity = '0';
+                diningPanel.style.animation = 'none';
+
+                suiteIdentifier.style.opacity = '0.7';
+                suiteIdentifier.style.animation = 'none';
+                diningIdentifier.style.opacity = '0';
+                diningIdentifier.style.animation = 'none';
+
+                // Show service panel
+                servicePanel.style.opacity = '0.75';
+                servicePanel.style.animation = 'none';
+                servicePanel.style.transform = 'translateX(0)';
+            } else {
+                // Show Dining, hide Suite
+                suiteScene.style.opacity = '0';
+                suiteScene.style.animation = 'none';
+                diningScene.style.opacity = '1';
+                diningScene.style.animation = 'none';
+                
+                suiteTimeline.style.opacity = '0';
+                suiteTimeline.style.animation = 'none';
+                diningTimeline.style.opacity = '1';
+                diningTimeline.style.animation = 'none';
+                
+                suitePanel.style.opacity = '0';
+                suitePanel.style.animation = 'none';
+                diningPanel.style.opacity = '1';
+                diningPanel.style.animation = 'none';
+
+                suiteIdentifier.style.opacity = '0';
+                suiteIdentifier.style.animation = 'none';
+                diningIdentifier.style.opacity = '0.7';
+                diningIdentifier.style.animation = 'none';
+
+                // Show service panel
+                servicePanel.style.opacity = '0.75';
+                servicePanel.style.animation = 'none';
+                servicePanel.style.transform = 'translateX(0)';
+            }
+        }
+
+        // Add click listeners to buttons
+        scenarioButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchScenario(btn.dataset.scenario);
+            });
+        });
+
+        // Start with Suite scenario visible
+        switchScenario('suite');
+    </script>
+    <script>
+        // Scenario Selector Functionality
+        const sceneBtns = document.querySelectorAll('.scenario-btn');
+        const suiteScene = document.querySelector('.scene');
+        const diningScene = document.querySelector('.scene-dining');
+        const suiteTimeline = document.querySelector('.timeline-suite');
+        const diningTimeline = document.querySelector('.timeline-dining');
+        const suiteIdentifier = document.querySelector('.identifier-suite');
+        const diningIdentifier = document.querySelector('.identifier-dining');
+        const suitePanel = document.querySelector('.panel-suite');
+        const diningPanel = document.querySelector('.panel-dining');
+        const servicePanel = document.querySelector('.service-queue-panel');
+
+        // Disable automatic animations and set manual control
+        function showScenario(scenario) {
+            // Remove active class from all buttons
+            sceneBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (scenario === 'suite') {
+                // Show suite, hide dining
+                suiteScene.style.animation = 'none';
+                diningScene.style.animation = 'none';
+                suiteScene.style.opacity = '1';
+                diningScene.style.opacity = '0';
+                
+                suiteTimeline.style.animation = 'none';
+                diningTimeline.style.animation = 'none';
+                suiteTimeline.style.opacity = '1';
+                diningTimeline.style.opacity = '0';
+                
+                suiteIdentifier.style.animation = 'none';
+                diningIdentifier.style.animation = 'none';
+                suiteIdentifier.style.opacity = '0.7';
+                diningIdentifier.style.opacity = '0';
+                
+                suitePanel.style.animation = 'none';
+                diningPanel.style.animation = 'none';
+                suitePanel.style.opacity = '1';
+                diningPanel.style.opacity = '0';
+                
+                servicePanel.style.animation = 'none';
+                servicePanel.style.opacity = '0.75';
+                servicePanel.style.transform = 'translateX(0)';
+                
+                // Activate suite button
+                document.querySelector('[data-scenario="suite"]').classList.add('active');
+            } else if (scenario === 'dining') {
+                // Show dining, hide suite
+                suiteScene.style.animation = 'none';
+                diningScene.style.animation = 'none';
+                suiteScene.style.opacity = '0';
+                diningScene.style.opacity = '1';
+                
+                suiteTimeline.style.animation = 'none';
+                diningTimeline.style.animation = 'none';
+                suiteTimeline.style.opacity = '0';
+                diningTimeline.style.opacity = '1';
+                
+                suiteIdentifier.style.animation = 'none';
+                diningIdentifier.style.animation = 'none';
+                suiteIdentifier.style.opacity = '0';
+                diningIdentifier.style.opacity = '0.7';
+                
+                suitePanel.style.animation = 'none';
+                diningPanel.style.animation = 'none';
+                suitePanel.style.opacity = '0';
+                diningPanel.style.opacity = '1';
+                
+                servicePanel.style.animation = 'none';
+                servicePanel.style.opacity = '0.75';
+                servicePanel.style.transform = 'translateX(0)';
+                
+                // Activate dining button
+                document.querySelector('[data-scenario="dining"]').classList.add('active');
+            }
+        }
+
+        // Add click handlers
+        sceneBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const scenario = btn.dataset.scenario;
+                showScenario(scenario);
+            });
+        });
+
+        // Start with suite scenario visible
+        showScenario('suite');
+    </script>
 </body>
 </html>
