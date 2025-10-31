@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Luxury Guest Experience | insane.marketing</title>
+    <title>The Luxury Suite Experience | insane.marketing</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Inter:wght@300;400;600&display=swap');
 
@@ -1748,11 +1748,12 @@
         </div>
 
         <div class="hero">
-           
-            <h1>Guests Luxury Experience</h1>
-            <p class="hero-subtitle">Privacy Always. Real Time Service. Ultra-Satisfaction.</p>
-           <!--  <p class="hero-description">
-                See your guests journey - know exactly what they want and need, when and where 
+            
+            <h1>Guests Luxury Experiences</h1>
+            <p class="hero-subtitle">Privacy Always. Real-Time Everything. Ultra-Satisfaction.</p>
+        <!--    <p class="hero-description">
+                Watch as each family member explores your venue independently—seamlessly connected, 
+                completely anonymous, absolutely luxurious.
             </p>  -->
         </div>
 
@@ -1768,9 +1769,9 @@
             </button>
         </div>
 
-        <!-- Timeline Bar
+        <!-- Timeline Bar 
         <div class="timeline-bar">
-            
+           
             <div class="timeline-suite">
                 <div class="timeline-content">
                     <div class="timeline-time">☀️ 10:30 AM</div>
@@ -1780,7 +1781,7 @@
                     <div class="timeline-label">→ Evening</div>
                     <div class="timeline-time">8:00 PM 🌙</div>
                 </div>
-            </div>    -->
+            </div>   -->
             <!-- Fine Dining Timeline 
             <div class="timeline-dining">
                 <div class="timeline-content">
@@ -2289,6 +2290,9 @@
                 
                 // Activate suite button
                 document.querySelector('[data-scenario="suite"]').classList.add('active');
+                
+                // Smooth scroll to suite scene
+                suiteScene.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else if (scenario === 'dining') {
                 // Show dining, hide suite
                 suiteScene.style.animation = 'none';
@@ -2317,6 +2321,9 @@
                 
                 // Activate dining button
                 document.querySelector('[data-scenario="dining"]').classList.add('active');
+                
+                // Smooth scroll to dining scene
+                diningScene.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
 
