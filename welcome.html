@@ -363,18 +363,49 @@
             }
 
             try {
-                const response = await fetch(`${API_URL}/restaurant/profile`, {
+                console.log('📍 API_URL:', API_URL);
+                console.log('🔑 Token exists:', !!token);
+                
+                // Ensure API_URL ends with /api for proper endpoint construction
+                const apiBase = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+                const profileUrl = `${apiBase}/restaurant/profile`;
+                
+                console.log('🌐 Fetching profile from:', profileUrl);
+                
+                const response = await fetch(profileUrl, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch restaurant data');
+                console.log('📡 Response status:', response.status);
+
+                if (response.ok) {
+                    restaurantData = await response.json();
+                    console.log('✅ Profile loaded:', restaurantData);
+                } else if (response.status === 404) {
+                    // Profile endpoint might not have the restaurant yet - use localStorage fallback
+                    console.log('⚠️ Profile not found (404), using localStorage data');
+                    restaurantData = {
+                        id: localStorage.getItem('user_restaurant_id'),
+                        restaurant_id: localStorage.getItem('user_restaurant_id'),
+                        restaurant_name: localStorage.getItem('user_restaurant_name'),
+                        email: localStorage.getItem('user_email'),
+                        full_name: localStorage.getItem('user_name'),
+                        tagline: 'Manage your digital experience',
+                        logo_emoji: '🍽️'
+                    };
+                } else if (response.status === 401) {
+                    // Invalid token
+                    console.log('❌ Authentication failed (401)');
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                    return;
+                } else {
+                    throw new Error(`HTTP ${response.status}: Failed to fetch restaurant data`);
                 }
 
-                restaurantData = await response.json();
                 populateDashboard(restaurantData);
                 await fetchAnalytics();
                 
@@ -382,16 +413,38 @@
                 document.getElementById('mainContent').style.display = 'block';
                 
             } catch (error) {
-                console.error('Error loading dashboard:', error);
-                if (error.message.includes('401') || error.message.includes('token')) {
-                    localStorage.removeItem('token');
+                console.error('❌ Error loading dashboard:', error);
+                
+                // If it's an auth error, redirect to login
+                if (error.message.includes('401') || error.message.includes('Authentication')) {
+                    localStorage.clear();
                     window.location.href = 'login.html';
+                    return;
+                }
+                
+                // For other errors, try to load with localStorage as graceful fallback
+                console.log('⚠️ Using localStorage fallback due to error...');
+                restaurantData = {
+                    id: localStorage.getItem('user_restaurant_id'),
+                    restaurant_id: localStorage.getItem('user_restaurant_id'),
+                    restaurant_name: localStorage.getItem('user_restaurant_name'),
+                    email: localStorage.getItem('user_email'),
+                    full_name: localStorage.getItem('user_name'),
+                    tagline: 'Manage your digital experience',
+                    logo_emoji: '🍽️'
+                };
+                
+                if (restaurantData.restaurant_name) {
+                    populateDashboard(restaurantData);
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
                 } else {
-                    alert('Error loading dashboard. Please try again.');
+                    alert('Error loading dashboard. Please try logging in again.');
+                    localStorage.clear();
+                    window.location.href = 'login.html';
                 }
             }
         });
-
         function populateDashboard(data) {
             if (data.restaurant_name) {
                 document.getElementById('restaurantName').textContent = data.restaurant_name;
