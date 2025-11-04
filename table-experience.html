@@ -448,12 +448,12 @@
         function initializeTimeIntelligence() {
             updateTimeContext();
             loadBusinessHours();
-            generateSmartCardConfigs();
+            await generateSmartCardConfigs();
             
             // Update every minute to stay current
             setInterval(() => {
                 updateTimeContext();
-                generateSmartCardConfigs();
+                await generateSmartCardConfigs();
                 // Rebuild carousel if time context significantly changed
                 if (shouldRebuildCarousel()) {
                     rebuildCarousel();
@@ -527,13 +527,123 @@
             };
         }
 
-        function generateSmartCardConfigs() {
-            // Base cards that are always available
-            const baseCards = [
+
+
+// NEW: Load saved card configuration from database
+        async function loadSavedCardConfig() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const apiBase = apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`;
+                
+                console.log('🔍 Loading card config for restaurant:', restaurantId);
+                
+                const response = await fetch(`${apiBase}/cards/configuration?restaurant_id=${restaurantId}`);
+                
+                if (!response.ok) {
+                    console.warn('⚠️ No saved config found, using defaults');
+                    return null;
+                }
+                
+                const data = await response.json();
+                console.log('✅ Loaded saved config:', data);
+                
+                return data;
+                
+            } catch (error) {
+                console.error('❌ Error loading card config:', error);
+                return null;
+            }
+        }
+
+        // NEW: Map saved config to card format
+        function mapSavedConfigToCards(savedConfig) {
+            if (!savedConfig || !savedConfig.configurations) {
+                return [];
+            }
+            
+            const configMap = savedConfig.configurations;
+            const selectedCards = savedConfig.selectedCards || [];
+            const mappedCards = [];
+            
+            // Card type mapping with icons and colors
+            const cardTypeMap = {
+                'wifi': { icon: '📶', color: 0x4ecdc4, qrType: 'wifi', priority: 10 },
+                'menu': { icon: '🍽️', color: 0xff6b6b, qrType: 'menu', priority: 10 },
+                'instagram': { icon: '📷', color: 0xe84393, qrType: 'instagram', priority: 7 },
+                'facebook': { icon: '👍', color: 0x3498db, qrType: 'facebook', priority: 6 },
+                'website': { icon: '🌐', color: 0x00b894, qrType: 'website', priority: 8 },
+                'order': { icon: '🛒', color: 0xfdcb6e, qrType: 'order', priority: 9 },
+                'reservations': { icon: '📅', color: 0x6c5ce7, qrType: 'reservations', priority: 9 },
+                'offers': { icon: '🎁', color: 0xff7675, qrType: 'offers', priority: 8 },
+                'call': { icon: '📞', color: 0x00cec9, qrType: 'call', priority: 7 },
+                'server': { icon: '🔔', color: 0xa29bfe, qrType: 'service', priority: 7 },
+                'vip': { icon: '🌟', color: 0xd4af37, qrType: 'vip', priority: 15 },
+                'reviews': { icon: '⭐', color: 0x96ceb4, qrType: 'reviews', priority: 6 },
+                'gallery': { icon: '📸', color: 0xfd79a8, qrType: 'gallery', priority: 5 },
+                'events': { icon: '🎉', color: 0x00b894, qrType: 'events', priority: 8 },
+                'loyalty': { icon: '🎁', color: 0xe17055, qrType: 'loyalty', priority: 7 }
+            };
+            
+            selectedCards.forEach(cardType => {
+                const cardInfo = cardTypeMap[cardType];
+                if (!cardInfo) return;
+                
+                const config = configMap[cardType] || {};
+                
+                // Build description from config
+                let description = '';
+                switch(cardType) {
+                    case 'wifi':
+                        description = config.ssid ? `Connect to ${config.ssid}` : 'Free WiFi access';
+                        break;
+                    case 'menu':
+                        description = config.text || 'Browse our full menu';
+                        break;
+                    case 'vip':
+                        description = config.description || 'Premium VIP service';
+                        break;
+                    case 'reviews':
+                        description = config.text || 'Share your experience';
+                        break;
+                    case 'events':
+                        description = 'Upcoming events and specials';
+                        break;
+                    default:
+                        description = `${cardType.charAt(0).toUpperCase() + cardType.slice(1)} information`;
+                }
+                
+                mappedCards.push({
+                    id: cardType,
+                    description: description,
+                    color: cardInfo.color,
+                    icon: cardInfo.icon,
+                    qrType: cardInfo.qrType,
+                    priority: cardInfo.priority,
+                    alwaysShow: ['wifi', 'menu', 'server'].includes(cardType),
+                    config: config // Store original config for later use
+                });
+            });
+            
+            return mappedCards;
+        }
+
+
+
+        async function generateSmartCardConfigs() {
+            // Try to load saved configuration first
+            const savedConfig = await loadSavedCardConfig();
+            let userCards = [];
+            
+            if (savedConfig) {
+                console.log('✅ Using saved card configuration');
+                userCards = mapSavedConfigToCards(savedConfig);
+            }
+            
+            // Default base cards (fallback if no saved config)
+            const defaultCards = [
                 {
                     id: 'menu',
-                 // title: "Digital Menu",
-                    description: "Browse our full menu with photos, descriptions, and prices",
+                    description: "Browse our full menu with photos and prices",
                     color: 0xff6b6b,
                     icon: "🍽️",
                     qrType: 'menu',
@@ -542,24 +652,34 @@
                 },
                 {
                     id: 'wifi',
-                // title: "Free WiFi",
-                    description: "Connect to our complimentary secure-high-speed internet",
+                    description: "Connect to our complimentary high-speed internet",
                     color: 0x4ecdc4,
                     icon: "📶",
                     qrType: 'wifi',
-                    priority: 5,
+                    priority: 10,
+                    alwaysShow: true
+                },
+                {
+                    id: 'service',
+                    description: "Need assistance? Call your server",
+                    color: 0xa29bfe,
+                    icon: "🔔",
+                    qrType: 'service',
+                    priority: 7,
                     alwaysShow: true
                 }
             ];
             
-            // Time-contextual cards
+            // Use saved cards if available, otherwise use defaults
+            const baseCards = userCards.length > 0 ? userCards : defaultCards;
+            
+            // Time-contextual cards (still dynamic based on time)
             const contextualCards = [];
             
             // Breakfast cards
             if (timeContext.isBreakfast) {
                 contextualCards.push({
                     id: 'breakfast-specials',
-                 // title: "Breakfast Specials",
                     description: "Fresh morning favorites and coffee combinations",
                     color: 0xfeca57,
                     icon: "🌅",
@@ -572,12 +692,11 @@
             // Lunch cards
             if (timeContext.isLunch) {
                 contextualCards.push({
-                    id: 'events',
-                   // title: "Local Events",
-                    description: "Explore the Local Community Ammenities",
+                    id: 'lunch-special',
+                    description: "Today's lunch specials and quick bites",
                     color: 0x26de81,
                     icon: "⚡",
-                    qrType: 'events',
+                    qrType: 'lunch',
                     priority: 14,
                     timeRelevant: true
                 });
@@ -587,14 +706,13 @@
             if (timeContext.isHappyHour) {
                 contextualCards.push({
                     id: 'happy-hour',
-                  //  title: "Happy Hour",
-                    description: "Check out todays Happy hour Specials",
+                    description: "Check out today's Happy Hour Specials",
                     color: 0xff9ff3,
                     icon: "🍹",
                     qrType: 'happy-hour',
                     priority: 20,
                     timeRelevant: true,
-                    pulsing: true // Special effect for time-sensitive offers
+                    pulsing: true
                 });
             }
             
@@ -602,7 +720,6 @@
             if (timeContext.isDinner) {
                 contextualCards.push({
                     id: 'dinner-specials',
-                  //  title: "Chef's Selections",
                     description: "Tonight's featured dishes and wine pairings",
                     color: 0x6c5ce7,
                     icon: "👨‍🍳",
@@ -612,39 +729,10 @@
                 });
             }
             
-            // Rush time efficiency cards
-            if (timeContext.isPeakTime) {
-                contextualCards.push({
-                    id: 'quick-service',
-                  //  title: "Express Order",
-                    description: "Skip the wait with our quick-service options",
-                    color: 0xff3838,
-                    icon: "🚀",
-                    qrType: 'express',
-                    priority: 18,
-                    timeRelevant: true
-                });
-            }
-            
-            // Quiet time entertainment
-            if (timeContext.isQuietTime) {
-                contextualCards.push({
-                    id: 'games',
-                  // title: "Table Games",
-                    description: "Play fun games while you relax and dine",
-                    color: 0x45b7d1,
-                    icon: "🎮",
-                    qrType: 'games',
-                    priority: 8,
-                    timeRelevant: true
-                });
-            }
-            
             // Weekend specials
             if (timeContext.isWeekend && (timeContext.isLunch || timeContext.isDinner)) {
                 contextualCards.push({
                     id: 'weekend-special',
-                   // title: "Weekend Features",
                     description: "Special weekend menu and extended hours",
                     color: 0x00b894,
                     icon: "🎉",
@@ -654,43 +742,32 @@
                 });
             }
             
-            // Always include service call
-            contextualCards.push({
-                id: 'service',
-               // title: "Call Server",
-                description: "Need assistance? Privately alert service staff",
-                color: 0xa29bfe,
-                icon: "🔔",
-                qrType: 'service',
-                priority: 7,
-                alwaysShow: true
-            });
+            // Combine user cards with contextual cards
+            const allCards = [...baseCards, ...contextualCards];
             
-            // Always include reviews, but lower priority during rush
-            contextualCards.push({
-                id: 'review',
-               // title: "Leave a Review",
-                description: "Share your experience and help other diners",
-                color: 0x96ceb4,
-                icon: "💭",
-                qrType: 'review',
-                priority: timeContext.isPeakTime ? 3 : 6,
-                alwaysShow: false
-            });
+            // Remove duplicates (contextual takes priority)
+            const uniqueCards = allCards.reduce((acc, card) => {
+                const existing = acc.find(c => c.id === card.id);
+                if (!existing || card.timeRelevant) {
+                    return [...acc.filter(c => c.id !== card.id), card];
+                }
+                return acc;
+            }, []);
             
-            // Combine and sort by priority and time relevance
-            const newConfigs = [...baseCards, ...contextualCards]
+            // Sort by priority and time relevance
+            const newConfigs = uniqueCards
                 .sort((a, b) => {
-                    // Time-relevant cards get boost
                     const aScore = a.priority + (a.timeRelevant ? 5 : 0);
                     const bScore = b.priority + (b.timeRelevant ? 5 : 0);
                     return bScore - aScore;
                 })
-                .slice(0, 6); // Keep top 6 cards
+                .slice(0, 8); // Show up to 8 cards
             
-            // Check if configuration actually changed
+            // Check if configuration changed
             const configChanged = JSON.stringify(smartCardConfigs) !== JSON.stringify(newConfigs);
             smartCardConfigs = newConfigs;
+            
+            console.log('📊 Final card configs:', smartCardConfigs);
             
             return configChanged;
         }
