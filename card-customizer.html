@@ -653,6 +653,10 @@
 
     <script>
         const API_URL = CONFIG.getApiBaseUrl();
+        // Ensure API_URL ends with /api for proper endpoint construction
+        const API_BASE = API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`;
+        console.log('🌐 Card Customizer API_BASE:', API_BASE);
+        
         let selectedCards = new Set();
         let cardConfigurations = {};
 
@@ -795,7 +799,7 @@
             });
 
             try {
-                const response = await fetch(`${API_URL}/cards/configuration`, {
+                const response = await fetch(`${API_BASE}/cards/configuration`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -819,7 +823,7 @@
             const token = localStorage.getItem('qr_user_token');
             
             try {
-                const response = await fetch(`${API_URL}/cards/configuration`, {
+                const response = await fetch(`${API_BASE}/cards/configuration`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
