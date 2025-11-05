@@ -445,21 +445,19 @@
         tableNumber = urlParams.get('table') || '1';
 
         // Time-Aware Intelligence Engine
-        function initializeTimeIntelligence() {
-            updateTimeContext();
-            loadBusinessHours();
-            await generateSmartCardConfigs();
-            
-            // Update every minute to stay current
-            setInterval(() => {
-                updateTimeContext();
-                await generateSmartCardConfigs();
-                // Rebuild carousel if time context significantly changed
-                if (shouldRebuildCarousel()) {
-                    rebuildCarousel();
-                }
-            }, 60000);
+async function initializeTimeIntelligence() {
+    updateTimeContext();
+    loadBusinessHours();
+    await generateSmartCardConfigs();
+
+    setInterval(async () => {
+        updateTimeContext();
+        const changed = await generateSmartCardConfigs();
+        if (shouldRebuildCarousel() && changed) {
+            buildCarousel();
         }
+    }, 60000);
+}
 
         function updateTimeContext() {
             const now = new Date();
@@ -778,20 +776,18 @@
             return now.getMinutes() === 0; // Rebuild at the top of each hour
         }
 
-        function rebuildCarousel() {
-            if (generateSmartCardConfigs()) {
+        async function rebuildCarousel() {
+    const configChanged = await generateSmartCardConfigs();
+    if (configChanged) {
                 createCarousel();
                 generateQRCodes(); // Regenerate QR codes for new cards
             }
         }
 
         async function init() {
-            try {
-                // Wait for Three.js to load
-                await waitForThree();
-                
-                // Initialize time-aware intelligence
-                initializeTimeIntelligence();
+    try {
+        await waitForThree();
+        await initializeTimeIntelligence();  
                 
                 // Load restaurant data
                 await loadRestaurantData();
