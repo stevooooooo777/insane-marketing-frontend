@@ -428,7 +428,7 @@
                             <div class="icon">📞</div>
                             <div class="label">Call Us</div>
                         </div>
-                        <div class="card-option" data-card="server" onclick="toggleCard('server')">
+                        <div class="card-option" data-card="service" onclick="toggleCard('service')">
                             <div class="selected-badge">✓</div>
                             <div class="icon">🔔</div>
                             <div class="label">Call Server</div>
@@ -614,15 +614,15 @@
                             </div>
                         </div>
 
-                        <!-- Server Card Config -->
-                        <div class="config-card" id="config-server">
+                        <!-- Service Card Config -->
+                        <div class="config-card" id="config-service">
                             <div class="config-header">
                                 <span class="icon">🔔</span>
-                                <span class="title">Call Server Configuration</span>
+                                <span class="title">Call Service Configuration</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Button Text</label>
-                                <input type="text" class="form-input" id="server-text" placeholder="Call Server" value="Call Server">
+                                <input type="text" class="form-input" id="service-text" placeholder="Call Server" value="Call Server">
                             </div>
                             <div class="form-help">This will send a notification to your staff dashboard</div>
                         </div>
@@ -716,13 +716,12 @@
                 'wifi': { icon: '📶', title: 'Free WiFi', detail: 'Connect to our network' },
                 'menu': { icon: '🍽️', title: 'View Menu', detail: 'See our full menu' },
                 'instagram': { icon: '📸', title: 'Follow Us', detail: 'Instagram' },
-                'facebook': { icon: '👍', title: 'Like Our Page', detail: 'Facebook' },
-                'website': { icon: '🌐', title: 'Visit Website', detail: 'Learn more about us' },
+               'website': { icon: '🌐', title: 'Visit Website', detail: 'Learn more about us' },
                 'order': { icon: '🛵', title: 'Order Online', detail: 'Delivery & Takeout' },
                 'reservations': { icon: '📅', title: 'Book a Table', detail: 'Make a reservation' },
                 'offers': { icon: '🎁', title: 'Special Offers', detail: 'View current deals' },
                 'call': { icon: '📞', title: 'Call Restaurant', detail: 'Speak with us' },
-                'server': { icon: '🔔', title: 'Call Server', detail: 'Request assistance' }
+                'service': { icon: '🔔', title: 'Call Server', detail: 'Request assistance' }
             };
 
             let previewHTML = '';
@@ -790,8 +789,8 @@
                         cardConfig.number = document.getElementById('call-number').value;
                         cardConfig.text = document.getElementById('call-text').value;
                         break;
-                    case 'server':
-                        cardConfig.text = document.getElementById('server-text').value;
+                    case 'service':
+                        cardConfig.text = document.getElementById('service-text').value;
                         break;
                 }
                 
@@ -898,8 +897,8 @@
                     if (config.number) document.getElementById('call-number').value = config.number;
                     if (config.text) document.getElementById('call-text').value = config.text;
                     break;
-                case 'server':
-                    if (config.text) document.getElementById('server-text').value = config.text;
+                case 'service':
+                    if (config.text) document.getElementById('service-text').value = config.text;
                     break;
             }
         }

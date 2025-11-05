@@ -568,13 +568,13 @@ async function initializeTimeIntelligence() {
                 'wifi': { icon: '📶', color: 0x4ecdc4, qrType: 'wifi', priority: 10 },
                 'menu': { icon: '🍽️', color: 0xff6b6b, qrType: 'menu', priority: 10 },
                 'instagram': { icon: '📷', color: 0xe84393, qrType: 'instagram', priority: 7 },
-                'facebook': { icon: '👍', color: 0x3498db, qrType: 'facebook', priority: 6 },
+               
                 'website': { icon: '🌐', color: 0x00b894, qrType: 'website', priority: 8 },
                 'order': { icon: '🛒', color: 0xfdcb6e, qrType: 'order', priority: 9 },
                 'reservations': { icon: '📅', color: 0x6c5ce7, qrType: 'reservations', priority: 9 },
                 'offers': { icon: '🎁', color: 0xff7675, qrType: 'offers', priority: 8 },
                 'call': { icon: '📞', color: 0x00cec9, qrType: 'call', priority: 7 },
-                'server': { icon: '🔔', color: 0xa29bfe, qrType: 'service', priority: 7 },
+                'service': { icon: '🔔', color: 0xa29bfe, qrType: 'service', priority: 7 },
                 'vip': { icon: '🌟', color: 0xd4af37, qrType: 'vip', priority: 15 },
                 'reviews': { icon: '⭐', color: 0x96ceb4, qrType: 'reviews', priority: 6 },
                 'gallery': { icon: '📸', color: 0xfd79a8, qrType: 'gallery', priority: 5 },
@@ -617,7 +617,7 @@ async function initializeTimeIntelligence() {
                     icon: cardInfo.icon,
                     qrType: cardInfo.qrType,
                     priority: cardInfo.priority,
-                    alwaysShow: ['wifi', 'menu', 'server'].includes(cardType),
+                    alwaysShow: ['service', wifi', 'menu'].includes(cardType),
                     config: config // Store original config for later use
                 });
             });
@@ -1524,7 +1524,7 @@ async function initializeTimeIntelligence() {
             updateCardInfo();
         }
 
-async function callServer() {
+async function callService() {
     try {
         const apiUrl = CONFIG.getApiBaseUrl();
         
