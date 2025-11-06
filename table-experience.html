@@ -566,6 +566,12 @@ async function initializeTimeIntelligence() {
             // Card type mapping with icons and colors
             const cardTypeMap = {
                 'wifi': { icon: '📶', color: 0x4ecdc4, qrType: 'wifi', priority: 10 },
+'vip': { icon: '🌟', color: 0xd4af37, qrType: 'vip', priority: 15 },
+                'games': { icon: '🎮', color: 0x45b7d1, qrType: 'games', priority: 8 },
+                'explore': { icon: '🗺️', color: 0x74b9ff, qrType: 'explore', priority: 7 },
+                'emergency': { icon: '🚨', color: 0xff6348, qrType: 'emergency', priority: 20 },
+                'merchandise': { icon: '🛍️', color: 0xfd79a8, qrType: 'merchandise', priority: 6 },
+                'upcoming': { icon: '📅', color: 0x55efc4, qrType: 'upcoming', priority: 9 }
                 'menu': { icon: '🍽️', color: 0xff6b6b, qrType: 'menu', priority: 10 },
                 'instagram': { icon: '📷', color: 0xe84393, qrType: 'instagram', priority: 7 },
                
@@ -605,6 +611,24 @@ async function initializeTimeIntelligence() {
                         break;
                     case 'events':
                         description = 'Upcoming events and specials';
+                        break;
+case 'vip':
+                        description = config.description || 'Premium VIP service';
+                        break;
+                    case 'games':
+                        description = config.text || 'Play games while you dine';
+                        break;
+                    case 'explore':
+                        description = config.description || 'Discover local attractions';
+                        break;
+                    case 'emergency':
+                        description = config.text || 'Emergency contacts and safety';
+                        break;
+                    case 'merchandise':
+                        description = config.text || 'Shop our merchandise';
+                        break;
+                    case 'upcoming':
+                        description = config.current || 'See upcoming events';
                         break;
                     default:
                         description = `${cardType.charAt(0).toUpperCase() + cardType.slice(1)} information`;

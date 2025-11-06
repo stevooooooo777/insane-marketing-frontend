@@ -433,6 +433,44 @@
                             <div class="icon">🔔</div>
                             <div class="label">Call Server</div>
                         </div>
+
+
+<div class="card-option" data-card="vip" onclick="toggleCard('vip')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🌟</div>
+                            <div class="label">VIP Concierge</div>
+                        </div>
+
+                        <div class="card-option" data-card="games" onclick="toggleCard('games')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🎮</div>
+                            <div class="label">Games</div>
+                        </div>
+
+                        <div class="card-option" data-card="explore" onclick="toggleCard('explore')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🗺️</div>
+                            <div class="label">Explore Local</div>
+                        </div>
+
+                        <div class="card-option" data-card="emergency" onclick="toggleCard('emergency')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🚨</div>
+                            <div class="label">Emergency</div>
+                        </div>
+
+                        <div class="card-option" data-card="merchandise" onclick="toggleCard('merchandise')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">🛍️</div>
+                            <div class="label">Merchandise</div>
+                        </div>
+
+                        <div class="card-option" data-card="upcoming" onclick="toggleCard('upcoming')">
+                            <div class="selected-badge">✓</div>
+                            <div class="icon">📅</div>
+                            <div class="label">Upcoming Events</div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -627,6 +665,98 @@
                             <div class="form-help">This will send a notification to your staff dashboard</div>
                         </div>
                     </div>
+
+<!-- VIP Concierge Config -->
+                    <div class="config-card" id="config-vip">
+                        <div class="config-header">
+                            <span class="icon">🌟</span>
+                            <span class="title">VIP Concierge</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" id="vip-phone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-input" id="vip-description" placeholder="Premium VIP service">
+                        </div>
+                    </div>
+
+                    <!-- Games Config -->
+                    <div class="config-card" id="config-games">
+                        <div class="config-header">
+                            <span class="icon">🎮</span>
+                            <span class="title">Games</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Button Text</label>
+                            <input type="text" class="form-input" id="games-text" placeholder="Play Games" value="Fun Games">
+                        </div>
+                    </div>
+
+                    <!-- Explore Config -->
+                    <div class="config-card" id="config-explore">
+                        <div class="config-header">
+                            <span class="icon">🗺️</span>
+                            <span class="title">Explore Local</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Area Name</label>
+                            <input type="text" class="form-input" id="explore-area" placeholder="Downtown">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-input" id="explore-description" placeholder="Discover local attractions">
+                        </div>
+                    </div>
+
+                    <!-- Emergency Config -->
+                    <div class="config-card" id="config-emergency">
+                        <div class="config-header">
+                            <span class="icon">🚨</span>
+                            <span class="title">Emergency Contacts</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Emergency Phone</label>
+                            <input type="tel" class="form-input" id="emergency-phone" placeholder="Emergency number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Information</label>
+                            <input type="text" class="form-input" id="emergency-text" placeholder="Emergency info" value="Emergency contacts">
+                        </div>
+                    </div>
+
+                    <!-- Merchandise Config -->
+                    <div class="config-card" id="config-merchandise">
+                        <div class="config-header">
+                            <span class="icon">🛍️</span>
+                            <span class="title">Merchandise</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Shop URL</label>
+                            <input type="url" class="form-input" id="merchandise-url" placeholder="https://shop.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Button Text</label>
+                            <input type="text" class="form-input" id="merchandise-text" placeholder="Shop Now" value="Browse Merchandise">
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Events Config -->
+                    <div class="config-card" id="config-upcoming">
+                        <div class="config-header">
+                            <span class="icon">📅</span>
+                            <span class="title">Upcoming Events</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Current Event</label>
+                            <input type="text" class="form-input" id="upcoming-current" placeholder="Live Jazz Friday">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Events URL</label>
+                            <input type="url" class="form-input" id="upcoming-url" placeholder="https://events.com">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -716,12 +846,18 @@
                 'wifi': { icon: '📶', title: 'Free WiFi', detail: 'Connect to our network' },
                 'menu': { icon: '🍽️', title: 'View Menu', detail: 'See our full menu' },
                 'instagram': { icon: '📸', title: 'Follow Us', detail: 'Instagram' },
-               'website': { icon: '🌐', title: 'Visit Website', detail: 'Learn more about us' },
+                'website': { icon: '🌐', title: 'Visit Website', detail: 'Learn more about us' },
                 'order': { icon: '🛵', title: 'Order Online', detail: 'Delivery & Takeout' },
                 'reservations': { icon: '📅', title: 'Book a Table', detail: 'Make a reservation' },
                 'offers': { icon: '🎁', title: 'Special Offers', detail: 'View current deals' },
                 'call': { icon: '📞', title: 'Call Restaurant', detail: 'Speak with us' },
-                'service': { icon: '🔔', title: 'Call Server', detail: 'Request assistance' }
+                'service': { icon: '🔔', title: 'Call Server', detail: 'Request assistance' },
+                'vip': { icon: '🌟', title: 'VIP Concierge', detail: 'Premium service' },
+                'games': { icon: '🎮', title: 'Games', detail: 'Play while you dine' },
+                'explore': { icon: '🗺️', title: 'Explore Local', detail: 'Discover the area' },
+                'emergency': { icon: '🚨', title: 'Emergency', detail: 'Important contacts' },
+                'merchandise': { icon: '🛍️', title: 'Merchandise', detail: 'Shop our collection' },
+                'upcoming': { icon: '📅', title: 'Upcoming Events', detail: 'See what\'s coming' }
             };
 
             let previewHTML = '';
@@ -792,6 +928,35 @@
                     case 'service':
                         cardConfig.text = document.getElementById('service-text').value;
                         break;
+
+
+
+case 'vip':
+                        cardConfig.phone = document.getElementById('vip-phone').value;
+                        cardConfig.description = document.getElementById('vip-description').value;
+                        break;
+                    case 'games':
+                        cardConfig.text = document.getElementById('games-text').value;
+                        break;
+                    case 'explore':
+                        cardConfig.area = document.getElementById('explore-area').value;
+                        cardConfig.description = document.getElementById('explore-description').value;
+                        break;
+                    case 'emergency':
+                        cardConfig.phone = document.getElementById('emergency-phone').value;
+                        cardConfig.text = document.getElementById('emergency-text').value;
+                        break;
+                    case 'merchandise':
+                        cardConfig.url = document.getElementById('merchandise-url').value;
+                        cardConfig.text = document.getElementById('merchandise-text').value;
+                        break;
+                    case 'upcoming':
+                        cardConfig.current = document.getElementById('upcoming-current').value;
+                        cardConfig.url = document.getElementById('upcoming-url').value;
+                        break;
+
+
+
                 }
                 
                 config.configurations[cardType] = cardConfig;
@@ -900,6 +1065,32 @@
                 case 'service':
                     if (config.text) document.getElementById('service-text').value = config.text;
                     break;
+
+
+case 'vip':
+                    if (config.phone) document.getElementById('vip-phone').value = config.phone;
+                    if (config.description) document.getElementById('vip-description').value = config.description;
+                    break;
+                case 'games':
+                    if (config.text) document.getElementById('games-text').value = config.text;
+                    break;
+                case 'explore':
+                    if (config.area) document.getElementById('explore-area').value = config.area;
+                    if (config.description) document.getElementById('explore-description').value = config.description;
+                    break;
+                case 'emergency':
+                    if (config.phone) document.getElementById('emergency-phone').value = config.phone;
+                    if (config.text) document.getElementById('emergency-text').value = config.text;
+                    break;
+                case 'merchandise':
+                    if (config.url) document.getElementById('merchandise-url').value = config.url;
+                    if (config.text) document.getElementById('merchandise-text').value = config.text;
+                    break;
+                case 'upcoming':
+                    if (config.current) document.getElementById('upcoming-current').value = config.current;
+                    if (config.url) document.getElementById('upcoming-url').value = config.url;
+                    break;
+
             }
         }
     </script>
