@@ -567,23 +567,23 @@ async function initializeTimeIntelligence() {
             const cardTypeMap = {
                 'wifi': { icon: '📶', color: 0x4ecdc4, qrType: 'wifi', priority: 10 },
                 'menu': { icon: '🍽️', color: 0xff6b6b, qrType: 'menu', priority: 10 },
-                'instagram': { icon: '📷', color: 0xe84393, qrType: 'instagram', priority: 7 },
-                'website': { icon: '🌐', color: 0x00b894, qrType: 'website', priority: 8 },
-                'order': { icon: '🛒', color: 0xfdcb6e, qrType: 'order', priority: 9 },
-                'reservations': { icon: '📅', color: 0x6c5ce7, qrType: 'reservations', priority: 9 },
-                'offers': { icon: '🎁', color: 0xff7675, qrType: 'offers', priority: 8 },
-                'call': { icon: '📞', color: 0x00cec9, qrType: 'call', priority: 4 },
+                'instagram': { icon: '📷', color: 0xe84393, qrType: 'instagram', priority: 1 },
+                'website': { icon: '🌐', color: 0x00b894, qrType: 'website', priority: 1 },
+                'order': { icon: '🛒', color: 0xfdcb6e, qrType: 'order', priority: 1 },
+                'reservations': { icon: '📅', color: 0x6c5ce7, qrType: 'reservations', priority: 1 },
+                'offers': { icon: '🎁', color: 0xff7675, qrType: 'offers', priority: 1 },
+                'call': { icon: '📞', color: 0x00cec9, qrType: 'call', priority: 2 },
                 'service': { icon: '🔔', color: 0xa29bfe, qrType: 'service', priority: 10 },
                 'vip': { icon: '🌟', color: 0xd4af37, qrType: 'vip', priority: 10 },
-                'reviews': { icon: '⭐', color: 0x96ceb4, qrType: 'reviews', priority: 6 },
-                'gallery': { icon: '📸', color: 0xfd79a8, qrType: 'gallery', priority: 5 },
-                'events': { icon: '🎉', color: 0x00b894, qrType: 'events', priority: 8 },
-                'loyalty': { icon: '🎁', color: 0xe17055, qrType: 'loyalty', priority: 7 },
+                'reviews': { icon: '⭐', color: 0x96ceb4, qrType: 'reviews', priority: 2 },
+                'gallery': { icon: '📸', color: 0xfd79a8, qrType: 'gallery', priority: 3 },
+                'events': { icon: '🎉', color: 0x00b894, qrType: 'events', priority: 7 },
+                'loyalty': { icon: '🎁', color: 0xe17055, qrType: 'loyalty', priority: 4 },
                 'games': { icon: '🎮', color: 0x45b7d1, qrType: 'games', priority: 10 },
                 'explore': { icon: '🗺️', color: 0x74b9ff, qrType: 'explore', priority: 7 },
                 'emergency': { icon: '🚨', color: 0xff6348, qrType: 'emergency', priority: 20 },
                 'merchandise': { icon: '🛍️', color: 0xfd79a8, qrType: 'merchandise', priority: 6 },
-                'upcoming': { icon: '📅', color: 0x55efc4, qrType: 'upcoming', priority: 7 }
+                'upcoming': { icon: '📅', color: 0x55efc4, qrType: 'upcoming', priority: 9 }
           
             };
             
@@ -637,7 +637,7 @@ async function initializeTimeIntelligence() {
                     icon: cardInfo.icon,
                     qrType: cardInfo.qrType,
                     priority: cardInfo.priority,
-                    alwaysShow: ['service', 'vip', 'wifi', 'emergency', 'menu'].includes(cardType),
+                    alwaysShow: ['service', 'vip', 'wifi', 'games', 'emergency', 'menu'].includes(cardType),
                     config: config // Store original config for later use
                 });
             });
@@ -727,12 +727,12 @@ async function initializeTimeIntelligence() {
             // Breakfast cards
             if (timeContext.isBreakfast) {
                 contextualCards.push({
-                    id: 'breakfast-specials',
-                    description: "Fresh morning favorites and coffee combinations",
+                    id: 'explore',
+                    description: "Explore the local community",
                     color: 0xfeca57,
                     icon: "🌅",
-                    qrType: 'breakfast',
-                    priority: 15,
+                    qrType: 'explore',
+                    priority: 7,
                     timeRelevant: true
                 });
             }
@@ -745,7 +745,7 @@ async function initializeTimeIntelligence() {
                     color: 0x26de81,
                     icon: "⚡",
                     qrType: 'lunch',
-                    priority: 14,
+                    priority: 1,
                     timeRelevant: true
                 });
             }
@@ -772,7 +772,7 @@ async function initializeTimeIntelligence() {
                     color: 0x6c5ce7,
                     icon: "👨‍🍳",
                     qrType: 'chef-specials',
-                    priority: 16,
+                    priority: 1,
                     timeRelevant: true
                 });
             }
@@ -780,12 +780,12 @@ async function initializeTimeIntelligence() {
             // Weekend specials
             if (timeContext.isWeekend && (timeContext.isLunch || timeContext.isDinner)) {
                 contextualCards.push({
-                    id: 'weekend-special',
-                    description: "Special weekend menu and extended hours",
+                    id: 'upcoming',
+                    description: "View what's coming up with new events",
                     color: 0x00b894,
                     icon: "🎉",
-                    qrType: 'weekend',
-                    priority: 12,
+                    qrType: 'upcoming',
+                    priority: 9,
                     timeRelevant: true
                 });
             }
