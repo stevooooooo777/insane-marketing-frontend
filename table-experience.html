@@ -955,6 +955,14 @@ async function initializeTimeIntelligence() {
                     return `${baseUrl}/menu.html?restaurant=${restaurantId}&table=${tableNumber}`;
                 case 'wifi':
                     return `${baseUrl}/wifi.html?restaurant=${restaurantId}`;
+
+case 'emergency':
+                    return `${baseUrl}/emergency.html?restaurant=${restaurantId}&table=${tableNumber}`;
+
+case 'vip':
+                    return `${baseUrl}/vip-concierge.html?restaurant=${restaurantId}&table=${tableNumber}`;
+
+
                 case 'specials':
                 case 'breakfast':
                 case 'lunch-express':
