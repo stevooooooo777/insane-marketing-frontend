@@ -352,8 +352,8 @@
         <div class="card-title" id="cardTitle">Digital Menu</div>
         <div class="card-description" id="cardDescription">Browse our menu with photos, descriptions, and prices</div>
         <div class="action-buttons">
-            <button class="action-btn" onclick="showQRCode()">Scan to Mobile</button>
-            <button class="action-btn secondary" onclick="directAction()">Scanless for Here </button>
+            <button class="action-btn" onclick="showQRCode()">Scan to Go</button>
+            <button class="action-btn secondary" onclick="directAction()">Tap for Here </button>
         </div>
     </div>
 
@@ -388,7 +388,7 @@
 
     <div class="loading" id="loading">
         <div>Loading Customer Service Hub...</div>
-        <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">Customer Service Hub Loading...</div>
+        <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 10px;">Luxury Service Hub Loading...</div>
     </div>
 
     <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
@@ -572,18 +572,18 @@ async function initializeTimeIntelligence() {
                 'order': { icon: '🛒', color: 0xfdcb6e, qrType: 'order', priority: 9 },
                 'reservations': { icon: '📅', color: 0x6c5ce7, qrType: 'reservations', priority: 9 },
                 'offers': { icon: '🎁', color: 0xff7675, qrType: 'offers', priority: 8 },
-                'call': { icon: '📞', color: 0x00cec9, qrType: 'call', priority: 7 },
-                'service': { icon: '🔔', color: 0xa29bfe, qrType: 'service', priority: 7 },
-                'vip': { icon: '🌟', color: 0xd4af37, qrType: 'vip', priority: 15 },
+                'call': { icon: '📞', color: 0x00cec9, qrType: 'call', priority: 4 },
+                'service': { icon: '🔔', color: 0xa29bfe, qrType: 'service', priority: 10 },
+                'vip': { icon: '🌟', color: 0xd4af37, qrType: 'vip', priority: 10 },
                 'reviews': { icon: '⭐', color: 0x96ceb4, qrType: 'reviews', priority: 6 },
                 'gallery': { icon: '📸', color: 0xfd79a8, qrType: 'gallery', priority: 5 },
                 'events': { icon: '🎉', color: 0x00b894, qrType: 'events', priority: 8 },
                 'loyalty': { icon: '🎁', color: 0xe17055, qrType: 'loyalty', priority: 7 },
-                'games': { icon: '🎮', color: 0x45b7d1, qrType: 'games', priority: 8 },
+                'games': { icon: '🎮', color: 0x45b7d1, qrType: 'games', priority: 10 },
                 'explore': { icon: '🗺️', color: 0x74b9ff, qrType: 'explore', priority: 7 },
                 'emergency': { icon: '🚨', color: 0xff6348, qrType: 'emergency', priority: 20 },
                 'merchandise': { icon: '🛍️', color: 0xfd79a8, qrType: 'merchandise', priority: 6 },
-                'upcoming': { icon: '📅', color: 0x55efc4, qrType: 'upcoming', priority: 9 }
+                'upcoming': { icon: '📅', color: 0x55efc4, qrType: 'upcoming', priority: 7 }
           
             };
             
@@ -597,7 +597,7 @@ async function initializeTimeIntelligence() {
                 let description = '';
                 switch(cardType) {
                     case 'wifi':
-                        description = config.ssid ? `Connect to ${config.ssid}` : 'Free WiFi access';
+                        description = config.ssid ? `Connect to ${config.ssid}` : 'Secure WiFi access';
                         break;
                     case 'menu':
                         description = config.text || 'Browse our full menu';
@@ -612,7 +612,7 @@ async function initializeTimeIntelligence() {
                         description = 'Upcoming events and specials';
                         break;
                     case 'games':
-                        description = config.text || 'Play games while you dine';
+                        description = config.text || 'Play brain games';
                         break;
                     case 'explore':
                         description = config.description || 'Discover local attractions';
@@ -637,7 +637,7 @@ async function initializeTimeIntelligence() {
                     icon: cardInfo.icon,
                     qrType: cardInfo.qrType,
                     priority: cardInfo.priority,
-                    alwaysShow: ['service', 'wifi', 'menu'].includes(cardType),
+                    alwaysShow: ['service', 'vip', 'wifi', 'emergency', 'menu'].includes(cardType),
                     config: config // Store original config for later use
                 });
             });
@@ -677,13 +677,43 @@ async function initializeTimeIntelligence() {
                     priority: 10,
                     alwaysShow: true
                 },
+{
+                    id: 'games',
+                    description: "Play interactive brain games for solo or multi-player",
+                    color: 0x45b7d1,
+                    icon: "🎮",
+                    qrType: 'games',
+                    priority: 10,
+                    alwaysShow: true
+                },
+{
+                    id: 'vip',
+                    description: "VIP Concierge... at your serivice",
+                    color: 0xd4af37,
+                    icon: "🌟",
+                    qrType: 'vip',
+                    priority: 10,
+                    alwaysShow: true
+                },
+
+
+{
+                    id: 'emergency',
+                    description: "Emergency health and safety",
+                    color: 0xff6348,
+                    icon: "🚨",
+                    qrType: 'emergency',
+                    priority: 20,
+                    alwaysShow: true
+                },
+
                 {
                     id: 'service',
                     description: "Need assistance? Call your server",
                     color: 0xa29bfe,
                     icon: "🔔",
                     qrType: 'service',
-                    priority: 7,
+                    priority: 10,
                     alwaysShow: true
                 }
             ];
@@ -853,7 +883,7 @@ async function initializeTimeIntelligence() {
                 const response = await fetch(`${apiUrl}/api/restaurant/${restaurantId}`);
                 if (response.ok) {
                     restaurantData = await response.json();
-                    document.getElementById('restaurantName').textContent = restaurantData.name || 'Your Restaurant';
+                    document.getElementById('restaurantName').textContent = restaurantData.name || 'Your Venue';
                 } else {
                     // Fallback for demo
                     restaurantData = { name: 'Demo Restaurant', id: restaurantId };
