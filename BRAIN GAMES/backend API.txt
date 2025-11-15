@@ -1,0 +1,10 @@
+// Create room
+POST /api/trivia/room/create
+// Join room
+POST /api/trivia/room/join
+// Start game
+POST /api/trivia/room/start
+// Submit answer
+POST /api/trivia/answer
+// Get live scores
+GET /api/trivia/room/:code/scores

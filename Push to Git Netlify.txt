@@ -1,3 +1,0 @@
-git add build.js
-git commit -m "Add index.html to build process"
-git push origin main

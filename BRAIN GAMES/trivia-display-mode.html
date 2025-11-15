@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Display Mode - Big Screen</title>
+    
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Setup Screen */
+        .setup-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .setup-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 600px;
+            color: #333;
+        }
+
+        .setup-container h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .setup-container p {
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            color: #666;
+        }
+
+        .code-input {
+            font-size: 3em;
+            padding: 20px;
+            border: 4px solid #667eea;
+            border-radius: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 15px;
+            width: 100%;
+            margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.5em;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .connect-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Waiting Screen */
+        .waiting-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 60px;
+            text-align: center;
+        }
+
+        .waiting-icon {
+            font-size: 8em;
+            margin-bottom: 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .waiting-screen h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+        }
+
+        .room-code-display {
+            font-size: 6em;
+            font-weight: bold;
+            letter-spacing: 20px;
+            margin: 40px 0;
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px 60px;
+            border-radius: 20px;
+        }
+
+        .player-count {
+            font-size: 2.5em;
+            margin-top: 40px;
+        }
+
+        /* Game Screen */
+        .game-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 30px 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+        }
+
+        .question-number {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .timer-display.warning {
+            color: #fbbf24;
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-display.danger {
+            color: #ef4444;
+            animation: blink 0.3s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 40px;
+        }
+
+        .question-area {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question-text {
+            font-size: 4em;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 60px;
+            text-align: center;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .answers-display {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .answer-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            font-size: 2em;
+            text-align: center;
+            font-weight: 600;
+            border: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .answer-item.correct {
+            background: #22c55e;
+            border-color: #16a34a;
+            animation: correctPulse 0.5s;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .leaderboard-area {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .leaderboard-title {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .leaderboard-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px 35px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.8em;
+            transition: all 0.3s;
+        }
+
+        .leaderboard-item:nth-child(1) {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            font-size: 2.2em;
+            transform: scale(1.05);
+        }
+
+        .leaderboard-item:nth-child(2) {
+            background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%);
+        }
+
+        .leaderboard-item:nth-child(3) {
+            background: linear-gradient(135deg, #cd7f32 0%, #b87333 100%);
+        }
+
+        .player-rank {
+            font-weight: bold;
+            min-width: 60px;
+        }
+
+        .player-name {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .player-score {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .answered-indicator {
+            display: inline-block;
+            margin-left: 15px;
+            color: #22c55e;
+            font-size: 1.2em;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 60px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .results-header h1 {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 40px;
+            margin-bottom: 60px;
+            flex: 1;
+        }
+
+        .podium-place {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 60px;
+            border-radius: 30px;
+            min-width: 300px;
+            transition: all 0.5s;
+        }
+
+        .podium-place.first {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            transform: translateY(-40px) scale(1.1);
+            box-shadow: 0 20px 60px rgba(251, 191, 36, 0.5);
+        }
+
+        .podium-place.second {
+            background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%);
+        }
+
+        .podium-place.third {
+            background: linear-gradient(135deg, #cd7f32 0%, #b87333 100%);
+        }
+
+        .podium-rank {
+            font-size: 6em;
+            margin-bottom: 20px;
+        }
+
+        .podium-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .podium-score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .final-leaderboard {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .venue-branding {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            font-size: 2em;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        .qr-code-hint {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.5em;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .connection-status.connected {
+            background: #22c55e;
+        }
+
+        .connection-status.disconnected {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Venue Branding -->
+    <div class="venue-branding" id="venueBranding">
+        <!-- Will be populated with venue name -->
+    </div>
+
+    <!-- Connection Status -->
+    <div class="connection-status connected" id="connectionStatus">
+        🟢 LIVE
+    </div>
+
+    <!-- Setup Screen -->
+    <div class="setup-screen" id="setupScreen">
+        <div class="setup-container">
+            <h1>📺 Display Mode</h1>
+            <p>Enter the room code to display the game on this screen</p>
+            <input 
+                type="text" 
+                id="roomCodeInput" 
+                class="code-input" 
+                placeholder="----"
+                maxlength="4"
+                autofocus
+            >
+            <button class="connect-btn" onclick="connectToRoom()">Connect Display</button>
+        </div>
+    </div>
+
+    <!-- Waiting Screen -->
+    <div class="waiting-screen hidden" id="waitingScreen">
+        <div class="waiting-icon">⏳</div>
+        <h1>Waiting for Game to Start...</h1>
+        <div class="room-code-display" id="displayRoomCode">----</div>
+        <p style="font-size: 2em;">Players can join with this code</p>
+        <div class="player-count" id="playerCountDisplay">
+            <span id="playerCount">0</span> Players Joined
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="game-screen hidden" id="gameScreen">
+        <div class="game-header">
+            <div class="question-number" id="questionNumber">Question 1/10</div>
+            <div class="timer-display" id="timerDisplay">15</div>
+        </div>
+
+        <div class="main-content">
+            <div class="question-area">
+                <div class="question-text" id="questionText"></div>
+                <div class="answers-display" id="answersDisplay"></div>
+            </div>
+
+            <div class="leaderboard-area">
+                <div class="leaderboard-title">🏆 Live Scores</div>
+                <div id="liveLeaderboard"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="results-screen hidden" id="resultsScreen">
+        <div class="results-header">
+            <h1>🎉 Game Over!</h1>
+            <p style="font-size: 2em;">Final Results</p>
+        </div>
+
+        <div class="podium-container" id="podiumContainer"></div>
+
+        <div class="final-leaderboard">
+            <div class="leaderboard-title">Final Standings</div>
+            <div id="finalLeaderboard"></div>
+        </div>
+    </div>
+
+    <!-- QR Code Hint (optional) -->
+    <div class="qr-code-hint hidden" id="qrHint">
+        Scan QR to Join
+    </div>
+
+    <script>
+        // Configuration
+        const SOCKET_URL = 'YOUR_SERVER_URL'; // Replace with your Railway URL
+        let socket = null;
+        
+        // Display state
+        let displayState = {
+            roomCode: null,
+            players: [],
+            currentQuestion: null,
+            scores: [],
+            timer: null,
+            venueName: null
+        };
+
+        // Initialize Socket.IO
+        function initSocket() {
+            socket = io(SOCKET_URL, {
+                transports: ['websocket', 'polling'],
+                reconnection: true
+            });
+
+            socket.on('connect', () => {
+                console.log('Display connected');
+                updateConnectionStatus(true);
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Display disconnected');
+                updateConnectionStatus(false);
+            });
+
+            // Observer-specific events
+            socket.on('display_update', handleDisplayUpdate);
+            socket.on('player_joined', handlePlayerJoined);
+            socket.on('player_left', handlePlayerLeft);
+            socket.on('game_started', handleGameStarted);
+            socket.on('new_question', handleNewQuestion);
+            socket.on('player_answered', handlePlayerAnswered);
+            socket.on('scores_update', handleScoresUpdate);
+            socket.on('game_ended', handleGameEnded);
+            socket.on('error', handleError);
+        }
+
+        // Connect to room as observer
+        function connectToRoom() {
+            const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+            
+            if (!code || code.length !== 4) {
+                alert('Please enter a valid 4-digit room code');
+                return;
+            }
+
+            displayState.roomCode = code;
+            
+            // Join room as display observer
+            socket.emit('join_as_display', {
+                roomCode: code
+            });
+
+            document.getElementById('displayRoomCode').textContent = code;
+            showScreen('waitingScreen');
+        }
+
+        // Event Handlers
+        function handleDisplayUpdate(data) {
+            console.log('Display update:', data);
+            displayState.players = data.players || [];
+            updatePlayerCount();
+        }
+
+        function handlePlayerJoined(data) {
+            console.log('Player joined:', data);
+            displayState.players = data.players;
+            updatePlayerCount();
+        }
+
+        function handlePlayerLeft(data) {
+            console.log('Player left:', data);
+            displayState.players = data.players;
+            updatePlayerCount();
+        }
+
+        function handleGameStarted(data) {
+            console.log('Game started:', data);
+            showScreen('gameScreen');
+        }
+
+        function handleNewQuestion(data) {
+            console.log('New question:', data);
+            displayState.currentQuestion = data;
+            
+            // Update question number
+            document.getElementById('questionNumber').textContent = 
+                `Question ${data.questionNumber}/${data.totalQuestions}`;
+            
+            // Display question
+            document.getElementById('questionText').textContent = data.question;
+            
+            // Display answers
+            const answersDiv = document.getElementById('answersDisplay');
+            answersDiv.innerHTML = data.answers.map((answer, index) => `
+                <div class="answer-item" id="answer-${index}">
+                    ${String.fromCharCode(65 + index)}. ${answer}
+                </div>
+            `).join('');
+            
+            // Start timer
+            startTimer(data.timeLimit);
+            
+            // Show game screen if not already visible
+            showScreen('gameScreen');
+        }
+
+        function handlePlayerAnswered(data) {
+            console.log('Player answered:', data);
+            // Could show visual indicator that player answered
+        }
+
+        function handleScoresUpdate(data) {
+            console.log('Scores update:', data);
+            displayState.scores = data.players;
+            updateLeaderboard();
+            
+            // Highlight correct answer if showing
+            if (data.correctAnswer !== undefined) {
+                const correctBtn = document.getElementById(`answer-${data.correctAnswer}`);
+                if (correctBtn) {
+                    correctBtn.classList.add('correct');
+                }
+            }
+        }
+
+        function handleGameEnded(data) {
+            console.log('Game ended:', data);
+            showResults(data.standings);
+        }
+
+        function handleError(data) {
+            console.error('Error:', data);
+            alert(data.message || 'An error occurred');
+        }
+
+        // UI Updates
+        function updatePlayerCount() {
+            document.getElementById('playerCount').textContent = displayState.players.length;
+        }
+
+        function updateLeaderboard() {
+            const leaderboard = document.getElementById('liveLeaderboard');
+            const sortedPlayers = [...displayState.scores].sort((a, b) => b.score - a.score);
+            
+            leaderboard.innerHTML = sortedPlayers.map((player, index) => `
+                <div class="leaderboard-item">
+                    <span class="player-rank">#${index + 1}</span>
+                    <span class="player-name">${player.name}</span>
+                    <span class="player-score">${player.score}</span>
+                </div>
+            `).join('');
+        }
+
+        function startTimer(duration) {
+            clearInterval(displayState.timer);
+            let timeLeft = duration;
+            
+            const timerDisplay = document.getElementById('timerDisplay');
+            timerDisplay.textContent = timeLeft;
+            timerDisplay.className = 'timer-display';
+            
+            displayState.timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 5) {
+                    timerDisplay.classList.add('danger');
+                } else if (timeLeft <= 10) {
+                    timerDisplay.classList.add('warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(displayState.timer);
+                }
+            }, 1000);
+        }
+
+        function showResults(standings) {
+            clearInterval(displayState.timer);
+            showScreen('resultsScreen');
+            
+            // Show podium (top 3)
+            const podium = document.getElementById('podiumContainer');
+            const classes = ['first', 'second', 'third'];
+            const ranks = ['🥇', '🥈', '🥉'];
+            
+            podium.innerHTML = standings.slice(0, 3).map((player, index) => `
+                <div class="podium-place ${classes[index]}">
+                    <div class="podium-rank">${ranks[index]}</div>
+                    <div class="podium-name">${player.name}</div>
+                    <div class="podium-score">${player.score} pts</div>
+                </div>
+            `).join('');
+            
+            // Show full leaderboard
+            const finalBoard = document.getElementById('finalLeaderboard');
+            finalBoard.innerHTML = standings.map((player, index) => `
+                <div class="leaderboard-item">
+                    <span class="player-rank">#${player.rank}</span>
+                    <span class="player-name">${player.name}</span>
+                    <span class="player-score">${player.score}</span>
+                </div>
+            `).join('');
+            
+            // Auto-return to waiting after 30 seconds
+            setTimeout(() => {
+                showScreen('waitingScreen');
+            }, 30000);
+        }
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            status.className = 'connection-status ' + (connected ? 'connected' : 'disconnected');
+            status.textContent = connected ? '🟢 LIVE' : '🔴 OFFLINE';
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('body > div:not(.venue-branding):not(.connection-status)').forEach(div => {
+                if (!div.classList.contains('venue-branding') && 
+                    !div.classList.contains('connection-status') &&
+                    !div.classList.contains('qr-code-hint')) {
+                    div.classList.add('hidden');
+                }
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        // Auto-uppercase room code input
+        document.getElementById('roomCodeInput').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+
+        // Enter key to connect
+        document.getElementById('roomCodeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                connectToRoom();
+            }
+        });
+
+        // Get venue branding from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const venueName = urlParams.get('venue');
+        if (venueName) {
+            document.getElementById('venueBranding').textContent = venueName;
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initSocket();
+        };
+    </script>
+</body>
+</html>

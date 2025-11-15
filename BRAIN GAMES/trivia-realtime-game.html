@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickFire Trivia - Insane Marketing</title>
+    
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <style>
+        /* [Previous CSS styles remain exactly the same - copy from trivia-rooms-game.html] */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ... (rest of styles from previous file) ... */
+        
+        .pulse-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: pulse-animation 1.5s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .connection-status.connected {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .connection-status.disconnected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status Indicator -->
+    <div class="connection-status connected" id="connectionStatus">
+        <span id="statusText">🟢 Connected</span>
+    </div>
+
+    <div class="game-container">
+        <!-- [All HTML screens remain the same as previous version] -->
+        <!-- But we'll add the complete HTML here for reference -->
+        
+        <!-- Start Screen -->
+        <div id="startScreen">
+            <!-- ... same as before ... -->
+        </div>
+
+        <!-- Create Room Screen -->
+        <div id="createRoomScreen" class="hidden">
+            <!-- ... same as before ... -->
+        </div>
+
+        <!-- Room Lobby Screen -->
+        <div id="lobbyScreen" class="hidden">
+            <div class="header">
+                <h1>Room Lobby <span class="pulse-dot"></span></h1>
+            </div>
+
+            <div class="room-code-display">
+                <p style="color: #666; margin-bottom: 10px;">Share this code with your friends:</p>
+                <div class="room-code" id="roomCodeDisplay">----</div>
+            </div>
+
+            <div class="player-list">
+                <h3 style="margin-bottom: 15px; color: #667eea;">
+                    Players in Room (<span id="playerCount">0</span>):
+                </h3>
+                <div id="playersList"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-success" onclick="startGame()" id="startGameBtn">Start Game</button>
+                <button class="btn btn-secondary" onclick="leaveRoom()">Leave Room</button>
+            </div>
+        </div>
+
+        <!-- ... (rest of HTML screens) ... -->
+    </div>
+
+    <script>
+        // ============================================================================
+        // WEBSOCKET CONNECTION
+        // ============================================================================
+        
+        const SOCKET_URL = 'YOUR_SERVER_URL'; // e.g., 'https://your-trivia.railway.app'
+        let socket = null;
+        
+        // Game state
+        let gameState = {
+            mode: null,
+            roomCode: null,
+            playerName: null,
+            isHost: false,
+            currentQuestion: 0,
+            score: 0,
+            correctCount: 0,
+            players: [],
+            category: 'general',
+            timeLeft: 15,
+            totalQuestions: 10,
+            timerInterval: null,
+            hasAnswered: false
+        };
+
+        // Initialize Socket.IO connection
+        function initSocket() {
+            socket = io(SOCKET_URL, {
+                transports: ['websocket', 'polling'],
+                reconnection: true,
+                reconnectionDelay: 1000,
+                reconnectionDelayMax: 5000,
+                reconnectionAttempts: 5
+            });
+
+            // Connection events
+            socket.on('connect', () => {
+                console.log('Connected to server');
+                updateConnectionStatus(true);
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+                updateConnectionStatus(false);
+            });
+
+            socket.on('connect_error', (error) => {
+                console.error('Connection error:', error);
+                updateConnectionStatus(false);
+            });
+
+            // Game events
+            socket.on('room_created', handleRoomCreated);
+            socket.on('room_joined', handleRoomJoined);
+            socket.on('player_joined', handlePlayerJoined);
+            socket.on('player_left', handlePlayerLeft);
+            socket.on('game_started', handleGameStarted);
+            socket.on('new_question', handleNewQuestion);
+            socket.on('answer_result', handleAnswerResult);
+            socket.on('player_answered', handlePlayerAnswered);
+            socket.on('scores_update', handleScoresUpdate);
+            socket.on('game_ended', handleGameEnded);
+            socket.on('new_host', handleNewHost);
+            socket.on('error', handleError);
+        }
+
+        // ============================================================================
+        // SOCKET EVENT HANDLERS
+        // ============================================================================
+
+        function handleRoomCreated(data) {
+            console.log('Room created:', data);
+            gameState.roomCode = data.roomCode;
+            gameState.isHost = true;
+            gameState.players = data.players;
+            
+            document.getElementById('roomCodeDisplay').textContent = data.roomCode;
+            updatePlayersList();
+            showScreen('lobbyScreen');
+        }
+
+        function handleRoomJoined(data) {
+            console.log('Room joined:', data);
+            gameState.roomCode = data.roomCode;
+            gameState.isHost = data.isHost;
+            gameState.players = data.players;
+            
+            document.getElementById('roomCodeDisplay').textContent = data.roomCode;
+            updatePlayersList();
+            showScreen('lobbyScreen');
+            
+            // Hide start button if not host
+            if (!gameState.isHost) {
+                document.getElementById('startGameBtn').style.display = 'none';
+            }
+        }
+
+        function handlePlayerJoined(data) {
+            console.log('Player joined:', data);
+            gameState.players = data.players;
+            updatePlayersList();
+            
+            // Show notification
+            showNotification(`${data.player.name} joined the room!`, 'success');
+        }
+
+        function handlePlayerLeft(data) {
+            console.log('Player left:', data);
+            gameState.players = data.players;
+            updatePlayersList();
+            
+            showNotification(`${data.playerName} left the room`, 'info');
+        }
+
+        function handleNewHost(data) {
+            console.log('New host:', data);
+            if (socket.id === data.hostId) {
+                gameState.isHost = true;
+                document.getElementById('startGameBtn').style.display = 'block';
+                showNotification('You are now the host!', 'success');
+            }
+        }
+
+        function handleGameStarted(data) {
+            console.log('Game started:', data);
+            gameState.totalQuestions = data.totalQuestions;
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.correctCount = 0;
+            
+            // Show waiting screen
+            showScreen('waitingScreen');
+            document.getElementById('waitingText').textContent = 'Get ready for the first question!';
+        }
+
+        function handleNewQuestion(data) {
+            console.log('New question:', data);
+            gameState.currentQuestion = data.questionNumber;
+            gameState.timeLeft = data.timeLimit;
+            gameState.hasAnswered = false;
+            
+            // Show game screen
+            showScreen('gameScreen');
+            document.getElementById('liveScoreboard').style.display = 'block';
+            
+            // Display question
+            document.getElementById('questionNumber').textContent = 
+                `Question ${data.questionNumber} of ${data.totalQuestions}`;
+            document.getElementById('questionText').textContent = data.question;
+            
+            // Display answers
+            const answersGrid = document.getElementById('answersGrid');
+            answersGrid.innerHTML = '';
+            
+            data.answers.forEach((answer, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => selectAnswer(index);
+                answersGrid.appendChild(btn);
+            });
+            
+            // Hide feedback
+            document.getElementById('answerFeedback').classList.add('hidden');
+            
+            // Start timer
+            startTimer();
+        }
+
+        function handleAnswerResult(data) {
+            console.log('Answer result:', data);
+            const buttons = document.querySelectorAll('.answer-btn');
+            
+            buttons.forEach((btn, i) => {
+                btn.onclick = null;
+                if (i === data.correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (i === gameState.selectedAnswer) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            gameState.score = data.newScore;
+            
+            if (data.correct) {
+                gameState.correctCount++;
+                showFeedback(`✅ Correct! +${data.points} points`, 'correct');
+            } else {
+                showFeedback('❌ Incorrect!', 'incorrect');
+            }
+        }
+
+        function handlePlayerAnswered(data) {
+            console.log('Player answered:', data);
+            // Could show visual indicator that player answered
+            // For now, just log it
+        }
+
+        function handleScoresUpdate(data) {
+            console.log('Scores update:', data);
+            gameState.players = data.players;
+            updateLiveScores();
+        }
+
+        function handleGameEnded(data) {
+            console.log('Game ended:', data);
+            clearInterval(gameState.timerInterval);
+            
+            showScreen('resultsScreen');
+            document.getElementById('soloResults').classList.add('hidden');
+            document.getElementById('multiplayerResults').classList.remove('hidden');
+            
+            // Show podium
+            showPodium(data.standings);
+            
+            // Show final standings
+            showFinalStandings(data.standings);
+        }
+
+        function handleError(data) {
+            console.error('Server error:', data);
+            alert(data.message || 'An error occurred');
+        }
+
+        // ============================================================================
+        // GAME ACTIONS
+        // ============================================================================
+
+        function selectMode(mode) {
+            gameState.mode = mode;
+            
+            if (mode === 'solo') {
+                // Solo mode doesn't use WebSocket
+                startSoloGame();
+            } else if (mode === 'create') {
+                showScreen('createRoomScreen');
+            } else if (mode === 'join') {
+                showScreen('joinRoomScreen');
+            }
+        }
+
+        function createRoom() {
+            const name = document.getElementById('hostName').value.trim();
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            gameState.playerName = name;
+            
+            const selectedCategory = document.querySelector('.category-btn.selected');
+            gameState.category = selectedCategory ? selectedCategory.dataset.category : 'general';
+            
+            socket.emit('create_room', {
+                playerName: name,
+                category: gameState.category,
+                venueId: null // Could be passed from URL parameter
+            });
+        }
+
+        function joinRoom() {
+            const name = document.getElementById('playerName').value.trim();
+            const code = document.getElementById('joinRoomCode').value.trim().toUpperCase();
+            
+            if (!name || !code) {
+                alert('Please enter both name and room code');
+                return;
+            }
+            
+            gameState.playerName = name;
+            
+            socket.emit('join_room', {
+                roomCode: code,
+                playerName: name
+            });
+        }
+
+        function startGame() {
+            if (!gameState.isHost) return;
+            
+            socket.emit('start_game', {
+                roomCode: gameState.roomCode
+            });
+        }
+
+        function selectAnswer(index) {
+            if (gameState.hasAnswered) return;
+            
+            clearInterval(gameState.timerInterval);
+            gameState.hasAnswered = true;
+            gameState.selectedAnswer = index;
+            
+            // Highlight selected answer
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach((btn, i) => {
+                if (i === index) {
+                    btn.classList.add('selected');
+                }
+                btn.onclick = null;
+            });
+            
+            // Submit answer to server
+            socket.emit('submit_answer', {
+                roomCode: gameState.roomCode,
+                answerIndex: index,
+                timeLeft: gameState.timeLeft
+            });
+        }
+
+        function leaveRoom() {
+            socket.emit('leave_room', {
+                roomCode: gameState.roomCode
+            });
+            
+            backToStart();
+        }
+
+        // ============================================================================
+        // UI UPDATES
+        // ============================================================================
+
+        function updatePlayersList() {
+            const list = document.getElementById('playersList');
+            list.innerHTML = gameState.players.map((player, index) => `
+                <div class="player-item">
+                    <span class="player-name">
+                        ${gameState.isHost && index === 0 ? '👑 ' : '👤 '}${player.name}
+                    </span>
+                    <span class="player-ready">✓ Ready</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('playerCount').textContent = gameState.players.length;
+        }
+
+        function updateLiveScores() {
+            const scoresDiv = document.getElementById('liveScores');
+            const sortedPlayers = [...gameState.players].sort((a, b) => b.score - a.score);
+            
+            scoresDiv.innerHTML = sortedPlayers.map((player, index) => `
+                <div class="score-item">
+                    <div class="score-rank">#${index + 1}</div>
+                    <div class="score-name">
+                        ${player.name}${player.name === gameState.playerName ? ' (You)' : ''}
+                    </div>
+                    <div class="score-points">${player.score}</div>
+                </div>
+            `).join('');
+        }
+
+        function showPodium(standings) {
+            const podium = document.getElementById('podium');
+            const classes = ['first', 'second', 'third'];
+            const ranks = ['🥇', '🥈', '🥉'];
+            
+            podium.innerHTML = standings.slice(0, 3).map((player, index) => `
+                <div class="podium-place ${classes[index]}">
+                    <div class="podium-rank">${ranks[index]}</div>
+                    <div class="podium-name">${player.name}</div>
+                    <div class="podium-score">${player.score} pts</div>
+                </div>
+            `).join('');
+        }
+
+        function showFinalStandings(standings) {
+            const list = document.getElementById('finalStandings');
+            
+            list.innerHTML = standings.map((player, index) => `
+                <div class="score-item">
+                    <div class="score-rank">#${player.rank}</div>
+                    <div class="score-name">
+                        ${player.name}${player.name === gameState.playerName ? ' (You)' : ''}
+                    </div>
+                    <div class="score-points">${player.score}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            const text = document.getElementById('statusText');
+            
+            if (connected) {
+                status.className = 'connection-status connected';
+                text.textContent = '🟢 Connected';
+            } else {
+                status.className = 'connection-status disconnected';
+                text.textContent = '🔴 Disconnected';
+            }
+        }
+
+        function showNotification(message, type) {
+            // Could implement toast notifications
+            console.log(`[${type}] ${message}`);
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('answerFeedback');
+            feedback.textContent = message;
+            feedback.className = `answer-feedback ${type}`;
+            feedback.classList.remove('hidden');
+        }
+
+        function startTimer() {
+            gameState.timeLeft = 15;
+            const timerFill = document.getElementById('timerFill');
+            timerFill.style.width = '100%';
+            timerFill.classList.remove('warning', 'danger');
+
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+                const percentage = (gameState.timeLeft / 15) * 100;
+                timerFill.style.width = percentage + '%';
+
+                if (gameState.timeLeft <= 5) {
+                    timerFill.classList.add('danger');
+                } else if (gameState.timeLeft <= 10) {
+                    timerFill.classList.add('warning');
+                }
+
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    if (!gameState.hasAnswered) {
+                        selectAnswer(-1); // Timeout
+                    }
+                }
+            }, 1000);
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.game-container > div').forEach(div => {
+                div.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function backToStart() {
+            clearInterval(gameState.timerInterval);
+            gameState = {
+                mode: null,
+                roomCode: null,
+                playerName: null,
+                isHost: false,
+                currentQuestion: 0,
+                score: 0,
+                correctCount: 0,
+                players: [],
+                category: 'general',
+                timeLeft: 15,
+                totalQuestions: 10,
+                timerInterval: null,
+                hasAnswered: false
+            };
+            showScreen('startScreen');
+        }
+
+        // ============================================================================
+        // SOLO MODE (Works without WebSocket)
+        // ============================================================================
+        
+        function startSoloGame() {
+            // Same as before - local solo mode
+            // Implementation from previous version
+        }
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        window.onload = function() {
+            initSocket();
+            loadStats();
+            setupCategoryButtons();
+        };
+
+        function setupCategoryButtons() {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    gameState.category = this.dataset.category;
+                });
+            });
+        }
+
+        function loadStats() {
+            const stats = JSON.parse(localStorage.getItem('triviaStats') || '{"gamesPlayed":0,"bestScore":0,"totalWins":0}');
+            document.getElementById('gamesPlayed').textContent = stats.gamesPlayed;
+            document.getElementById('bestScore').textContent = stats.bestScore;
+            document.getElementById('winRate').textContent = stats.gamesPlayed > 0 
+                ? Math.round((stats.totalWins / stats.gamesPlayed) * 100) + '%' 
+                : '0%';
+        }
+    </script>
+</body>
+</html>

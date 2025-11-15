@@ -1,0 +1,34 @@
+{
+  "name": "trivia-websocket-server",
+  "version": "1.0.0",
+  "description": "Real-time multiplayer trivia game server with WebSocket support",
+  "main": "trivia-websocket-server.js",
+  "scripts": {
+    "start": "node trivia-websocket-server.js",
+    "dev": "nodemon trivia-websocket-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "trivia",
+    "websocket",
+    "multiplayer",
+    "socket.io",
+    "game",
+    "real-time"
+  ],
+  "author": "Insane Marketing",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.5.4",
+    "pg": "^8.11.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

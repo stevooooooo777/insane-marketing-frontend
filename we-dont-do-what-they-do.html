@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Privacy Reality: Who Really Owns Your Guest Data?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero .subtitle {
+            font-size: 24px;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Intro Section */
+        .intro {
+            background: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .intro h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .intro p {
+            font-size: 18px;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+        
+        .warning-box {
+            background: #fff5f5;
+            border: 3px solid #e53e3e;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .warning-box h3 {
+            color: #e53e3e;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .warning-box p {
+            color: #2c3e50;
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        /* Comparison Grid */
+        .comparison-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .comparison-section h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #2c3e50;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .comparison-card.bad {
+            border: 3px solid #e53e3e;
+        }
+        
+        .comparison-card.good {
+            border: 3px solid #38a169;
+            transform: scale(1.05);
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .company-logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .card-label {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+        
+        .label-red {
+            background: #fee;
+            color: #e53e3e;
+        }
+        
+        .label-green {
+            background: #f0fff4;
+            color: #38a169;
+        }
+        
+        .data-sharing-list {
+            margin-top: 20px;
+        }
+        
+        .data-sharing-list h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .sharing-item {
+            background: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            font-size: 15px;
+            color: #2c3e50;
+        }
+        
+        .sharing-item.good {
+            background: #f0fff4;
+            border-left-color: #38a169;
+        }
+        
+        .zero-display {
+            font-size: 120px;
+            font-weight: bold;
+            color: #38a169;
+            text-align: center;
+            margin: 40px 0;
+            line-height: 1;
+        }
+        
+        .zero-label {
+            text-align: center;
+            font-size: 24px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: white;
+            padding: 60px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .stat-card {
+            padding: 30px;
+        }
+        
+        .stat-number {
+            font-size: 60px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-number.bad {
+            color: #e53e3e;
+        }
+        
+        .stat-number.good {
+            color: #38a169;
+        }
+        
+        .stat-label {
+            font-size: 18px;
+            color: #555;
+        }
+        
+        /* Detailed Breakdown */
+        .breakdown {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+        
+        .breakdown h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #2c3e50;
+        }
+        
+        .breakdown-card {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .breakdown-card h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #e53e3e;
+        }
+        
+        .breakdown-card.good h3 {
+            color: #38a169;
+        }
+        
+        .category {
+            margin: 30px 0;
+        }
+        
+        .category h4 {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .category ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .category li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .category li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #e53e3e;
+            font-weight: bold;
+        }
+        
+        .quote-box {
+            background: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #2c3e50;
+        }
+        
+        /* Final CTA */
+        .final-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .final-cta h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .final-cta p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a202c;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        footer p {
+            opacity: 0.8;
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .comparison-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-card.good {
+                transform: scale(1);
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">insane.marketing</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>The Privacy Reality: Who Really Owns Your Guest Data?</h1>
+            <p class="subtitle">A side-by-side comparison of what the "big players" actually do with your luxury guests' personal information</p>
+        </div>
+    </section>
+
+    <!-- Intro -->
+    <section class="intro">
+        <div class="container">
+            <h2>The Question Every Luxury Venue Should Ask</h2>
+            <p>When you implement hotel technology from major vendors, what exactly happens to your guests' data? Let's look at what their privacy policies actually say.</p>
+            
+            <div class="warning-box">
+                <h3>⚠️ What Your Billionaire Guests Need to Know</h3>
+                <p>When UHNW individuals, celebrities, and royalty stay at your venue, their preferences, spending patterns, and personal information may be shared with dozens of third parties without their knowledge.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Comparison -->
+    <section class="comparison-section">
+        <div class="container">
+            <h2>At a Glance: Data Sharing Comparison</h2>
+            
+            <div class="comparison-grid">
+                <!-- Salesforce -->
+                <div class="comparison-card bad">
+                    <div class="card-header">
+                        <div class="company-logo" style="color: #00a1e0;">Salesforce</div>
+                        <div class="card-label label-red">Shares Your Data</div>
+                    </div>
+                    
+                    <div class="data-sharing-list">
+                        <h3>Who They Share With:</h3>
+                        <div class="sharing-item">Third-party advertising networks</div>
+                        <div class="sharing-item">Social media platforms</div>
+                        <div class="sharing-item">Marketing partners</div>
+                        <div class="sharing-item">AppExchange partners</div>
+                        <div class="sharing-item">Event sponsors</div>
+                        <div class="sharing-item">Contest promoters</div>
+                        <div class="sharing-item">Service providers for analytics</div>
+                        <div class="sharing-item">Affiliates globally</div>
+                        <div class="sharing-item">Data enrichment companies</div>
+                    </div>
+                </div>
+
+                <!-- Oracle -->
+                <div class="comparison-card bad">
+                    <div class="card-header">
+                        <div class="company-logo" style="color: #c74634;">Oracle</div>
+                        <div class="card-label label-red">Shares Your Data</div>
+                    </div>
+                    
+                    <div class="data-sharing-list">
+                        <h3>Who They Share With:</h3>
+                        <div class="sharing-item">Third-party service providers</div>
+                        <div class="sharing-item">Oracle distributors/resellers</div>
+                        <div class="sharing-item">Complementary product partners</div>
+                        <div class="sharing-item">Third parties for advertising</div>
+                        <div class="sharing-item">Event partners/sponsors</div>
+                        <div class="sharing-item">Data aggregators</div>
+                        <div class="sharing-item">Global affiliates (80+ countries)</div>
+                        <div class="sharing-item">IT service providers</div>
+                        <div class="sharing-item">Research and analytics firms</div>
+                    </div>
+                </div>
+
+                <!-- insane.marketing -->
+                <div class="comparison-card good">
+                    <div class="card-header">
+                        <div class="company-logo" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">insane.marketing</div>
+                        <div class="card-label label-green">Zero Data Sharing</div>
+                    </div>
+                    
+                    <div class="zero-display">0</div>
+                    <div class="zero-label">Third Parties</div>
+                    <div class="zero-label">No Sharing. Ever.</div>
+                    
+                    <div class="data-sharing-list" style="margin-top: 30px;">
+                        <div class="sharing-item good">✓ Your venue controls all data</div>
+                        <div class="sharing-item good">✓ Zero cloud storage of personal info</div>
+                        <div class="sharing-item good">✓ No marketing analytics sold</div>
+                        <div class="sharing-item good">✓ Complete guest anonymity option</div>
+                        <div class="sharing-item good">✓ Privacy-first by design</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number bad">20+</div>
+                    <div class="stat-label">Third Parties<br>Salesforce Shares With</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number bad">80+</div>
+                    <div class="stat-label">Countries Oracle<br>Processes Data In</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number good">0</div>
+                    <div class="stat-label">Third Parties<br>We Share With</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Breakdown -->
+    <section class="breakdown">
+        <div class="container">
+            <h2>The Full Picture: What Their Privacy Policies Actually Say</h2>
+
+            <!-- Salesforce Breakdown -->
+            <div class="breakdown-card">
+                <h3>Salesforce: Extensive Data Sharing Ecosystem</h3>
+                
+                <div class="quote-box">
+                    <strong>From Salesforce's Privacy Policy:</strong><br>
+                    "We may share Personal Data (in the form of identifiers and internet activity information) with third party advertisers for purposes of targeting advertisements on non-Salesforce websites, applications and services."
+                </div>
+                
+                <div class="category">
+                    <h4>Marketing & Advertising Partners</h4>
+                    <ul>
+                        <li>Third-party social media networks (Facebook, LinkedIn, etc.)</li>
+                        <li>Advertising networks for targeted ads</li>
+                        <li>Websites for marketing campaigns</li>
+                        <li>Data shared to "market and advertise on third party platforms"</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>Business Partners & Affiliates</h4>
+                    <ul>
+                        <li>AppExchange partners who may contact you</li>
+                        <li>Contest and promotion sponsors</li>
+                        <li>Event and webinar sponsors (badge scanning)</li>
+                        <li>Partners offering "supplementary services"</li>
+                        <li>Global corporate affiliates</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>Service Providers</h4>
+                    <ul>
+                        <li>IT and system administration</li>
+                        <li>Credit card processing</li>
+                        <li>Research and analytics companies</li>
+                        <li>Marketing service providers</li>
+                        <li>Customer support vendors</li>
+                        <li>Data enrichment services</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>What They Collect & Share</h4>
+                    <ul>
+                        <li>Identifiers (names, emails, contact info)</li>
+                        <li>Internet activity information</li>
+                        <li>Professional/employment data</li>
+                        <li>Financial account information</li>
+                        <li>Commercial information</li>
+                        <li>Visual information</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Oracle Breakdown -->
+            <div class="breakdown-card">
+                <h3>Oracle: Global Data Processing Network</h3>
+                
+                <div class="quote-box">
+                    <strong>From Oracle's Privacy Policy:</strong><br>
+                    "Oracle is a global corporation with operations in over 80 countries and personal information is processed globally as necessary in accordance with this policy."
+                </div>
+                
+                <div class="category">
+                    <h4>Third-Party Partners</h4>
+                    <ul>
+                        <li>Oracle distributors and resellers</li>
+                        <li>Specific partners offering "complementary products"</li>
+                        <li>Third parties "to facilitate interest-based advertising"</li>
+                        <li>Event partners and conference sponsors</li>
+                        <li>Data aggregators (who may have no direct relationship with you)</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>Service Providers</h4>
+                    <ul>
+                        <li>IT service providers</li>
+                        <li>Credit card and payment processors</li>
+                        <li>Order fulfillment companies</li>
+                        <li>Analytics providers</li>
+                        <li>Event/campaign management</li>
+                        <li>Website management</li>
+                        <li>E-mail delivery services</li>
+                        <li>Auditing firms</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>Global Data Transfers</h4>
+                    <ul>
+                        <li>Shared throughout Oracle's worldwide organization (80+ countries)</li>
+                        <li>Processed in countries "that may not provide the same level of protection"</li>
+                        <li>Transferred to Oracle affiliates globally</li>
+                        <li>Third-party subprocessors in multiple jurisdictions</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>What They Collect From Third Parties</h4>
+                    <ul>
+                        <li>Information from "selected third party sources"</li>
+                        <li>Data aggregators who have no relationship with you</li>
+                        <li>Third parties who collect on Oracle's behalf</li>
+                        <li>Publicly available information about you</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- insane.marketing Breakdown -->
+            <div class="breakdown-card good">
+                <h3>insane.marketing: Zero-Knowledge Architecture</h3>
+                
+                <div class="quote-box" style="background: #f0fff4; border-left-color: #38a169;">
+                    <strong>Our Privacy Promise:</strong><br>
+                    "We don't store, share, or sell guest data. Ever. Your venue controls all personal information. We provide the intelligence layer, not the database."
+                </div>
+                
+                <div class="category">
+                    <h4>Who We Share With</h4>
+                    <ul>
+                        <li style="color: #38a169; font-weight: 600;">No one. Zero third parties. No exceptions.</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>What We Store</h4>
+                    <ul>
+                        <li style="color: #38a169;">Session data only (while guest is in venue)</li>
+                        <li style="color: #38a169;">Operational metrics (anonymized)</li>
+                        <li style="color: #38a169;">Service request timestamps</li>
+                        <li style="color: #38a169;">NO personal information</li>
+                        <li style="color: #38a169;">NO payment data</li>
+                        <li style="color: #38a169;">NO marketing profiles</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>How It Works</h4>
+                    <ul>
+                        <li style="color: #2c3e50;">Venue's PMS controls all guest personal data</li>
+                        <li style="color: #2c3e50;">We provide elegant interface (3D carousel) for service requests</li>
+                        <li style="color: #2c3e50;">Mission Control shows requests without personal identifiers</li>
+                        <li style="color: #2c3e50;">Complete anonymity mode available for UHNW guests</li>
+                        <li style="color: #2c3e50;">On-premise deployment option (data never leaves property)</li>
+                    </ul>
+                </div>
+
+                <div class="category">
+                    <h4>Privacy Tiers Available</h4>
+                    <ul>
+                        <li style="color: #2c3e50;"><strong>Tier 1 - Complete Anonymity:</strong> Zero identification, perfect for royalty/celebrities</li>
+                        <li style="color: #2c3e50;"><strong>Tier 2 - Venue-Only:</strong> Data stays in venue's systems only</li>
+                        <li style="color: #2c3e50;"><strong>Tier 3 - Enhanced:</strong> Guest opt-in only, venue still controls</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Question -->
+    <section class="intro" style="background: #f8f9fa;">
+        <div class="container">
+            <h2>The Real Question</h2>
+            <p>When a billionaire stays in your Royal Suite, do you want their preferences, spending patterns, and personal information shared with:</p>
+            
+            <div style="max-width: 700px; margin: 40px auto;">
+                <div class="sharing-item" style="margin-bottom: 15px;">❌ Advertising networks building marketing profiles?</div>
+                <div class="sharing-item" style="margin-bottom: 15px;">❌ Data aggregators selling insights to competitors?</div>
+                <div class="sharing-item" style="margin-bottom: 15px;">❌ Event sponsors they've never heard of?</div>
+                <div class="sharing-item" style="margin-bottom: 15px;">❌ Third-party analytics companies in 80+ countries?</div>
+                <div class="sharing-item" style="margin-bottom: 15px;">❌ Social media platforms for targeted advertising?</div>
+            </div>
+
+            <p style="font-size: 24px; font-weight: 600; color: #2c3e50; margin-top: 40px;">Or would you rather they stay completely anonymous?</p>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Privacy-First Luxury Service Intelligence</h2>
+            <p>The only platform built for venues that value discretion as much as their guests do</p>
+            
+            <div style="margin: 60px 0;">
+                <div style="font-size: 72px; font-weight: bold; margin-bottom: 20px;">0%</div>
+                <div style="font-size: 28px; opacity: 0.95;">Data Sharing. Forever.</div>
+            </div>
+            
+            <a href="mailto:contact@insane.marketing" class="cta-button">See The Difference</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 insane.marketing | We Don't Store, Share, or Sell Data. Ever.</p>
+            <p style="margin-top: 20px; font-size: 12px; opacity: 0.6;">
+                Information sourced from publicly available privacy policies:<br>
+                Salesforce Privacy Statement (www.salesforce.com/company/privacy)<br>
+                Oracle Privacy Policy (www.oracle.com/legal/privacy)
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
