@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>insane.marketing - Premium Hospitality Intelligence Platform</title>
+    <title>insane.marketing - White-Glove Intelligence for Ultra-Luxury Venues</title>
     <style>
         * {
             margin: 0;
@@ -12,250 +12,321 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
             background: #0a0a0a;
-            color: #fff;
+            color: #ffffff;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* Navigation */
-        .nav {
+        /* Header / Navigation */
+        .header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
+            padding: 20px 60px;
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 1000;
-            padding: 15px 0;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 40px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-            color: #fff;
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 1.2em;
-            color: #0a0a0a;
-            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
-        }
-
-        .logo-text {
+            font-size: 28px;
             font-weight: 700;
-            font-size: 1.3em;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .nav-links {
             display: flex;
-            gap: 35px;
+            gap: 40px;
             align-items: center;
-            list-style: none;
         }
 
-        .nav-link {
-            color: #cbd5e1;
+        .nav-links a {
+            color: #ffffff;
             text-decoration: none;
+            font-size: 15px;
             font-weight: 500;
-            transition: color 0.3s;
-            font-size: 0.95em;
+            transition: color 0.3s ease;
         }
 
-        .nav-link:hover {
-            color: #fbbf24;
+        .nav-links a:hover {
+            color: #00d4ff;
         }
 
-        .nav-cta {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #0a0a0a;
+        .cta-button {
             padding: 12px 28px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            border: none;
             border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .nav-cta:hover {
+        .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(251, 191, 36, 0.5);
+            box-shadow: 0 10px 30px rgba(123, 47, 247, 0.4);
         }
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 120px 40px 80px;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.15), transparent);
-            border-radius: 50%;
-            top: -200px;
-            right: -200px;
-            animation: pulse-glow 8s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.1); }
-        }
-
-        .hero-content {
-            max-width: 1000px;
-            margin: 0 auto;
+            margin-top: 80px;
+            padding: 120px 60px 80px;
             text-align: center;
-            position: relative;
-            z-index: 2;
+            background: radial-gradient(ellipse at center, rgba(123, 47, 247, 0.15) 0%, rgba(10, 10, 10, 0) 70%);
         }
 
-        .hero-badge {
-            display: inline-block;
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            padding: 10px 20px;
-            border-radius: 25px;
-            color: #fbbf24;
+        .hero-eyebrow {
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 25px;
-            font-size: 0.9em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #00d4ff;
+            margin-bottom: 20px;
         }
 
-        .hero-title {
-            font-size: 2.5em;
-            font-weight: 900;
+        .hero-headline {
+            font-size: 72px;
+            font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 25px;
-        }
-
-        .hero-title .highlight {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 50%, #7b2ff7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .hero-subtitle {
-            font-size: 1.3em;
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 40px;
+        .hero-supporting {
+            font-size: 20px;
+            color: #a0a0a0;
+            max-width: 900px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
         }
 
         .hero-ctas {
             display: flex;
             gap: 20px;
-            flex-wrap: wrap;
             justify-content: center;
+            margin-bottom: 80px;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #0a0a0a;
-            padding: 18px 35px;
+        .primary-cta {
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            border: none;
             border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1em;
-            transition: all 0.3s;
-            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
-            display: inline-block;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .btn-primary:hover {
+        .primary-cta:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(251, 191, 36, 0.6);
+            box-shadow: 0 15px 40px rgba(123, 47, 247, 0.5);
         }
 
-        .btn-secondary {
+        .secondary-cta {
+            padding: 18px 40px;
             background: transparent;
-            color: #fbbf24;
-            padding: 18px 35px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1em;
-            border: 2px solid rgba(251, 191, 36, 0.3);
-            transition: all 0.3s;
-            display: inline-block;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .btn-secondary:hover {
-            background: rgba(251, 191, 36, 0.1);
-            border-color: #fbbf24;
-            transform: translateY(-3px);
+        .secondary-cta:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
         }
 
-        /* Complete System Showcase */
-        .system-showcase {
-            padding: 100px 40px;
-            background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 100%);
+        .trust-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 60px;
+            padding: 30px;
         }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #4ade80;
+        }
+
+        .trust-icon {
+            font-size: 24px;
+        }
+
+        /* Zero-Knowledge Section */
+        .zero-knowledge {
+            padding: 100px 60px;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);
         }
 
         .section-title {
-            font-size: 3em;
-            font-weight: 900;
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
             margin-bottom: 20px;
-        }
-
-        .section-title .highlight {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .section-subtitle {
-            font-size: 1.3em;
-            color: #94a3b8;
+            text-align: center;
+            font-size: 22px;
+            color: #4ade80;
+            margin-bottom: 60px;
+            font-weight: 600;
         }
 
-        .system-grid {
+        .architecture-visual {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 60px;
+            background: rgba(26, 26, 46, 0.4);
+            border-radius: 30px;
+            border: 1px solid rgba(123, 47, 247, 0.3);
+        }
+
+        .data-blocked {
+            text-align: center;
+            padding: 40px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            border-radius: 20px;
+        }
+
+        .blocked-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .blocked-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+
+        .blocked-list {
+            font-size: 16px;
+            color: #a0a0a0;
+            line-height: 2.2;
+        }
+
+        .shield-separator {
+            text-align: center;
+        }
+
+        .shield-visual {
+            width: 140px;
+            height: 180px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            box-shadow: 0 0 60px rgba(74, 222, 128, 0.4);
+            border: 3px solid rgba(74, 222, 128, 0.6);
+            animation: shield-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes shield-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 60px rgba(74, 222, 128, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 80px rgba(74, 222, 128, 0.6);
+            }
+        }
+
+        .shield-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        .data-flows {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(45, 27, 78, 0.6));
+            border: 2px solid rgba(123, 47, 247, 0.6);
+            border-radius: 20px;
+        }
+
+        .flows-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .flows-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .flows-list {
+            font-size: 16px;
+            color: #a0a0a0;
+            line-height: 2.2;
+        }
+
+        /* Ecosystem Section */
+        .ecosystem {
+            padding: 100px 60px;
+            background: #0a0a0a;
+        }
+
+        .systems-grid {
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
         }
 
         .system-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(123, 47, 247, 0.3);
             border-radius: 20px;
-            padding: 30px;
-            transition: all 0.4s;
+            padding: 40px;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
@@ -267,1143 +338,392 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #fbbf24, #f59e0b);
-            transform: scaleX(0);
-            transition: transform 0.4s;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .system-card:hover {
-            border-color: rgba(251, 191, 36, 0.3);
-            transform: translateY(-10px);
-            box-shadow: 0 25px 60px rgba(251, 191, 36, 0.2);
+            transform: translateY(-8px);
+            border-color: rgba(123, 47, 247, 0.6);
+            box-shadow: 0 15px 50px rgba(123, 47, 247, 0.3);
         }
 
         .system-card:hover::before {
-            transform: scaleX(1);
+            opacity: 1;
         }
 
         .system-icon {
-            font-size: 3.5em;
+            font-size: 48px;
             margin-bottom: 20px;
         }
 
         .system-title {
-            font-size: 1.6em;
+            font-size: 22px;
             font-weight: 700;
             margin-bottom: 15px;
         }
 
         .system-description {
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 25px;
+            font-size: 15px;
+            color: #a0a0a0;
+            line-height: 1.8;
+            margin-bottom: 20px;
         }
 
-        .system-demo {
-            width: 100%;
-            height: 500px;
-            background: #000;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-        }
-
-        .system-demo iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .system-link {
+        .system-badge {
             display: inline-block;
-            margin-top: 15px;
-            color: #fbbf24;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .system-link:hover {
-            color: #f59e0b;
-            transform: translateX(5px);
-        }
-
-        /* Key Differentiators */
-        .differentiators {
-            padding: 100px 40px;
-            background: #0a0a0a;
-        }
-
-        .diff-grid {
-            max-width: 1400px;
-            margin: 60px auto 0;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-        }
-
-        .diff-card {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(245, 158, 11, 0.02));
-            border: 2px solid rgba(251, 191, 36, 0.2);
-            border-radius: 25px;
-            padding: 50px;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .diff-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .diff-card:hover {
-            border-color: rgba(251, 191, 36, 0.5);
-            transform: translateY(-10px);
-            box-shadow: 0 25px 60px rgba(251, 191, 36, 0.3);
-        }
-
-        .diff-card:hover::before {
-            opacity: 1;
-        }
-
-        .diff-icon {
-            font-size: 4em;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .diff-title {
-            font-size: 2em;
-            font-weight: 900;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .diff-description {
-            color: #cbd5e1;
-            line-height: 1.7;
-            font-size: 1.1em;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .diff-features {
-            list-style: none;
-            position: relative;
-            z-index: 2;
-        }
-
-        .diff-features li {
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.05em;
-        }
-
-        .diff-features li:last-child {
-            border-bottom: none;
-        }
-
-        .diff-features li::before {
-            content: '⚡';
-            flex-shrink: 0;
-            font-size: 1.2em;
-        }
-
-        /* Health & Safety Section */
-        .health-safety {
-            padding: 100px 40px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .health-safety::before {
-            content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.1), transparent);
-            border-radius: 50%;
-            top: -150px;
-            left: -150px;
-        }
-
-        .emergency-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            padding: 12px 25px;
-            border-radius: 25px;
-            color: #fff;
-            font-weight: 700;
-            margin-bottom: 30px;
-            font-size: 0.9em;
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-            animation: emergency-pulse 2s infinite;
-        }
-
-        @keyframes emergency-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .emergency-grid {
-            max-width: 1400px;
-            margin: 60px auto 0;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-        }
-
-        .emergency-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(239, 68, 68, 0.3);
-            border-radius: 20px;
-            padding: 40px;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .emergency-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #ef4444, #dc2626);
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .emergency-card:hover {
-            border-color: rgba(239, 68, 68, 0.6);
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(239, 68, 68, 0.3);
-        }
-
-        .emergency-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .emergency-icon {
-            font-size: 3.5em;
-            margin-bottom: 20px;
-        }
-
-        .emergency-title {
-            font-size: 1.6em;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .emergency-description {
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-size: 1.05em;
-        }
-
-        .emergency-features {
-            list-style: none;
-            margin-top: 20px;
-        }
-
-        .emergency-features li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #cbd5e1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .emergency-features li::before {
-            content: '✓';
-            color: #22c55e;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 100px 40px;
-            background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 100%);
-        }
-
-        .features-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 35px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #fbbf24, #f59e0b);
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .feature-card:hover {
-            border-color: rgba(251, 191, 36, 0.3);
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(251, 191, 36, 0.2);
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-
-        .feature-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .feature-description {
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .feature-badge {
-            display: inline-block;
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.3);
             padding: 6px 14px;
-            border-radius: 15px;
-            font-size: 0.75em;
-            font-weight: 700;
-            color: #fbbf24;
-            text-transform: uppercase;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #4ade80;
+            font-weight: 600;
         }
 
         /* Stats Section */
-        .stats {
-            padding: 100px 40px;
-            background: #0a0a0a;
+        .stats-section {
+            padding: 100px 60px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+            text-align: center;
         }
 
         .stats-grid {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 60px auto 0;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 35px;
+            gap: 40px;
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            border-color: rgba(251, 191, 36, 0.3);
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.2);
+        .stat-item {
+            padding: 30px;
         }
 
         .stat-number {
-            font-size: 3.5em;
-            font-weight: 900;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-        }
-
-        .stat-label {
-            font-size: 1.1em;
-            font-weight: 600;
+            background-clip: text;
             margin-bottom: 10px;
         }
 
-        .stat-description {
-            color: #94a3b8;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-
-        /* Problem/Solution */
-        .problem-solution {
-            padding: 100px 40px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
-        }
-
-        .comparison-grid {
-            max-width: 1400px;
-            margin: 60px auto 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-        }
-
-        .comparison-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 50px;
-            border-left: 4px solid;
-        }
-
-        .comparison-card.before {
-            border-left-color: #ef4444;
-        }
-
-        .comparison-card.after {
-            border-left-color: #22c55e;
-        }
-
-        .comparison-title {
-            font-size: 2em;
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
-
-        .comparison-card.before .comparison-title {
-            color: #f87171;
-        }
-
-        .comparison-card.after .comparison-title {
-            color: #4ade80;
-        }
-
-        .comparison-list {
-            list-style: none;
-        }
-
-        .comparison-list li {
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            font-size: 1.05em;
-            line-height: 1.5;
-        }
-
-        .comparison-list li:last-child {
-            border-bottom: none;
-        }
-
-        .comparison-card.before .comparison-list li {
-            color: #f87171;
-        }
-
-        .comparison-card.after .comparison-list li {
-            color: #4ade80;
-        }
-
-        .comparison-card.before .comparison-list li::before {
-            content: '✗';
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .comparison-card.after .comparison-list li::before {
-            content: '✓';
-            font-weight: 700;
-            flex-shrink: 0;
+        .stat-label {
+            font-size: 16px;
+            color: #a0a0a0;
+            font-weight: 500;
         }
 
         /* CTA Section */
-        .cta {
-            padding: 120px 40px;
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        .final-cta {
+            padding: 120px 60px;
             text-align: center;
+            background: radial-gradient(ellipse at center, rgba(123, 47, 247, 0.2) 0%, rgba(10, 10, 10, 0) 70%);
         }
 
-        .cta-title {
-            font-size: 3.5em;
-            font-weight: 900;
-            color: #0a0a0a;
-            margin-bottom: 25px;
+        .final-cta-title {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .cta-subtitle {
-            font-size: 1.4em;
-            color: rgba(10, 10, 10, 0.8);
-            margin-bottom: 45px;
-        }
-
-        .cta .btn-primary {
-            background: #0a0a0a;
-            color: #fbbf24;
-            font-size: 1.3em;
-            padding: 22px 45px;
-        }
-
-        .cta .btn-primary:hover {
-            background: #1a1a1a;
+        .final-cta-text {
+            font-size: 20px;
+            color: #a0a0a0;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
         }
 
         /* Footer */
         .footer {
-            padding: 60px 40px 40px;
-            background: #000;
+            padding: 60px;
+            background: #000000;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
         }
 
         .footer-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            flex-direction: column;
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .footer-brand-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 20px;
         }
 
         .footer-logo {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            color: #0a0a0a;
-            flex-shrink: 0;
-            font-size: 1.5em;
-        }
-
-        .footer-brand-text {
-            font-size: 1.5em;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .footer-tagline {
-            color: #94a3b8;
-            line-height: 1.6;
-            font-size: 1.05em;
-        }
-
-        .footer-links-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .footer-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
-            transition: all 0.3s;
-        }
-
-        .footer-section:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(251, 191, 36, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .footer-section h4 {
-            font-size: 1.2em;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #fbbf24;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .footer-links {
-            list-style: none;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-links li {
-            margin: 0;
+            gap: 40px;
         }
 
         .footer-links a {
-            color: #cbd5e1;
+            color: #a0a0a0;
             text-decoration: none;
-            transition: all 0.3s;
-            display: inline-block;
-            font-size: 1.05em;
+            font-size: 14px;
+            transition: color 0.3s ease;
         }
 
         .footer-links a:hover {
-            color: #fbbf24;
-            transform: translateX(5px);
+            color: #00d4ff;
         }
 
-        .footer-bottom {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.9em;
+        .footer-copyright {
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
         }
 
         /* Responsive */
-        @media (max-width: 1200px) {
-            .system-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .diff-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .emergency-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-links-container {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 1024px) {
+            .hero-headline { font-size: 56px; }
+            .systems-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .architecture-visual { grid-template-columns: 1fr; gap: 40px; }
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero-title {
-                font-size: 2.5em;
-            }
-
-            .section-title {
-                font-size: 2.2em;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-links-container {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-brand-box {
-                flex-direction: column;
-                text-align: center;
-            }
+            .header { padding: 15px 30px; }
+            .hero { padding: 80px 30px 60px; }
+            .hero-headline { font-size: 40px; }
+            .hero-supporting { font-size: 18px; }
+            .systems-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero-ctas { flex-direction: column; }
+            .trust-indicators { flex-direction: column; gap: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="/" class="logo">
-                <div class="logo-icon">IM</div>
-                <div class="logo-text">insane.marketing</div>
-            </a>
-
-            <ul class="nav-links">
-                <li><a href="#system" class="nav-link">System</a></li>
-<li><a href="/privacy-first-always" class="nav-link">VIP Privacy</a></li>
-<li><a href="/zero-tech-barriers" class="nav-link">NO Tech</a></li>
-                <li><a href="/venue-safety" class="nav-link">Safety</a></li>
-<li><a href="/blog" class="nav-link">Why</a></li>
-
-                <li><a href="/login" class="nav-link">Login</a></li>
-            </ul>
-
-            <a href="/contact" class="nav-cta">Request Demo</a>
-        </div>
-    </nav>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">insane.marketing</div>
+        <nav class="nav-links">
+            <a href="#platform">Platform</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#solutions">Solutions</a>
+            <button class="cta-button">Request Demo</button>
+        </nav>
+    </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">✨ Privacy-First Unified Architecture for 5-Star Hospitality Venues and Resorts.</div>
-            
-            <h1 class="hero-title">
-               End to End Ultra-Luxury Service Experiences 
- <span class="highlight">with White-Glove Real Time Intelligence </span>
-            </h1>
-            
-            <p class="hero-subtitle">
-                Enterprise-Level AI that predicts VIP guest needs, prevents service failures, and delivers ultra-luxury experiences at scale - *but never knows your guests personal data, Ever.
-            </p>
-<br> <br>
-            <div class="hero-ctas">
-                <a href="/VIP" target="_blank" class="btn-primary">See Mission Control for Venues</a>
-                <a href="/table-experience" target="_blank" class="btn-secondary">Try Guests 3D-Central Control</a>
-<a href="/emergency" target="_blank" class="btn-secondary">View Health & Safety Interface</a>
-<a href="/guest-journey-luxury" target="_blank" class="btn-secondary">See Guests Luxury Experience</a>
+        <div class="hero-eyebrow">Built for the World's Finest Hotels & Resorts</div>
+        <h1 class="hero-headline">Ultra-Luxury Service.<br/>Predictive Intelligence.</h1>
+        <p class="hero-supporting">
+            Anticipate VIP guest needs, eliminate service failures, and deliver white-glove experiences at scale—with privacy-first architecture your guests will trust.
+        </p>
+        
+        <div class="hero-ctas">
+            <button class="primary-cta">Schedule Private Demo</button>
+            <button class="secondary-cta">View Platform</button>
+        </div>
 
-
+        <div class="trust-indicators">
+            <div class="trust-item">
+                <span class="trust-icon">🚫</span>
+                <span>Zero Personal Data Collection</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">⚡</span>
+                <span>Deploy in Under 1 Hour</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">🌍</span>
+                <span>Global Scale, Local Service</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">🛡️</span>
+                <span>GDPR Native Architecture</span>
             </div>
         </div>
     </section>
 
-    <!-- Complete System Showcase -->
-    <section class="system-showcase" id="system">
-        <div class="section-header">
-            <h2 class="section-title">
-                Complete Anonymity<span class="highlight"> Everywhere </span>
-            </h2>
-            <p class="section-subtitle">
-                That's exactly what VIP's and UHNW want. Say no more!
-            </p>
-        </div>
+    <!-- Zero-Knowledge Architecture -->
+    <section id="architecture" class="zero-knowledge">
+        <h2 class="section-title">Zero-Knowledge Architecture</h2>
+        <p class="section-subtitle">We Never Collect Personal Data. Ever.</p>
 
-        <div class="system-grid">
-            <div class="system-card">
-                <div class="system-icon">🎨</div>
-                <h3 class="system-title">Guest's Immersive Experience</h3>
-                <p class="system-description">
-                    Sophisticated 3D carousel interface guests actually love to use. One tap access to everything - menus, service, WiFi, feedback. No app needed.
-                </p>
-                <div class="system-demo">
-                    <iframe src="/table-experience.html?restaurant=vip-lounge&table=1"></iframe>
+        <div class="architecture-visual">
+            <div class="data-blocked">
+                <div class="blocked-icon">🚫</div>
+                <div class="blocked-title">Personal Data<br/>STAYS OUT</div>
+                <div class="blocked-list">
+                    ❌ Names<br/>
+                    ❌ Email Addresses<br/>
+                    ❌ Phone Numbers<br/>
+                    ❌ Payment Details<br/>
+                    ❌ Physical Addresses
                 </div>
-                <a href="/table-experience" class="system-link">Explore Guest Demo →</a>
             </div>
 
+            <div class="shield-separator">
+                <div class="shield-visual">🛡️</div>
+                <div class="shield-label">PRIVACY SHIELD<br/>Never Enters System</div>
+            </div>
+
+            <div class="data-flows">
+                <div class="flows-icon">🧠</div>
+                <div class="flows-title">Anonymous Intelligence<br/>FLOWS THROUGH</div>
+                <div class="flows-list">
+                    ✅ Behavioral Patterns<br/>
+                    ✅ Preference Signals<br/>
+                    ✅ Service Timing<br/>
+                    ✅ Experience Quality<br/>
+                    ✅ Venue Analytics
+                </div>
+            </div>
+        </div>
+
+        <div style="max-width: 900px; margin: 60px auto; text-align: center; padding: 40px; background: rgba(74, 222, 128, 0.1); border: 2px solid rgba(74, 222, 128, 0.4); border-radius: 20px;">
+            <div style="font-size: 28px; font-weight: 700; color: #4ade80; margin-bottom: 20px;">The Core Principle</div>
+            <div style="font-size: 18px; color: #ffffff; line-height: 1.8;">
+                We track "Presidential Suite 7 prefers Château Margaux and evening turndown at 8pm"<br/>
+                <strong>NOT</strong> "John Smith, john@email.com, prefers Château Margaux"<br/><br/>
+                Your VIPs get world-class personalized experiences.<br/>
+                Their privacy remains absolutely intact.
+            </div>
+        </div>
+    </section>
+
+    <!-- Ecosystem -->
+    <section id="platform" class="ecosystem">
+        <h2 class="section-title">Complete Intelligence Ecosystem</h2>
+        <p class="section-subtitle">Every Module Powered by Anonymous Intelligence</p>
+
+        <div class="systems-grid">
             <div class="system-card">
                 <div class="system-icon">🎯</div>
-                <h3 class="system-title">Your 360* Mission Control</h3>
-                <p class="system-description">
-                    Complete venue visibility for management. Monitor all tables, track sentiment, predict issues, coordinate response. Command center for luxury service venues.
-                </p>
-                <div class="system-demo">
-                    <iframe src="/VIP.html"></iframe>
-                </div>
-                <a href="/VIP" class="system-link">Experience Mission Control →</a>
+                <div class="system-title">3D Interactive Showcase</div>
+                <div class="system-description">Immersive venue exploration with encrypted preference tracking that converts browsers to bookers without storing personal data.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">📊</div>
+                <div class="system-title">Mission Control Dashboard</div>
+                <div class="system-description">Real-time operational intelligence across your entire property with zero-knowledge data processing and predictive insights.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">⭐</div>
+                <div class="system-title">VIP Recognition Engine</div>
+                <div class="system-description">Identify high-value behavioral patterns and deliver personalized service without storing guest identities or personal information.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">💰</div>
+                <div class="system-title">Dynamic Revenue Optimization</div>
+                <div class="system-description">AI-powered pricing that maximizes revenue through demand prediction and real-time optimization while maintaining brand integrity.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🔧</div>
+                <div class="system-title">Service Recovery System</div>
+                <div class="system-description">Catch and resolve guest issues before they escalate with anonymous tracking by space, time, and service type.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🚨</div>
+                <div class="system-title">Emergency Safety Protocols</div>
+                <div class="system-description">Critical response systems for venue security using location and timing data without personal identification requirements.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">📈</div>
+                <div class="system-title">Space Intelligence</div>
+                <div class="system-description">Optimize suite utilization and revenue through pattern analysis and preference tracking without customer identity data.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🎨</div>
+                <div class="system-title">Brand Experience Engine</div>
+                <div class="system-description">Maintain consistent luxury standards across all touchpoints with automated quality monitoring and real-time adjustments.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🌐</div>
+                <div class="system-title">Global Deployment Platform</div>
+                <div class="system-description">Launch across multiple properties worldwide in under an hour with centralized control and localized customization.</div>
+                <span class="system-badge">Zero Personal Data</span>
             </div>
         </div>
     </section>
 
-    <!-- Key Differentiators -->
-    <section class="differentiators" id="differentiators">
-        <div class="section-header">
-            <h2 class="section-title">
-                Why <span class="highlight">We Are Exceptionally-Unique</span>
-            </h2>
-            <p class="section-subtitle">
-                
-            </p>
-        </div>
-
-        <div class="diff-grid">
-            <div class="diff-card">
-                <div class="diff-icon">⚡</div>
-                <h3 class="diff-title">Everything Live in One Hour</h3>
-                <p class="diff-description">
-                    Not months and months. Your entire venue can be operational the same day. No IT staff required. No complex setup. Just select preferences, go live.
-                </p>
-                <ul class="diff-features">
-                    <li>Zero technical knowledge needed</li>
-                    <li>Pre-trained AI ready to go</li>
-                    <li>Guests can start using today</li>
-                    <li>Intuitive staff training guide</li>
-                    <li>Live support every step of the way</li>
-                </ul>
-            </div>
-
-            <div class="diff-card">
-                <div class="diff-icon">🌍</div>
-                <h3 class="diff-title">Scale Anywhere, Instantly</h3>
-                <p class="diff-description">
-                    Opening a new venue? Add it. One or 100 locations - same centralised platform, same speed, same excellence. Global operations, unified intelligence.
-                </p>
-                <ul class="diff-features">
-                    <li>Unlimited venues on one account</li>
-                    <li>Clone configurations instantly</li>
-                    <li>Multi-location analytics</li>
-                    <li>Centralized management</li>
-                    <li>Franchise-ready architecture</li>
-                </ul>
-            </div>
-
-            <div class="diff-card">
-                <div class="diff-icon">🎯</div>
-                <h3 class="diff-title">Complete Full-Stack Solution</h3>
-                <p class="diff-description">
-                    Everything you need, nothing you don't. Guest experience, staff operations, management intelligence, AI analytics, emergency systems - all included. No integrations needed.
-                </p>
-                <ul class="diff-features">
-                    <li>3D guest interface included</li>
-                    <li>Staff dashboard included</li>
-                    <li>Management platform included</li>
-                    <li>AI analytics included</li>
-                    <li>Health & safety systems included</li>
-                </ul>
-            </div>
-
-            <div class="diff-card">
-                <div class="diff-icon">✅</div>
-                <h3 class="diff-title">Nothing Else Required</h3>
-                <p class="diff-description">
-                    Turnkey solution means turnkey. No additional software, no third-party integrations, no hidden costs, no surprises. One platform. One price. Everything works together perfectly.
-                </p>
-                <ul class="diff-features">
-                    <li>No POS or any integration needed</li>
-                    <li>No additional hardware required</li>
-                    <li>No separate analytics tools</li>
-                    <li>No external services required</li>
-                    <li>All-in-one price, all-in-one platform</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Health & Safety Section -->
-    <section class="health-safety" id="safety">
-        <div class="section-header">
-            <div class="emergency-badge">🚨 CRITICAL SAFETY FEATURES</div>
-            <h2 class="section-title">
-                Health & Safety <span class="highlight">Emergency Response</span>
-            </h2>
-            <p class="section-subtitle">
-                Instant alerts that can save lives - from medical emergencies to security threats
-            </p>
-        </div>
-
-        <div class="emergency-grid">
-            <div class="emergency-card">
-                <div class="emergency-icon">🚑</div>
-                <h3 class="emergency-title">Medical Emergency Alert</h3>
-                <p class="emergency-description">
-                    One-tap emergency button instantly alerts all staff, management, and emergency contacts. Location tracked. Medical history accessible.
-                </p>
-                <ul class="emergency-features">
-                    <li>Instant notification to all managers & security</li>
-                    <li>Guest location pinpointed on floor plan</li>
-                    <li>Medical info & allergies displayed</li>
-                    <li>Incident logged with timestamp</li>
-                </ul>
-            </div>
-
-            <div class="emergency-card">
-                <div class="emergency-icon">🛡️</div>
-                <h3 class="emergency-title">Security Threat Response</h3>
-                <p class="emergency-description">
-                    Silent panic button for guests or staff. Discreet alerts to security team. Real-time location tracking. Coordinate rapid response.
-                </p>
-                <ul class="emergency-features">
-                    <li>Silent alert - doesn't alarm attacker</li>
-                    <li>Security team instant notification</li>
-                    <li>Live location tracking</li>
-                    
-                </ul>
-            </div>
-
-            <div class="emergency-card">
-                <div class="emergency-icon">🔥</div>
-                <h3 class="emergency-title">Fire & Evacuation System</h3>
-                <p class="emergency-description">
-                    Integrated fire alarm system with automated guest notifications. Digital evacuation maps. Staff coordination. 
-                </p>
-                <ul class="emergency-features">
-                    <li>Real-time notifications</li>
-                      <li>Staff coordination dashboard</li>
-                    
-                </ul>
-            </div>
-
-            <div class="emergency-card">
-                <div class="emergency-icon">⚕️</div>
-                <h3 class="emergency-title">Allergy & Health Alerts</h3>
-                <p class="emergency-description">
-                    Critical allergy information flagged to kitchen & service staff.  Instant staff response and briefings.
-                </p>
-                <ul class="emergency-features">
-                    <li>Allergy warnings to staff</li>
-                    <li>Medical condition alert</li>
-                    
-                    
-                    
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="section-header">
-            <h2 class="section-title">
-                Advanced <span class="highlight">Intelligence Features</span>
-            </h2>
-            <p class="section-subtitle">
-                AI-powered capabilities that make premium service effortless
-            </p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🛡️</div>
-                <h3 class="feature-title">Service Recovery & Loyalty Retention System</h3>
-                <p class="feature-description">
-                    AI analyzes every piece of feedback in real-time. Negative ratings trigger instant manager alerts with recommended actions. Catch issues before they become reviews.
-                </p>
-                <span class="feature-badge">NEW</span>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🤖</div>
-                <h3 class="feature-title">Predictive AI Analytics</h3>
-                <p class="feature-description">
-                    Not just AI - Predictive AI that anticipates guest needs 1-5 minutes before they request service. 94% accuracy rate. Proactive service that feels like magic.
-                </p>
-                <span class="feature-badge">AI-Powered</span>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">👑</div>
-                <h3 class="feature-title">VIP Recognition Engine</h3>
-                <p class="feature-description">
-                    Identification of high-value guests with full preference history, and personalized service protocols.
-                </p>
-                <span class="feature-badge">Premium</span>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Real-Time Coordination</h3>
-                <p class="feature-description">
-                    Guest -> Staff -> management -> Executive -> Globally, unified systems all seemlessly connected. Everyone knows what's happening, who needs what, and how to deliver perfectly.
-                </p>
-                <span class="feature-badge">Core</span>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🔐</div>
-                <h3 class="feature-title">Enterprise Security</h3>
-                <p class="feature-description">
-                    SOC 2 compliant. GDPR ready. Data encrypted at rest and in transit. Dedicated hosting. Bank-level security.
-                </p>
-                <span class="feature-badge">Security</span>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3 class="feature-title">Executive Analytics</h3>
-                <p class="feature-description">
-                    Board-ready reports with ROI tracking, guest lifetime value, and competitive benchmarking. See the financial impact of every improvement.
-                </p>
-                <span class="feature-badge">Insights</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="stats" id="results">
-        <div class="section-header">
-            <h2 class="section-title">
-                <span class="highlight">Results</span> That Matter
-            </h2>
-            <p class="section-subtitle">
-                for luxury venues, and all guests
-            </p>
-        </div>
-
+    <!-- Stats -->
+    <section class="stats-section">
+        <h2 class="section-title">Built for Scale, Precision, and Privacy</h2>
+        
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">1 Day</div>
-                <div class="stat-label">Time to Go Live</div>
-                <p class="stat-description">From signup to fully operational venue (vs months with multi-vendor systems)</p>
+            <div class="stat-item">
+                <div class="stat-number">&lt;1hr</div>
+                <div class="stat-label">Global Deployment Time</div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-number">Extra</div>
-                <div class="stat-label">Health & Safety Alerts</div>
-                <p class="stat-description">Instant, Seemlessly Integrated for Guest & Staff & Corporate</p>
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Personal Data Points Collected</div>
             </div>
-
-
-            <div class="stat-card">
-                <div class="stat-number">Now</div>
-                <div class="stat-label">Service & Insights</div>
-                <p class="stat-description">High-value guests return more frequently with consistent service excellence</p>
+            <div class="stat-item">
+                <div class="stat-number">$369B</div>
+                <div class="stat-label">Luxury Hospitality Market by 2032</div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-number">5 Star</div>
-                <div class="stat-label">Issue Prevention</div>
-                <p class="stat-description">Problems caught and resolved before becoming complaints or reviews</p>
-            </div>
-
-
-        </div>
-    </section>
-
-    <!-- Problem/Solution -->
-    <section class="problem-solution">
-        <div class="section-header">
-            <h2 class="section-title">
-                The VIP <span class="highlight">Service Gap</span>
-            </h2>
-            <p class="section-subtitle">
-                Premium guests pay premium prices - your service should feel like it
-            </p>
-        </div>
-
-        <div class="comparison-grid">
-            <div class="comparison-card before">
-                <h3 class="comparison-title">❌ Without Intelligence</h3>
-                <ul class="comparison-list">
-                    <li>VIP guests frustrated with long wait times</li>
-                    <li>Staff don't know which tables need immediate attention</li>
-                    <li>No real-time visibility into guest satisfaction</li>
-                    <li>Service complaints discovered too late to fix</li>
-                    <li>Emergency situations handled chaotically</li>
-                    <li>Weeks to implement new technology</li>
-                    <li>Multiple systems that don't talk to each other</li>
-                </ul>
-            </div>
-
-            <div class="comparison-card after">
-                <h3 class="comparison-title">✅ With insane.marketing</h3>
-                <ul class="comparison-list">
-                    <li>Live in 5-10 minutes from signup</li>
-                    <li>2.3min average response time to VIP requests</li>
-                    <li>Real-time guest satisfaction monitoring</li>
-                    <li>Issues flagged before they become complaints</li>
-                    <li>Emergency response coordinated instantly</li>
-                    <li>Scale to unlimited venues effortlessly</li>
-                    <li>One platform, everything connected, nothing else needed</li>
-                </ul>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">GDPR Compliant by Design</div>
             </div>
         </div>
     </section>
 
     <!-- Final CTA -->
-    <section class="cta">
-        <h2 class="cta-title">Ready to Transform Your Venue?</h2>
-        <p class="cta-subtitle">
-            See the complete system in action - live in an hour, not months, and scaling forever
+    <section class="final-cta">
+        <h2 class="final-cta-title">Ready to Elevate Your Guest Experience?</h2>
+        <p class="final-cta-text">
+            Join the world's finest venues delivering ultra-luxury service with privacy-first intelligence. 
+            Schedule a private demonstration and discover how we can transform your property in under an hour.
         </p>
-        <a href="/contact" class="btn-primary">Request Demo</a>
+        <button class="primary-cta">Schedule Your Private Demo</button>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-brand-box">
-                <div class="footer-logo">IM</div>
-                <div>
-                    <div class="footer-brand-text">insane.marketing</div>
-                    <p class="footer-tagline">
-                        Complete hospitality intelligence platform. No IT requirements. Scale anytime. Nothing else required.
-                    </p>
-                </div>
-            </div>
-
-            <div class="footer-links-container">
-                <div class="footer-section">
-                    <h4>Platform</h4>
-                    <ul class="footer-links">
-                        
-                        <li><a href="/VIP">Mission Control</a></li>
-                        <li><a href="/table-experience">Guest Demo</a></li>
-                        <li><a href="/staff-dashboard">Staff Dashboard</a></li>
-                          <li><a href="/venue-safety">Emergency Safety</a></li>
-<li><a href="/service-recovery-dashboard">Guest Recovery & Retention</a></li>
-<li><a href="/contact">Demo & Free Pilot Program</a></li>
-                          
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <ul class="footer-links">
-                        <li><a href="/zero-tech-barriers">Zero Entry Barriers</a></li>
-<li><a href="/security">Full Platform Security</a></li>
-                        <li><a href="/contact">Contact Us</a></li>
-<li><a href="/who-we-are">Who We Are</a></li>
-                        <li><a href="/privacy">Privacy & GDPR</a></li>
-<li><a href="/terms">Terms of Service</a></li>
-                        
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Resources</h4>
-                    <ul class="footer-links">
-                        <li><a href="/blog">Now Market-Insights</a></li>
-                        <li><a href="/luxury-market-investors">Staff Training Guide </a></li>
-                        <li><a href="/media-press">Press & Media Kit</a></li>
-                        <li><a href="/luxury-market-investors">Investors Deck</a></li>
-                        
-                    </ul>
-                </div>
+            <div class="footer-logo">insane.marketing</div>
+            <div class="footer-links">
+                <a href="#platform">Platform</a>
+                <a href="#architecture">Architecture</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#contact">Contact</a>
             </div>
         </div>
-
-        <div class="footer-bottom">
-            <p>© 2025 Insane.Marketing. ALL RIGHTS RESERVED. <br>Complete hospitality intelligence platform, local, national and global scale.</p>
+        <div class="footer-copyright">
+            © 2025 insane.marketing. Privacy-first intelligence for ultra-luxury venues.
         </div>
     </footer>
 
     <script>
-        // Smooth scroll
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1411,6 +731,23 @@
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
+            });
+        });
+
+        // System card interactions
+        document.querySelectorAll('.system-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // CTA button interactions
+        document.querySelectorAll('.primary-cta, .secondary-cta, .cta-button').forEach(button => {
+            button.addEventListener('click', () => {
+                alert('Demo request functionality would be implemented here');
             });
         });
     </script>
