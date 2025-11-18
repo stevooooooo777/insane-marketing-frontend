@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>insane.marketing - White-Glove Intelligence for Ultra-Luxury Venues</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Header / Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 60px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00d4ff;
+        }
+
+        .cta-button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(123, 47, 247, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 120px 60px 80px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(123, 47, 247, 0.15) 0%, rgba(10, 10, 10, 0) 70%);
+        }
+
+        .hero-eyebrow {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .hero-headline {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 50%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-supporting {
+            font-size: 20px;
+            color: #a0a0a0;
+            max-width: 900px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 80px;
+        }
+
+        .primary-cta {
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .primary-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(123, 47, 247, 0.5);
+        }
+
+        .secondary-cta {
+            padding: 18px 40px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-cta:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .trust-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 60px;
+            padding: 30px;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #4ade80;
+        }
+
+        .trust-icon {
+            font-size: 24px;
+        }
+
+        /* Zero-Knowledge Section */
+        .zero-knowledge {
+            padding: 100px 60px;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 22px;
+            color: #4ade80;
+            margin-bottom: 60px;
+            font-weight: 600;
+        }
+
+        .architecture-visual {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 60px;
+            background: rgba(26, 26, 46, 0.4);
+            border-radius: 30px;
+            border: 1px solid rgba(123, 47, 247, 0.3);
+        }
+
+        .data-blocked {
+            text-align: center;
+            padding: 40px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            border-radius: 20px;
+        }
+
+        .blocked-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .blocked-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+
+        .blocked-list {
+            font-size: 16px;
+            color: #a0a0a0;
+            line-height: 2.2;
+        }
+
+        .shield-separator {
+            text-align: center;
+        }
+
+        .shield-visual {
+            width: 140px;
+            height: 180px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            box-shadow: 0 0 60px rgba(74, 222, 128, 0.4);
+            border: 3px solid rgba(74, 222, 128, 0.6);
+            animation: shield-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes shield-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 60px rgba(74, 222, 128, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 80px rgba(74, 222, 128, 0.6);
+            }
+        }
+
+        .shield-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        .data-flows {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(45, 27, 78, 0.6));
+            border: 2px solid rgba(123, 47, 247, 0.6);
+            border-radius: 20px;
+        }
+
+        .flows-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .flows-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .flows-list {
+            font-size: 16px;
+            color: #a0a0a0;
+            line-height: 2.2;
+        }
+
+        /* Ecosystem Section */
+        .ecosystem {
+            padding: 100px 60px;
+            background: #0a0a0a;
+        }
+
+        .systems-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .system-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(123, 47, 247, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .system-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(123, 47, 247, 0.6);
+            box-shadow: 0 15px 50px rgba(123, 47, 247, 0.3);
+        }
+
+        .system-card:hover::before {
+            opacity: 1;
+        }
+
+        .system-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .system-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .system-description {
+            font-size: 15px;
+            color: #a0a0a0;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .system-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 100px 60px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+            text-align: center;
+        }
+
+        .stats-grid {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .stat-item {
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .final-cta {
+            padding: 120px 60px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(123, 47, 247, 0.2) 0%, rgba(10, 10, 10, 0) 70%);
+        }
+
+        .final-cta-title {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .final-cta-text {
+            font-size: 20px;
+            color: #a0a0a0;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 60px;
+            background: #000000;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .footer-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        .footer-copyright {
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-headline { font-size: 56px; }
+            .systems-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .architecture-visual { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 15px 30px; }
+            .hero { padding: 80px 30px 60px; }
+            .hero-headline { font-size: 40px; }
+            .hero-supporting { font-size: 18px; }
+            .systems-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero-ctas { flex-direction: column; }
+            .trust-indicators { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">insane.marketing</div>
+        <nav class="nav-links">
+            <a href="#platform">Platform</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#solutions">Solutions</a>
+            <button class="cta-button">Request Demo</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-eyebrow">Built for the World's Finest Hotels & Resorts</div>
+        <h1 class="hero-headline">Ultra-Luxury Service.<br/>End-to-End VIP Privacy.</h1>
+        <p class="hero-supporting">
+            Anticipate needs and deliver white-glove experiences at scale—with privacy-always architecture your guests trust.
+        </p>
+        
+        <div class="hero-ctas">
+            <button class="primary-cta">Schedule Private Demo</button>
+            <button class="secondary-cta">View Platform</button>
+        </div>
+
+        <div class="trust-indicators">
+            <div class="trust-item">
+                <span class="trust-icon">🚫</span>
+                <span>Zero Personal Data Collection</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">⚡</span>
+                <span>Deploy in Under 1 Hour</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">🌍</span>
+                <span>Global Scale, No 3rd Party Add-ons</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">🛡️</span>
+                <span>GDPR Native Architecture</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zero-Knowledge Architecture -->
+    <section id="architecture" class="zero-knowledge">
+        <h2 class="section-title">Zero-Knowledge Architecture</h2>
+        <p class="section-subtitle">We Never Collect Personal Data. Ever.</p>
+
+        <div class="architecture-visual">
+            <div class="data-blocked">
+                <div class="blocked-icon">🚫</div>
+                <div class="blocked-title">Personal Data<br/>STAYS OUT</div>
+                <div class="blocked-list">
+                    ❌ Names<br/>
+                    ❌ Email Addresses<br/>
+                    ❌ Phone Numbers<br/>
+                    ❌ Payment Details<br/>
+                    ❌ Physical Addresses
+                </div>
+            </div>
+
+            <div class="shield-separator">
+                <div class="shield-visual">🛡️</div>
+                <div class="shield-label">PRIVACY SHIELD<br/>Never Enters System</div>
+            </div>
+
+            <div class="data-flows">
+                <div class="flows-icon">🧠</div>
+                <div class="flows-title">Anonymous Intelligence<br/>FLOWS THROUGH</div>
+                <div class="flows-list">
+                    ✅ Behavioral Patterns<br/>
+                    ✅ Preference Signals<br/>
+                    ✅ Service Timing<br/>
+                    ✅ Experience Quality<br/>
+                    ✅ Venue Analytics
+                </div>
+            </div>
+        </div>
+
+        <div style="max-width: 900px; margin: 60px auto; text-align: center; padding: 40px; background: rgba(74, 222, 128, 0.1); border: 2px solid rgba(74, 222, 128, 0.4); border-radius: 20px;">
+            <div style="font-size: 28px; font-weight: 700; color: #4ade80; margin-bottom: 20px;">The Core Principle</div>
+            <div style="font-size: 18px; color: #ffffff; line-height: 1.8;">
+                
+                Your VIPs get world-class personalized experiences.<br/>
+                While enjoying privacy and anonymity they crave.
+            </div>
+        </div>
+    </section>
+
+    <!-- Ecosystem -->
+    <section id="platform" class="ecosystem">
+        <h2 class="section-title">Unified Real-Time Intelligence Ecosystem</h2>
+        <p class="section-subtitle">Every System Seemlessly Connects. All Powered by Anonymous Intelligence</p>
+
+        <div class="systems-grid">
+            <div class="system-card">
+                <div class="system-icon">🎯</div>
+                <div class="system-title">Private 3D Interface</div>
+                <div class="system-description">Immersive venue exploration with one touch service requests, VIP concierge features, portable on any device, encrypted security request and preference tracking.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">📊</div>
+                <div class="system-title">Mission Control Dashboard</div>
+                <div class="system-description">Real-time operational intelligence across your entire property with zero-knowledge data processing and predictive insights.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">⭐</div>
+                <div class="system-title">VIP Recognition Engine</div>
+                <div class="system-description">Identify high-value behavioral patterns and deliver personalized service without storing guest identities or personal information.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">💰</div>
+                <div class="system-title">Dynamic Revenue Optimization</div>
+                <div class="system-description">AI-powered pricing that maximizes revenue through demand prediction and real-time optimization while maintaining brand integrity.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🔧</div>
+                <div class="system-title">Service Recovery System</div>
+                <div class="system-description">Catch and resolve guest issues before they escalate with anonymous tracking by space, time, and service type.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🚨</div>
+                <div class="system-title">Emergency Safety Protocols</div>
+                <div class="system-description">Critical response systems for venue security using location and timing data without personal identification requirements.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">📈</div>
+                <div class="system-title">Space Intelligence</div>
+                <div class="system-description">Optimize suite utilization and revenue through pattern analysis and preference tracking without customer identity data.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🎨</div>
+                <div class="system-title">Brand Experience Engine</div>
+                <div class="system-description">Maintain consistent luxury standards across all touchpoints with automated quality monitoring and real-time adjustments.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+
+            <div class="system-card">
+                <div class="system-icon">🌐</div>
+                <div class="system-title">Global Deployment Platform</div>
+                <div class="system-description">Launch across multiple properties worldwide in under an hour with centralized control and localized customization.</div>
+                <span class="system-badge">Zero Personal Data</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <h2 class="section-title">Built for Scale. Designed for Privacy</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">&lt;1hr</div>
+                <div class="stat-label">Global Deployment Time</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Personal Data Points Collected</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">$369B</div>
+                <div class="stat-label">Luxury Hospitality Market by 2032</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">GDPR Compliant by Design</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2 class="final-cta-title">Ready to Elevate Your Guest Experience?</h2>
+        <p class="final-cta-text">
+            Join the world's finest venues delivering ultra-luxury service with privacy-first intelligence. 
+            Schedule a private demonstration and discover how we can transform your property in under an hour.
+        </p>
+        <button class="primary-cta">Schedule Your Private Demo</button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">insane.marketing</div>
+            <div class="footer-links">
+                <a href="#platform">Platform</a>
+                <a href="#architecture">Architecture</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            © 2025 insane.marketing. Privacy-first intelligence for ultra-luxury venues.
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // System card interactions
+        document.querySelectorAll('.system-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // CTA button interactions
+        document.querySelectorAll('.primary-cta, .secondary-cta, .cta-button').forEach(button => {
+            button.addEventListener('click', () => {
+                alert('Demo request functionality would be implemented here');
+            });
+        });
+    </script>
+</body>
+</html>
