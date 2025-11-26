@@ -313,9 +313,9 @@
             width: 95%;
             max-width: 1800px;
             max-height: 95vh;
-            background: #000;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
             border-radius: 30px;
-            padding: 20px;
+            padding: 0;
             position: relative;
             overflow: hidden;
             border: 2px solid rgba(123, 47, 247, 0.5);
@@ -1061,6 +1061,160 @@
             coordination: 'table-control-center.html'
         };
 
+        // Benefit boxes for each system
+        const systemBenefits = {
+            revenue: {
+                title: 'Dynamic Revenue Optimization',
+                description: 'Real-time AI pricing that adapts to demand, events, and seasonality while maintaining your brand positioning and giving you complete control.',
+                features: [
+                    { icon: '📈', title: 'Demand Prediction', text: 'ML algorithms forecast booking patterns 90 days ahead' },
+                    { icon: '🎯', title: 'Smart Pricing', text: 'Automatic adjustments based on events, weather, and market conditions' },
+                    { icon: '🎛️', title: 'Full Control', text: 'Set boundaries, approve changes, maintain brand integrity' },
+                    { icon: '💎', title: 'Luxury Focus', text: 'Never compromise positioning for short-term revenue' }
+                ]
+            },
+            analytics: {
+                title: 'Mission Control Dashboard',
+                description: 'See your entire property in real-time with predictive intelligence that helps you make better decisions faster.',
+                features: [
+                    { icon: '👁️', title: 'Real-Time Visibility', text: 'Every space, every service, every metric—live' },
+                    { icon: '🔮', title: 'Predictive Insights', text: 'AI flags potential issues before they happen' },
+                    { icon: '📱', title: 'Mobile Access', text: 'Full intelligence on any device, anywhere' },
+                    { icon: '🎨', title: 'Custom Views', text: 'Configure dashboards for your specific needs' }
+                ]
+            },
+            privacy: {
+                title: 'Zero-Knowledge Architecture',
+                description: 'Complete immunity to data breaches because we never collect personal information—architectural privacy, not just compliance.',
+                features: [
+                    { icon: '🚫', title: 'Zero Collection', text: 'We never ask for names, emails, or personal details—ever' },
+                    { icon: '🔐', title: 'Anonymous Intelligence', text: 'Track patterns and behaviors without identities' },
+                    { icon: '✅', title: 'GDPR Native', text: 'Compliance by design, not by retrofit' },
+                    { icon: '💎', title: 'VIP Trust', text: 'The discretion your high-profile guests demand' }
+                ]
+            },
+            vip: {
+                title: 'VIP Recognition Engine',
+                description: 'Identify high-value behavioral patterns and deliver personalized service without storing guest identities or personal information.',
+                features: [
+                    { icon: '⭐', title: 'Pattern Recognition', text: 'AI identifies high-value guests by behavior, not identity' },
+                    { icon: '🎯', title: 'Service Triggers', text: 'Automatic alerts for VIP-level service delivery' },
+                    { icon: '🔒', title: 'Privacy Protected', text: 'All recognition happens without personal data' },
+                    { icon: '💫', title: 'Seamless Experience', text: 'VIPs get recognized without friction or forms' }
+                ]
+            },
+            deployment: {
+                title: 'Instant Global Deployment',
+                description: 'Launch our complete platform across multiple properties in under 1 hour—no IT projects, no consultants, no headaches.',
+                features: [
+                    { icon: '🚀', title: 'Sub-Hour Launch', text: 'From signup to fully operational in under 60 minutes' },
+                    { icon: '🌍', title: 'Multi-Property', text: 'Deploy to unlimited locations simultaneously' },
+                    { icon: '🔧', title: 'Zero IT Required', text: 'No servers, no installations, no complexity' },
+                    { icon: '🎯', title: 'Custom Branding', text: 'Your colors, your logo, your brand—instantly' }
+                ]
+            },
+            journey: {
+                title: 'Seamless Guest Journey',
+                description: 'From first browse to final checkout, every interaction is effortless and elegant—exactly as luxury should be.',
+                features: [
+                    { icon: '📱', title: 'Frictionless Booking', text: 'Reserve in seconds with immersive 3D previews' },
+                    { icon: '🚪', title: 'Smooth Arrival', text: 'Check-in that respects your time' },
+                    { icon: '🎨', title: 'Cohesive Experience', text: 'Every touchpoint feels connected and intentional' },
+                    { icon: '👋', title: 'Elegant Departure', text: 'Checkout as graceful as your entire stay' }
+                ]
+            },
+            personalization: {
+                title: 'Personalized Experiences',
+                description: 'Receive service tailored to your preferences without surrendering your personal information—true luxury discretion.',
+                features: [
+                    { icon: '🎯', title: 'Preference Memory', text: 'Venues remember what you like without knowing who you are' },
+                    { icon: '🍷', title: 'Service Tailoring', text: 'From wine selection to room temperature—personalized' },
+                    { icon: '🔒', title: 'Complete Privacy', text: 'World-class service with zero personal data sharing' },
+                    { icon: '👑', title: 'VIP Treatment', text: 'The attention to detail that defines true luxury' }
+                ]
+            },
+            anticipation: {
+                title: 'Anticipatory Service',
+                description: 'Experience hospitality that predicts your needs before you express them—the hallmark of white-glove service.',
+                features: [
+                    { icon: '⏰', title: 'Perfect Timing', text: 'Services arrive exactly when needed' },
+                    { icon: '🎭', title: 'Contextual Intelligence', text: 'AI understands your situation and adapts' },
+                    { icon: '✨', title: 'Seamless Delivery', text: 'Needs met so smoothly you barely notice' },
+                    { icon: '💫', title: 'Magical Moments', text: 'The delightful surprises that create memories' }
+                ]
+            },
+            safety: {
+                title: 'Complete Privacy Protection',
+                description: 'Enjoy world-class hospitality while maintaining absolute privacy—your personal information never leaves your control.',
+                features: [
+                    { icon: '🚫', title: 'No Data Sharing', text: 'Your information is never sold or shared with third parties' },
+                    { icon: '🛡️', title: 'Breach Immunity', text: 'We can\'t leak what we don\'t have' },
+                    { icon: '👤', title: 'Anonymous Benefits', text: 'All personalization without identity exposure' },
+                    { icon: '✅', title: 'Your Control', text: 'You decide what to share, always' }
+                ]
+            },
+            luxury: {
+                title: 'True Luxury Service',
+                description: 'Experience the discretion, attention to detail, and effortless excellence that defines genuine ultra-luxury hospitality.',
+                features: [
+                    { icon: '🤫', title: 'Absolute Discretion', text: 'Your privacy is paramount, always' },
+                    { icon: '💎', title: 'Exceptional Quality', text: 'Every detail executed to perfection' },
+                    { icon: '🎭', title: 'Invisible Excellence', text: 'Sophisticated service that never intrudes' },
+                    { icon: '⭐', title: 'Consistent Magic', text: 'Every stay exceeds the last' }
+                ]
+            },
+            intelligence: {
+                title: 'Staff Intelligence Dashboard',
+                description: 'Real-time guest insights and service intelligence that helps you deliver exceptional experiences every time.',
+                features: [
+                    { icon: '📊', title: 'Live Insights', text: 'Guest preferences and needs updated in real-time' },
+                    { icon: '🎯', title: 'Service Suggestions', text: 'AI recommends next-best actions' },
+                    { icon: '📱', title: 'Mobile Access', text: 'All intelligence on your phone or tablet' },
+                    { icon: '⚡', title: 'Instant Updates', text: 'Changes sync across all staff instantly' }
+                ]
+            },
+            alerts: {
+                title: 'Proactive Service Alerts',
+                description: 'Get notified of potential issues and guest needs before they become problems—stay ahead of every situation.',
+                features: [
+                    { icon: '🚨', title: 'Early Warning', text: 'AI detects issues before guests complain' },
+                    { icon: '📍', title: 'Smart Routing', text: 'Alerts go to the right person automatically' },
+                    { icon: '⏱️', title: 'Priority Levels', text: 'Know what needs attention immediately' },
+                    { icon: '✅', title: 'Resolution Tracking', text: 'Close the loop on every alert' }
+                ]
+            },
+            efficiency: {
+                title: 'Workflow Efficiency Tools',
+                description: 'Spend less time on administrative tasks and more time creating memorable guest experiences.',
+                features: [
+                    { icon: '📝', title: 'Auto Documentation', text: 'System logs activities automatically' },
+                    { icon: '🔄', title: 'Smart Handoffs', text: 'Seamless communication between shifts' },
+                    { icon: '📊', title: 'Performance Insights', text: 'See your impact and optimize your service' },
+                    { icon: '⚡', title: 'Quick Actions', text: 'Common tasks completed in one tap' }
+                ]
+            },
+            empowerment: {
+                title: 'Staff Empowerment Platform',
+                description: 'Tools that make every team member look like a hospitality hero—intelligence that elevates your performance.',
+                features: [
+                    { icon: '🎓', title: 'Instant Training', text: 'Context-aware guidance when you need it' },
+                    { icon: '💡', title: 'Smart Suggestions', text: 'AI recommends ways to delight guests' },
+                    { icon: '🏆', title: 'Recognition', text: 'Your great service gets noticed and celebrated' },
+                    { icon: '📈', title: 'Career Growth', text: 'Track your development and opportunities' }
+                ]
+            },
+            coordination: {
+                title: 'Team Coordination Hub',
+                description: 'Seamless communication and coordination across all departments—everyone working in perfect harmony.',
+                features: [
+                    { icon: '💬', title: 'Instant Messaging', text: 'Connect with any team member instantly' },
+                    { icon: '🔄', title: 'Shared Context', text: 'Everyone sees the same guest intelligence' },
+                    { icon: '📍', title: 'Department Sync', text: 'Housekeeping, F&B, concierge—all aligned' },
+                    { icon: '✨', title: 'Orchestrated Service', text: 'Multiple departments moving as one' }
+                ]
+            }
+        };
+
         // Backup modal content templates (not used when full pages available)
         const modalContent = {
             privacy: `
@@ -1357,9 +1511,45 @@
         function openModal(system) {
             const content = document.getElementById('modal-content');
             
+            // Get benefit boxes for this system
+            const benefits = systemBenefits[system];
+            
             // Check if we have a full page for this system
-            if (systemPages[system]) {
-                // Load the complete HTML page in an iframe for full experience
+            if (systemPages[system] && benefits) {
+                // Create header with benefits and CTA, then full system below
+                content.innerHTML = `
+                    <div style="padding: 40px; overflow-y: auto; max-height: 95vh;">
+                        <h2 class="modal-section-title">${benefits.title}</h2>
+                        <p class="modal-description">${benefits.description}</p>
+                        
+                        <div class="feature-grid">
+                            ${benefits.features.map(f => `
+                                <div class="feature-card">
+                                    <div class="feature-icon">${f.icon}</div>
+                                    <div class="feature-title">${f.title}</div>
+                                    <div class="feature-text">${f.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="modal-cta">
+                            <button>Schedule Demo of This System</button>
+                        </div>
+                        
+                        <div style="margin-top: 60px; border-top: 2px solid rgba(123, 47, 247, 0.3); padding-top: 40px;">
+                            <h3 style="text-align: center; font-size: 28px; margin-bottom: 30px; color: #00d4ff;">Experience the System Live</h3>
+                            <iframe 
+                                src="${systemPages[system]}" 
+                                style="width: 100%; height: 800px; border: 2px solid rgba(123, 47, 247, 0.3); border-radius: 20px; background: #000;"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                `;
+            } else if (systemPages[system]) {
+                // Just load the full page if no benefits defined
                 content.innerHTML = `
                     <iframe 
                         src="${systemPages[system]}" 
