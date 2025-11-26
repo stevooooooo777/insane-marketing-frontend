@@ -171,17 +171,65 @@
             opacity: 0;
             transform: scale(0.8);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Particle glow effect */
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #00d4ff, #7b2ff7, #00d4ff);
+            background-size: 200% 200%;
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            filter: blur(15px);
+            animation: particle-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes particle-glow {
+            0%, 100% { 
+                opacity: 0.3;
+                background-position: 0% 50%;
+            }
+            50% { 
+                opacity: 0.5;
+                background-position: 100% 50%;
+            }
+        }
+
+        .benefit-card:hover::before {
+            opacity: 0.7;
+            filter: blur(20px);
         }
 
         .benefit-card.visible {
             opacity: 1;
             transform: scale(1);
+            animation: gentle-float 3s ease-in-out infinite;
+        }
+
+        .benefit-card:nth-child(1).visible { animation-delay: 0s; }
+        .benefit-card:nth-child(2).visible { animation-delay: 0.6s; }
+        .benefit-card:nth-child(3).visible { animation-delay: 1.2s; }
+        .benefit-card:nth-child(4).visible { animation-delay: 1.8s; }
+        .benefit-card:nth-child(5).visible { animation-delay: 2.4s; }
+
+        @keyframes gentle-float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1); }
         }
 
         .benefit-card:hover {
-            transform: translateY(-15px) scale(1.05);
             border-color: #00d4ff;
             box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            animation: none;
+            z-index: 10;
         }
 
         .card-icon {
@@ -207,16 +255,15 @@
         .benefit-card:nth-child(1) { 
             left: 10%;
             top: 50%;
-            transform: translateY(-50%);
+            margin-top: -160px; /* Half of card height for centering */
         }
         .benefit-card:nth-child(2) { 
             left: 25%;
             top: 15%;
         }
         .benefit-card:nth-child(3) { 
-            left: 50%;
+            left: calc(50% - 120px); /* Center by subtracting half card width */
             top: 0;
-            transform: translateX(-50%);
         }
         .benefit-card:nth-child(4) { 
             right: 25%;
@@ -225,7 +272,7 @@
         .benefit-card:nth-child(5) { 
             right: 10%;
             top: 50%;
-            transform: translateY(-50%);
+            margin-top: -160px; /* Half of card height for centering */
         }
 
         /* Fullscreen Modal */
@@ -712,6 +759,77 @@
             .feature-grid { grid-template-columns: 1fr; }
             .journey-steps { flex-direction: column; gap: 30px; }
         }
+
+        /* Footer */
+        .footer {
+            margin-top: 100px;
+            padding: 60px 40px 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .footer-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        .footer-contact {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -725,7 +843,7 @@
     <section class="hero-section">
         <h1 class="hero-title">White-Glove Intelligence<br/>for Ultra-Luxury Venues</h1>
         <p class="hero-subtitle">
-            Experience how we deliver predictive service & operational excellence—click any card to see the system in action
+            Experience how we deliver predictive service excellence—click any card to see the system in action
         </p>
 
         <!-- Perspective Switcher -->
@@ -840,6 +958,21 @@
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">insane.marketing</div>
+            <div class="footer-links">
+                <a href="mailto:hello@insane.marketing" class="footer-contact">hello@insane.marketing</a>
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 insane.marketing. Privacy-first intelligence for ultra-luxury venues.
+        </div>
+    </footer>
+
     <script>
         let currentPerspective = 'venue';
 
@@ -880,6 +1013,27 @@
             card.addEventListener('click', () => {
                 const system = card.getAttribute('data-system');
                 openModal(system);
+            });
+
+            // 3D tilt effect on mouse move - subtle and preserves position
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 15; // Reduced for subtlety
+                const rotateY = (centerX - x) / 15; // Reduced for subtlety
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                card.style.transition = 'transform 0.1s ease-out, border-color 0.3s ease, box-shadow 0.3s ease';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+                card.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
             });
         });
 
