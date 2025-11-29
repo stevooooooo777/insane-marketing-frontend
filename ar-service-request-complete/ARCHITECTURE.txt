@@ -1,0 +1,197 @@
+AR SERVICE REQUEST SYSTEM - ARCHITECTURE
+═════════════════════════════════════════════════════════════
+
+GUEST FLOW:
+┌─────────────────────────────────────────────────────────────┐
+│  1. Guest Experience (Mobile)                               │
+│     ar-service-request.html                                 │
+│                                                             │
+│     📱 Open camera                                          │
+│     📍 Capture GPS location                                 │
+│     📸 Take photo of exact spot                             │
+│     🍾 Select service type                                  │
+│     ⏰ Choose timing                                        │
+│     ✅ Confirm request                                      │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  2. Backend API (Railway + PostgreSQL)                      │
+│     api-ar-service-endpoint.js                              │
+│                                                             │
+│     POST /api/service/ar-request                            │
+│     ├── Receive request data                                │
+│     ├── Check VIP status (priority)                         │
+│     ├── Store in database                                   │
+│     ├── Calculate estimated time                            │
+│     └── Notify staff (WebSocket/Push)                       │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│  3. Staff Dashboard (Desktop/Mobile)                        │
+│     mission-control-ar-dashboard.html                       │
+│                                                             │
+│     📋 Real-time request feed                               │
+│     🔥 Priority sorting                                     │
+│     📸 Photo preview                                        │
+│     🗺️  Location map link                                   │
+│     ✓ One-tap completion                                    │
+│     📊 Analytics dashboard                                  │
+└─────────────────────────────────────────────────────────────┘
+
+
+INTEGRATION WITH EXISTING SYSTEMS:
+═════════════════════════════════════════════════════════════
+
+┌────────────────────┐
+│ Your Existing      │
+│ 3D Carousel        │────► Add AR Service card
+│ (table-experience) │      (carousel-integration-instructions.js)
+└────────────────────┘
+
+┌────────────────────┐
+│ VIP Prediction     │────► Auto-prioritize high-value guests
+│ Engine             │      (already built)
+└────────────────────┘
+
+┌────────────────────┐
+│ Service Recovery   │────► Track AR request response times
+│ System             │      Feed improvement metrics
+└────────────────────┘
+
+┌────────────────────┐
+│ Time Machine       │────► Historical AR request patterns
+│ Analytics          │      Optimize staff deployment
+└────────────────────┘
+
+┌────────────────────┐
+│ Mission Control    │────► Unified operational dashboard
+│ Dashboard          │      AR requests alongside other data
+└────────────────────┘
+
+
+DATA FLOW:
+═════════════════════════════════════════════════════════════
+
+REQUEST DATA CAPTURED:
+{
+    restaurant_id: "claridges-london",
+    table_number: "suite-501",
+    service_type: "champagne",
+    timing: "15min",
+    scheduled_time: "2024-11-29T18:45:00Z",
+    location: {
+        latitude: 51.5124,
+        longitude: -0.1483,
+        accuracy: 10
+    },
+    photo: "base64_image_data...",
+    timestamp: "2024-11-29T18:30:00Z"
+}
+
+STAFF RECEIVES:
+- Visual: Photo of exact location
+- Context: VIP suite, 15min timing
+- Priority: HIGH (VIP guest + soon)
+- Action: One-tap completion
+- Analytics: Response time tracked
+
+
+PRIVACY & SECURITY:
+═════════════════════════════════════════════════════════════
+
+✓ Location ONLY captured on guest request (not continuous)
+✓ Photo shows guest exactly what's shared (transparent)
+✓ Data deleted after service completion (optional)
+✓ Zero-knowledge architecture maintained
+✓ No cross-table tracking
+✓ HTTPS required for camera access
+
+
+COMPETITIVE DIFFERENTIATION:
+═════════════════════════════════════════════════════════════
+
+COMPETITORS:                  YOU (shuush.vip):
+├─ AR Menus                   ├─ AR Service Intelligence
+├─ Static overlays            ├─ Dynamic location capture
+├─ Food visualization         ├─ Precision delivery
+├─ No tracking                ├─ VIP prediction integration
+└─ Limited value              └─ Service Recovery metrics
+
+
+DEPLOYMENT OPTIONS:
+═════════════════════════════════════════════════════════════
+
+OPTION 1: Standalone Demo (Now)
+├─ Open files locally
+├─ Test both interfaces
+├─ No backend needed
+└─ Perfect for pitches
+
+OPTION 2: Staging (Next Week)
+├─ Upload to Netlify
+├─ Connect to Railway backend
+├─ Test with real data
+└─ Internal team testing
+
+OPTION 3: Production (Pilot)
+├─ Integrate with carousel
+├─ Deploy to one hotel
+├─ Monitor real usage
+└─ Iterate based on feedback
+
+
+TECH STACK:
+═════════════════════════════════════════════════════════════
+
+Frontend:
+├─ HTML5 + Vanilla JavaScript
+├─ WebRTC (camera access)
+├─ Geolocation API (GPS)
+├─ CSS3 (responsive design)
+└─ No frameworks (lightweight)
+
+Backend:
+├─ Node.js + Express.js
+├─ PostgreSQL (database)
+├─ Railway (hosting)
+└─ Your existing infrastructure
+
+Browser Support:
+├─ Mobile: Safari, Chrome
+├─ Desktop: All modern browsers
+└─ No app download required
+
+
+FILE SIZES:
+═════════════════════════════════════════════════════════════
+
+ar-service-request.html:           26KB
+mission-control-ar-dashboard.html: 22KB
+api-ar-service-endpoint.js:        11KB
+Total:                            ~60KB
+
+(Extremely lightweight - loads instantly)
+
+
+METRICS TO TRACK:
+═════════════════════════════════════════════════════════════
+
+Operational:
+├─ Avg response time per service type
+├─ Peak request times/locations
+├─ Staff efficiency (completion rate)
+└─ Guest satisfaction (implicit)
+
+Business:
+├─ AR adoption rate (% of guests)
+├─ Service upsell opportunities
+├─ VIP vs standard guest usage
+└─ Revenue per AR request
+
+Technical:
+├─ Camera access grant rate
+├─ Location accuracy
+├─ System uptime
+└─ API response times

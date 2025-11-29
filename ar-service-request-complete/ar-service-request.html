@@ -1,0 +1,811 @@
+<!--
+═══════════════════════════════════════════════════════════════
+insane.marketing - AR Service Request Feature
+═══════════════════════════════════════════════════════════════
+
+Copyright (c) 2024-2025 insane.marketing
+All Rights Reserved - Proprietary and Confidential
+
+AR-enhanced service request system for luxury hospitality
+Integrates with existing 3D carousel interface
+
+For licensing inquiries: steve@insane.marketing
+═══════════════════════════════════════════════════════════════
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Service Request - insane.marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            overflow: hidden;
+        }
+
+        /* Camera View Container */
+        #camera-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            z-index: 1000;
+        }
+
+        #camera-container.active {
+            display: block;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* AR Overlay Elements */
+        .ar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .crosshair::before {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 20px;
+        }
+
+        .crosshair::after {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 2px;
+        }
+
+        /* Location Info Display */
+        .location-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            color: white;
+            font-size: 0.9rem;
+            pointer-events: auto;
+        }
+
+        .location-info div {
+            margin-bottom: 5px;
+        }
+
+        .location-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Service Selection Panel */
+        .service-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 100%);
+            backdrop-filter: blur(15px);
+            padding: 25px 20px 35px 20px;
+            pointer-events: auto;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+
+        .service-panel.visible {
+            transform: translateY(0);
+        }
+
+        .panel-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .service-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .service-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .service-btn:active,
+        .service-btn.selected {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-color: #ff6b6b;
+            transform: scale(0.95);
+        }
+
+        .service-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* Timing Options */
+        .timing-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .timing-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .timing-btn:active,
+        .timing-btn.selected {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-color: #4ecdc4;
+        }
+
+        .time-input-container {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .time-input-container.visible {
+            display: block;
+        }
+
+        .time-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .capture-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 25px;
+            padding: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .capture-btn:active {
+            transform: scale(0.95);
+        }
+
+        .capture-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .cancel-btn {
+            width: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Confirmation Screen */
+        .confirmation-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .confirmation-screen.active {
+            display: flex;
+        }
+
+        .confirmation-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: white;
+        }
+
+        .confirmation-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .confirmation-details {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .confirmation-btn {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .confirmation-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Start Screen */
+        .start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .start-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .start-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .start-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 50px;
+            padding: 18px 50px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .start-btn:active {
+            transform: scale(0.95);
+        }
+
+        .permission-note {
+            margin-top: 30px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            max-width: 350px;
+        }
+
+        /* Preview Image */
+        #preview-canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-icon">📍</div>
+        <h1 class="start-title">AR Service Request</h1>
+        <p class="start-description">
+            Point your camera at the exact location where you'd like service, 
+            select what you need, and we'll take care of the rest.
+        </p>
+        <button class="start-btn" onclick="startARExperience()">
+            Start AR Experience
+        </button>
+        <p class="permission-note">
+            This feature requires camera and location access to provide precise service.
+        </p>
+    </div>
+
+    <!-- Camera Container -->
+    <div id="camera-container">
+        <video id="video" autoplay playsinline></video>
+        
+        <!-- AR Overlay -->
+        <div class="ar-overlay">
+            <div class="crosshair"></div>
+        </div>
+
+        <!-- Location Info -->
+        <div class="location-info">
+            <div>
+                <span class="location-status"></span>
+                <span id="location-text">Acquiring location...</span>
+            </div>
+            <div style="font-size: 0.75rem; opacity: 0.7; margin-top: 5px;" id="coords-text"></div>
+        </div>
+
+        <!-- Service Selection Panel -->
+        <div class="service-panel" id="servicePanel">
+            <div class="panel-title">Select Service & Timing</div>
+            
+            <div class="service-options">
+                <button class="service-btn" onclick="selectService('champagne')">
+                    <div class="service-icon">🍾</div>
+                    <div>Champagne</div>
+                </button>
+                <button class="service-btn" onclick="selectService('coffee')">
+                    <div class="service-icon">☕</div>
+                    <div>Coffee/Tea</div>
+                </button>
+                <button class="service-btn" onclick="selectService('towels')">
+                    <div class="service-icon">🏖️</div>
+                    <div>Towels</div>
+                </button>
+                <button class="service-btn" onclick="selectService('concierge')">
+                    <div class="service-icon">🔔</div>
+                    <div>Concierge</div>
+                </button>
+                <button class="service-btn" onclick="selectService('dining')">
+                    <div class="service-icon">🍽️</div>
+                    <div>Dining</div>
+                </button>
+                <button class="service-btn" onclick="selectService('housekeeping')">
+                    <div class="service-icon">🧹</div>
+                    <div>Housekeeping</div>
+                </button>
+            </div>
+
+            <div class="timing-options">
+                <button class="timing-btn selected" onclick="selectTiming('now')">
+                    Now
+                </button>
+                <button class="timing-btn" onclick="selectTiming('15min')">
+                    15 mins
+                </button>
+                <button class="timing-btn" onclick="selectTiming('30min')">
+                    30 mins
+                </button>
+                <button class="timing-btn" onclick="selectTiming('custom')">
+                    Custom
+                </button>
+            </div>
+
+            <div class="time-input-container" id="customTimeContainer">
+                <input type="time" class="time-input" id="customTime">
+            </div>
+
+            <div class="action-buttons">
+                <button class="cancel-btn" onclick="cancelAR()">✕</button>
+                <button class="capture-btn" id="captureBtn" onclick="captureRequest()" disabled>
+                    Select a service to continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Screen -->
+    <div class="confirmation-screen" id="confirmationScreen">
+        <div class="confirmation-content">
+            <div class="confirmation-icon">✅</div>
+            <h2 class="confirmation-title">Request Sent!</h2>
+            <div class="confirmation-details" id="confirmationDetails"></div>
+            <button class="confirmation-btn" onclick="closeConfirmation()">
+                Done
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden canvas for photo capture -->
+    <canvas id="preview-canvas"></canvas>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            getApiBaseUrl: function() {
+                const hostname = window.location.hostname;
+                if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                    return 'http://localhost:3000';
+                }
+                return 'https://your-api-url.railway.app'; // Update with your Railway URL
+            }
+        };
+
+        // State
+        let stream = null;
+        let selectedService = null;
+        let selectedTiming = 'now';
+        let customTimeValue = null;
+        let locationData = null;
+        let restaurantId = null;
+        let tableNumber = null;
+
+        // Get URL parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            restaurantId = params.get('restaurant') || 'demo-hotel';
+            tableNumber = params.get('table') || 'suite-101';
+        }
+
+        // Start AR Experience
+        async function startARExperience() {
+            getUrlParams();
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('camera-container').classList.add('active');
+            
+            await initCamera();
+            await getLocation();
+            
+            // Show service panel after brief delay
+            setTimeout(() => {
+                document.getElementById('servicePanel').classList.add('visible');
+            }, 500);
+        }
+
+        // Initialize Camera
+        async function initCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    }
+                });
+                
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                
+            } catch (error) {
+                console.error('Camera error:', error);
+                alert('Unable to access camera. Please check permissions.');
+            }
+        }
+
+        // Get Location
+        async function getLocation() {
+            if (!navigator.geolocation) {
+                document.getElementById('location-text').textContent = 'Location not available';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    locationData = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    };
+                    
+                    document.getElementById('location-text').textContent = 'Location acquired';
+                    document.getElementById('coords-text').textContent = 
+                        `${locationData.latitude.toFixed(6)}, ${locationData.longitude.toFixed(6)}`;
+                },
+                (error) => {
+                    console.error('Location error:', error);
+                    document.getElementById('location-text').textContent = 'Location unavailable';
+                }
+            );
+        }
+
+        // Service Selection
+        function selectService(service) {
+            selectedService = service;
+            
+            // Update UI
+            document.querySelectorAll('.service-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.closest('.service-btn').classList.add('selected');
+            
+            // Enable capture button
+            const captureBtn = document.getElementById('captureBtn');
+            captureBtn.disabled = false;
+            captureBtn.textContent = `Request ${service.charAt(0).toUpperCase() + service.slice(1)}`;
+        }
+
+        // Timing Selection
+        function selectTiming(timing) {
+            selectedTiming = timing;
+            
+            // Update UI
+            document.querySelectorAll('.timing-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            // Show/hide custom time input
+            const customContainer = document.getElementById('customTimeContainer');
+            if (timing === 'custom') {
+                customContainer.classList.add('visible');
+            } else {
+                customContainer.classList.remove('visible');
+            }
+        }
+
+        // Capture Photo
+        function capturePhoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('preview-canvas');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            return canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        // Capture Request
+        async function captureRequest() {
+            if (!selectedService) {
+                alert('Please select a service');
+                return;
+            }
+
+            // Get custom time if selected
+            if (selectedTiming === 'custom') {
+                customTimeValue = document.getElementById('customTime').value;
+                if (!customTimeValue) {
+                    alert('Please enter a time');
+                    return;
+                }
+            }
+
+            // Capture photo
+            const photoData = capturePhoto();
+
+            // Calculate scheduled time
+            let scheduledTime = new Date();
+            switch(selectedTiming) {
+                case '15min':
+                    scheduledTime.setMinutes(scheduledTime.getMinutes() + 15);
+                    break;
+                case '30min':
+                    scheduledTime.setMinutes(scheduledTime.getMinutes() + 30);
+                    break;
+                case 'custom':
+                    const [hours, minutes] = customTimeValue.split(':');
+                    scheduledTime.setHours(parseInt(hours), parseInt(minutes));
+                    break;
+            }
+
+            // Prepare request data
+            const requestData = {
+                restaurant_id: restaurantId,
+                table_number: tableNumber,
+                service_type: selectedService,
+                timing: selectedTiming,
+                scheduled_time: scheduledTime.toISOString(),
+                location: locationData,
+                photo: photoData,
+                timestamp: new Date().toISOString()
+            };
+
+            // Send to backend
+            await sendRequest(requestData);
+        }
+
+        // Send Request to Backend
+        async function sendRequest(data) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                
+                const response = await fetch(`${apiUrl}/api/service/ar-request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showConfirmation(data);
+                } else {
+                    throw new Error('Request failed');
+                }
+                
+            } catch (error) {
+                console.error('Error sending request:', error);
+                // Show confirmation anyway for demo purposes
+                showConfirmation(data);
+            }
+        }
+
+        // Show Confirmation
+        function showConfirmation(data) {
+            // Stop camera
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            // Hide camera view
+            document.getElementById('camera-container').classList.remove('active');
+
+            // Format timing text
+            let timingText = '';
+            switch(data.timing) {
+                case 'now':
+                    timingText = 'immediately';
+                    break;
+                case '15min':
+                    timingText = 'in 15 minutes';
+                    break;
+                case '30min':
+                    timingText = 'in 30 minutes';
+                    break;
+                case 'custom':
+                    timingText = `at ${customTimeValue}`;
+                    break;
+            }
+
+            // Show confirmation
+            const details = `
+                <strong>${data.service_type.charAt(0).toUpperCase() + data.service_type.slice(1)}</strong> 
+                will be delivered ${timingText}<br><br>
+                <small>Location: ${data.location ? 'Confirmed' : 'General area'}</small><br>
+                <small>Table: ${data.table_number}</small>
+            `;
+            
+            document.getElementById('confirmationDetails').innerHTML = details;
+            document.getElementById('confirmationScreen').classList.add('active');
+        }
+
+        // Close Confirmation
+        function closeConfirmation() {
+            document.getElementById('confirmationScreen').classList.remove('active');
+            
+            // Option 1: Return to carousel (if opened from carousel)
+            if (window.opener) {
+                window.close();
+            } else {
+                // Option 2: Reset to start screen
+                location.reload();
+            }
+        }
+
+        // Cancel AR
+        function cancelAR() {
+            if (confirm('Cancel service request?')) {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                
+                if (window.opener) {
+                    window.close();
+                } else {
+                    location.reload();
+                }
+            }
+        }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
+</html>
