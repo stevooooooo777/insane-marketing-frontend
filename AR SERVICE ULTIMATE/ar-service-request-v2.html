@@ -730,11 +730,12 @@
         <div class="start-logo">📍</div>
         <h1 class="start-title">Service Request</h1>
         <p class="start-subtitle">
-            Point your camera at the exact location where you'd like service delivered with precision and care
+            Allow camera & location so staff know exactly where you are - you get fast, precise service. No data stored, ever.
         </p>
         <button class="start-btn" onclick="startExperience()">Begin</button>
         <p class="permission-note">
-            Requires camera and location access to provide exceptional service
+            Your browser will ask for camera and location access<br>
+            <small>Used only for this request • Not tracked • Fully private</small>
         </p>
     </div>
 
@@ -1032,13 +1033,18 @@
                 console.log('Video element connected');
             } catch (error) {
                 console.error('Camera error:', error);
-                let errorMsg = 'Unable to access camera. ';
+                let errorMsg = 'Camera access is required for this feature.\n\n';
+                
                 if (error.name === 'NotAllowedError') {
-                    errorMsg += 'Permission denied. Please allow camera access.';
+                    errorMsg += '📷 How to enable:\n\n';
+                    errorMsg += '• Click the camera icon in your address bar\n';
+                    errorMsg += '• Select "Allow" for camera access\n';
+                    errorMsg += '• Refresh the page and try again\n\n';
+                    errorMsg += 'On Chrome: Look for 🔒 or camera icon near the URL';
                 } else if (error.name === 'NotFoundError') {
                     errorMsg += 'No camera found on this device.';
                 } else if (error.name === 'NotReadableError') {
-                    errorMsg += 'Camera is already in use by another application.';
+                    errorMsg += 'Camera is already in use by another application.\nClose other apps using the camera and try again.';
                 } else {
                     errorMsg += error.message;
                 }
