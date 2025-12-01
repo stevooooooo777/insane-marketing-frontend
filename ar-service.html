@@ -972,7 +972,7 @@
 
         // State
         let stream = null;
-        let location = null;
+        let userLocation = null;
         let selectedCategory = null;
         let selectedItem = null;
         let quantity = 1;
@@ -1055,10 +1055,10 @@
             }
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    location = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: pos.coords.accuracy };
+                    userLocation = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: pos.coords.accuracy };
                     document.getElementById('locationText').textContent = 'Location acquired';
                     document.getElementById('coordsText').textContent = 
-                        `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
+                        `${userLocation.latitude.toFixed(6)}, ${userLocation.longitude.toFixed(6)}`;
                 },
                 () => {
                     document.getElementById('locationText').textContent = 'Location unavailable';
@@ -1188,7 +1188,7 @@
                 dietary: dietaryPrefs,
                 timing: timing,
                 scheduled_time: scheduledTime.toISOString(),
-                location: location,
+                location: userLocation,
                 photo: photo,
                 timestamp: new Date().toISOString()
             };
