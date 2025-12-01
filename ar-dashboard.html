@@ -1,0 +1,666 @@
+<!--
+═══════════════════════════════════════════════════════════════
+MISSION CONTROL - AR SERVICE REQUESTS DASHBOARD
+═══════════════════════════════════════════════════════════════
+
+Staff view for managing AR service requests with:
+- Real-time updates
+- Priority sorting
+- Location map view
+- Photo preview
+- One-tap completion
+
+Add this to your existing Mission Control dashboard
+
+═══════════════════════════════════════════════════════════════
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Service Requests - Mission Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1419;
+            color: #e1e8ed;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-color: #ff6b6b;
+        }
+
+        .requests-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .request-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .request-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        .request-card.urgent { border-left-color: #ff4757; }
+        .request-card.high { border-left-color: #ffa502; }
+        .request-card.medium { border-left-color: #4ecdc4; }
+        .request-card.low { border-left-color: #95afc0; }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .request-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+        }
+
+        .service-details {
+            flex: 1;
+        }
+
+        .service-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .table-number {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .priority-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-urgent { background: #ff4757; }
+        .priority-high { background: #ffa502; }
+        .priority-medium { background: #4ecdc4; }
+        .priority-low { background: #95afc0; }
+
+        .request-body {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+        }
+
+        .request-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .info-label {
+            opacity: 0.7;
+            min-width: 80px;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .timing-badge {
+            background: rgba(78, 205, 196, 0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+
+        .location-preview {
+            width: 200px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .location-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .location-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .complete-btn {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .complete-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .cancel-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            opacity: 0.6;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        /* Photo Modal */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-modal.active {
+            display: flex;
+        }
+
+        .photo-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .photo-modal img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 10px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .location-details {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 15px;
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .request-body {
+                grid-template-columns: 1fr;
+            }
+
+            .location-preview {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="header-title">🎯 AR Service Requests</div>
+        <div class="header-subtitle">Real-time location-based service management</div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-value" id="pendingCount">0</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="urgentCount">0</div>
+            <div class="stat-label">Urgent</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="avgResponseTime">0m</div>
+            <div class="stat-label">Avg Response</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="completedToday">0</div>
+            <div class="stat-label">Completed Today</div>
+        </div>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active" onclick="filterRequests('all')">All</button>
+        <button class="filter-btn" onclick="filterRequests('urgent')">Urgent</button>
+        <button class="filter-btn" onclick="filterRequests('pending')">Pending</button>
+        <button class="filter-btn" onclick="filterRequests('completed')">Completed</button>
+    </div>
+
+    <div class="requests-grid" id="requestsGrid">
+        <!-- Requests will be inserted here -->
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="photo-modal" id="photoModal">
+        <div class="photo-modal-content">
+            <button class="close-modal" onclick="closePhotoModal()">✕</button>
+            <img id="modalPhoto" src="" alt="Location Photo">
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            getApiBaseUrl: function() {
+                const hostname = window.location.hostname;
+                if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                    return 'http://localhost:3000';
+                }
+                return 'https://your-api-url.railway.app';
+            }
+        };
+
+        const restaurantId = new URLSearchParams(window.location.search).get('restaurant') || 'demo-hotel';
+        let currentFilter = 'all';
+        let requests = [];
+
+        // Service type icons
+        const serviceIcons = {
+            champagne: '🍾',
+            coffee: '☕',
+            towels: '🏖️',
+            concierge: '🔔',
+            dining: '🍽️',
+            housekeeping: '🧹'
+        };
+
+        // Fetch requests
+        async function fetchRequests() {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const response = await fetch(`${apiUrl}/api/service/ar-requests?restaurant_id=${restaurantId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    requests = data.requests;
+                    updateStats();
+                    renderRequests();
+                }
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+                // Show demo data for testing
+                loadDemoData();
+            }
+        }
+
+        // Load demo data
+        function loadDemoData() {
+            requests = [
+                {
+                    id: 1,
+                    table_number: 'Suite 101',
+                    service_type: 'champagne',
+                    timing: 'now',
+                    scheduled_time: new Date().toISOString(),
+                    location_lat: 51.5074,
+                    location_lng: -0.1278,
+                    priority: 'urgent',
+                    status: 'pending',
+                    created_at: new Date(Date.now() - 300000).toISOString()
+                },
+                {
+                    id: 2,
+                    table_number: 'Poolside 5',
+                    service_type: 'towels',
+                    timing: '15min',
+                    scheduled_time: new Date(Date.now() + 900000).toISOString(),
+                    location_lat: 51.5076,
+                    location_lng: -0.1280,
+                    priority: 'high',
+                    status: 'pending',
+                    created_at: new Date(Date.now() - 180000).toISOString()
+                }
+            ];
+            updateStats();
+            renderRequests();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const pending = requests.filter(r => r.status === 'pending').length;
+            const urgent = requests.filter(r => r.priority === 'urgent' && r.status === 'pending').length;
+            const completed = requests.filter(r => r.status === 'completed' && 
+                new Date(r.completed_at).toDateString() === new Date().toDateString()).length;
+
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('urgentCount').textContent = urgent;
+            document.getElementById('completedToday').textContent = completed;
+        }
+
+        // Filter requests
+        function filterRequests(filter) {
+            currentFilter = filter;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderRequests();
+        }
+
+        // Render requests
+        function renderRequests() {
+            const grid = document.getElementById('requestsGrid');
+            let filteredRequests = requests;
+
+            // Apply filter
+            if (currentFilter === 'urgent') {
+                filteredRequests = requests.filter(r => r.priority === 'urgent');
+            } else if (currentFilter === 'pending') {
+                filteredRequests = requests.filter(r => r.status === 'pending');
+            } else if (currentFilter === 'completed') {
+                filteredRequests = requests.filter(r => r.status === 'completed');
+            }
+
+            // Sort by priority and time
+            filteredRequests.sort((a, b) => {
+                const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority] ||
+                       new Date(a.scheduled_time) - new Date(b.scheduled_time);
+            });
+
+            if (filteredRequests.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">✅</div>
+                        <div>No ${currentFilter === 'all' ? '' : currentFilter} requests</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredRequests.map(req => `
+                <div class="request-card ${req.priority}">
+                    <div class="request-header">
+                        <div class="request-title">
+                            <div class="service-icon">${serviceIcons[req.service_type] || '🔔'}</div>
+                            <div class="service-details">
+                                <div class="service-name">${capitalizeFirst(req.service_type)}</div>
+                                <div class="table-number">${req.table_number}</div>
+                            </div>
+                        </div>
+                        <div class="priority-badge priority-${req.priority}">${req.priority}</div>
+                    </div>
+
+                    <div class="request-body">
+                        <div class="request-info">
+                            <div class="info-row">
+                                <span class="info-label">Timing:</span>
+                                <span class="timing-badge">${formatTiming(req.timing, req.scheduled_time)}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Requested:</span>
+                                <span class="info-value">${formatTimeAgo(req.created_at)}</span>
+                            </div>
+                            ${req.location_lat ? `
+                            <div class="info-row">
+                                <span class="info-label">Location:</span>
+                                <span class="info-value">
+                                    ${req.location_lat.toFixed(6)}, ${req.location_lng.toFixed(6)}
+                                    <a href="https://maps.google.com/?q=${req.location_lat},${req.location_lng}" 
+                                       target="_blank" style="color: #4ecdc4; margin-left: 5px;">📍</a>
+                                </span>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        ${req.photo_data ? `
+                        <div class="location-preview" onclick="showPhoto('${req.photo_data}')">
+                            <img src="${req.photo_data}" alt="Location">
+                            <div class="location-icon">📍</div>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    ${req.status === 'pending' ? `
+                    <div class="request-actions">
+                        <button class="action-btn complete-btn" onclick="completeRequest(${req.id})">
+                            ✓ Mark Complete
+                        </button>
+                        <button class="action-btn cancel-btn" onclick="cancelRequest(${req.id})">
+                            Cancel
+                        </button>
+                    </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Helper functions
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatTiming(timing, scheduledTime) {
+            if (timing === 'now') return 'ASAP';
+            if (timing === '15min') return 'In 15 minutes';
+            if (timing === '30min') return 'In 30 minutes';
+            return new Date(scheduledTime).toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+
+        function formatTimeAgo(timestamp) {
+            const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            return `${Math.floor(seconds / 3600)}h ago`;
+        }
+
+        // Complete request
+        async function completeRequest(id) {
+            try {
+                const apiUrl = CONFIG.getApiBaseUrl();
+                const response = await fetch(`${apiUrl}/api/service/ar-requests/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: 'completed',
+                        completed_by: 'Staff Member' // Replace with actual staff ID
+                    })
+                });
+
+                if (response.ok) {
+                    await fetchRequests();
+                }
+            } catch (error) {
+                console.error('Error completing request:', error);
+            }
+        }
+
+        // Cancel request
+        async function cancelRequest(id) {
+            if (confirm('Cancel this request?')) {
+                try {
+                    const apiUrl = CONFIG.getApiBaseUrl();
+                    await fetch(`${apiUrl}/api/service/ar-requests/${id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'cancelled' })
+                    });
+                    await fetchRequests();
+                } catch (error) {
+                    console.error('Error cancelling request:', error);
+                }
+            }
+        }
+
+        // Photo modal
+        function showPhoto(photoData) {
+            document.getElementById('modalPhoto').src = photoData;
+            document.getElementById('photoModal').classList.add('active');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.remove('active');
+        }
+
+        // Initialize
+        fetchRequests();
+        
+        // Refresh every 10 seconds
+        setInterval(fetchRequests, 10000);
+    </script>
+</body>
+</html>
