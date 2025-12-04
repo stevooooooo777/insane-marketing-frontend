@@ -499,7 +499,7 @@ Copyright (c) 2024-2025 insane.marketing - All Rights Reserved
         // CONFIGURATION
         // ═══════════════════════════════════════════════════════════════
         
-        // TODO: Update this to your Railway backend URL
+        // TODO: 
         const API_URL = 'https://qr-tracking-backend-production.up.railway.app';
         
         // ═══════════════════════════════════════════════════════════════
@@ -533,7 +533,7 @@ Copyright (c) 2024-2025 insane.marketing - All Rights Reserved
         function addWelcomeMessage() {
             const welcomeMsg = {
                 role: 'assistant',
-                content: `Hi! I'm the virtual concierge 👋
+                content: `Hi! I'm the AI virtual concierge 👋
 
 I can help you learn about our privacy-first intelligence platform that deploys in under 1 hour.
 
@@ -635,7 +635,7 @@ What would you like to know?`
             } catch (error) {
                 console.error('Chat error:', error);
                 hideTypingIndicator();
-                addMessage('Sorry, I encountered an error. Please try again or email us at contact@insane.marketing', 'bot');
+                addMessage('Sorry, I encountered an error. Please try again or email us at hello@insane.marketing', 'bot');
             } finally {
                 // Re-enable input
                 chatInput.disabled = false;
