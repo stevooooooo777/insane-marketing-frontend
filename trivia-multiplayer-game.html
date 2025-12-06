@@ -473,6 +473,11 @@
                 <h3>🏆 Current Scores</h3>
                 <div id="scoreboardList"></div>
             </div>
+
+            <!-- Host Control Button -->
+            <button class="btn" id="nextQuestionBtn" onclick="advanceQuestion()" style="display: none; margin-top: 20px;">
+                ⏭️ Next Question
+            </button>
         </div>
 
         <!-- Results Screen -->
@@ -558,6 +563,16 @@
             showResults(data);
         });
 
+        socket.on('time_expired', (data) => {
+            highlightCorrectAnswer(data.correctAnswer);
+        });
+
+        socket.on('enable_next_button', (data) => {
+            if (gameState.isHost) {
+                document.getElementById('nextQuestionBtn').style.display = 'block';
+            }
+        });
+
         socket.on('error', (data) => {
             alert(data.message);
         });
@@ -639,6 +654,21 @@
             showStart();
         }
 
+        function advanceQuestion() {
+            socket.emit('next_question', { roomCode: gameState.roomCode });
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+        }
+
+        function highlightCorrectAnswer(correctIndex) {
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === correctIndex) {
+                    btn.classList.add('correct');
+                }
+            });
+        }
+
         // Display Functions
         function updatePlayersList() {
             const list = document.getElementById('playersList');
@@ -653,6 +683,8 @@
         }
 
         function displayQuestion(data) {
+            gameState.answered = false;
+            document.getElementById('nextQuestionBtn').style.display = 'none';
             document.getElementById('questionNumber').textContent = 
                 `Question ${data.questionNumber}/${data.totalQuestions}`;
             document.getElementById('questionText').textContent = data.question;
