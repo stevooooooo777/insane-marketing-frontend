@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHUUSH Trivia - Display Mode</title>
+    <title>Big Screen Trivia</title>
     
     <!-- Socket.IO Client -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
@@ -289,14 +289,15 @@
 
     <div class="display-container">
         <div class="venue-header">
-            <h1 id="venueName">TRIVIA NIGHT</h1>
-            <p class="tagline" id="venueTagline">Scan QR code to join!</p>
+            <h1 id="venueName">TRIVIA PRIZE NIGHT</h1>
+            
         </div>
 
         <!-- Waiting for Room Code -->
         <div class="waiting-screen" id="waitingScreen">
-            <div class="icon">🎮</div>
-            <h2>Display Mode</h2>
+           <!--  <div class="icon">🎮</div>  -->
+
+            <h2>Big Screen Display Mode</h2>
             <p>Enter room code to connect</p>
             
             <div class="room-code-input">
@@ -352,7 +353,7 @@
 
         // Get venue name from URL parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const venueName = urlParams.get('venue') || 'TRIVIA NIGHT';
+        const venueName = urlParams.get('venue') || 'TRIVIA PRIZE NIGHT';
         document.getElementById('venueName').textContent = venueName;
 
         // Auto-connect if room code in URL
