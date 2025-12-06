@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Your Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .share-container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .share-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .venue-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .share-title {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .share-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .share-message {
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .share-buttons {
+            display: grid;
+            gap: 15px;
+        }
+
+        .share-btn {
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .share-btn.facebook {
+            background: linear-gradient(135deg, #3b5998, #2d4373);
+        }
+
+        .share-btn.twitter {
+            background: linear-gradient(135deg, #1DA1F2, #0c85d0);
+        }
+
+        .share-btn.instagram {
+            background: linear-gradient(135deg, #E1306C, #C13584);
+        }
+
+        .share-btn.generic {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .share-btn-icon {
+            font-size: 1.5rem;
+        }
+
+        .incentive-box {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .incentive-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .incentive-box p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .success-message {
+            display: none;
+            background: #10b981;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            animation: slideIn 0.3s;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .demo-note {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="share-container">
+        <div class="share-icon">📱</div>
+        <div class="venue-name" id="venueName">The Local Pub</div>
+        <div class="share-title">Share Your Experience!</div>
+
+        <div class="share-card">
+            <div class="share-message">
+                Having a great time? Share your experience and help others discover this spot!
+            </div>
+
+            <div class="share-buttons">
+                <button class="share-btn facebook" onclick="shareToFacebook()">
+                    <span class="share-btn-icon">📘</span>
+                    Share on Facebook
+                </button>
+
+                <button class="share-btn twitter" onclick="shareToTwitter()">
+                    <span class="share-btn-icon">🐦</span>
+                    Share on Twitter
+                </button>
+
+                <button class="share-btn instagram" onclick="shareToInstagram()">
+                    <span class="share-btn-icon">📸</span>
+                    Share on Instagram
+                </button>
+
+                <button class="share-btn generic" onclick="shareGeneric()">
+                    <span class="share-btn-icon">📤</span>
+                    Share Another Way
+                </button>
+            </div>
+
+            <div class="incentive-box">
+                <h3>🎁 Share & Win!</h3>
+                <p>Share your experience and show your server for a <strong>free dessert</strong> on your next visit!</p>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <strong>✅ Thanks for sharing!</strong><br>
+            Show this to your server for your free dessert voucher!
+        </div>
+
+        <div class="demo-note">
+            <strong>Demo Note:</strong> In live version, venue customizes their incentive (free drink, discount, entry into prize draw, etc.)
+        </div>
+    </div>
+
+    <script>
+        // Get venue name from URL parameter or use default
+        const urlParams = new URLSearchParams(window.location.search);
+        const venueName = urlParams.get('venue') || 'The Local Pub';
+        document.getElementById('venueName').textContent = venueName;
+
+        const shareText = `Having a great time at ${venueName}! 🍻`;
+        const shareUrl = window.location.origin;
+
+        function shareToFacebook() {
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+            window.open(url, '_blank', 'width=600,height=400');
+            showSuccess();
+        }
+
+        function shareToTwitter() {
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+            window.open(url, '_blank', 'width=600,height=400');
+            showSuccess();
+        }
+
+        function shareToInstagram() {
+            alert('📸 Instagram Sharing:\n\n1. Take a photo at the venue\n2. Post to Instagram\n3. Tag @' + venueName.replace(/\s/g, '').toLowerCase() + '\n4. Show server for your reward!\n\n(Instagram doesn't allow direct web sharing)');
+            showSuccess();
+        }
+
+        function shareGeneric() {
+            if (navigator.share) {
+                navigator.share({
+                    title: venueName,
+                    text: shareText,
+                    url: shareUrl
+                }).then(() => {
+                    showSuccess();
+                }).catch((error) => {
+                    console.log('Share cancelled');
+                });
+            } else {
+                // Fallback: copy to clipboard
+                const tempInput = document.createElement('input');
+                tempInput.value = shareText + ' ' + shareUrl;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                alert('✅ Message copied to clipboard!\n\nPaste it on your favorite social media platform.');
+                showSuccess();
+            }
+        }
+
+        function showSuccess() {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('show');
+            
+            // Track the share (in live version, this would go to analytics)
+            console.log('Share tracked:', {
+                venue: venueName,
+                timestamp: new Date().toISOString(),
+                platform: 'social'
+            });
+        }
+    </script>
+</body>
+</html>
