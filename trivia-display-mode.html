@@ -434,6 +434,7 @@
             let timeLeft = seconds;
             const timerEl = document.getElementById('timerDisplay');
             timerEl.className = 'timer-display';
+            timerEl.textContent = timeLeft + 's';
             
             displayState.currentTimer = setInterval(() => {
                 timeLeft--;
