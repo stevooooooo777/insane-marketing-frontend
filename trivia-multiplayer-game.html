@@ -506,7 +506,8 @@
             isHost: false,
             players: [],
             currentQuestion: null,
-            answered: false
+            answered: false,
+            timerInterval: null
         };
 
         // Socket connection handlers
@@ -665,15 +666,22 @@
         }
 
         function startTimer(seconds) {
+            // Clear any existing timer first
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            
             let timeLeft = seconds;
             const timerEl = document.getElementById('timer');
+            timerEl.textContent = timeLeft + 's';
             
-            const interval = setInterval(() => {
+            gameState.timerInterval = setInterval(() => {
                 timeLeft--;
                 timerEl.textContent = timeLeft + 's';
                 
                 if (timeLeft <= 0) {
-                    clearInterval(interval);
+                    clearInterval(gameState.timerInterval);
+                    gameState.timerInterval = null;
                 }
             }, 1000);
         }
