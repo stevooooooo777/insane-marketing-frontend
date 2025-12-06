@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin the Wheel - Insane Marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 30px auto;
+            max-width: 90vw;
+            max-height: 90vw;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px 0 0;
+        }
+
+        .segment-text {
+            transform: rotate(-22.5deg);
+            font-weight: bold;
+            font-size: 0.9em;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+
+        .wheel-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .wheel-center:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .wheel-center.spinning {
+            pointer-events: none;
+        }
+
+        .spin-button {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: none;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ef4444;
+            z-index: 5;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .spins-left {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 20px auto;
+            display: inline-block;
+        }
+
+        .prize-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .prize-modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .prize-content {
+            background: white;
+            padding: 60px;
+            border-radius: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: bounceIn 0.5s;
+            position: relative;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+        }
+
+        .prize-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: rotate 1s infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .prize-title {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .prize-description {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .prize-code {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 30px;
+            border: 3px dashed #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .rules {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .rules h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .rules ul {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .rules li {
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .no-spins {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .no-spins h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .no-spins p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🎡 Spin the Wheel</h1>
+            <p>Go on...see what you've won!</p>
+        </div>
+
+    <!--         <div id="loadingScreen" class="loading">
+            Loading your spins...
+        </div>  -->
+
+
+     <!--    <div id="gameScreen" style="display: none;">
+            <div class="spins-left" id="spinsLeft">3 Spins Left</div>  -->
+
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <div class="wheel" id="wheel"></div>
+                <div class="wheel-center" id="wheelCenter" onclick="spin()">
+                    <div class="spin-button">SPIN</div>
+                </div>
+            </div>
+
+            <div class="rules">
+                <h3>🎯 How to Play:</h3>
+                <ul>
+                    <li>Click the center button to spin the wheel</li>
+                    <li>Wait for the wheel to stop spinning</li>
+                    <li>Claim your prize instantly!</li>
+                    <li>Show the prize code to staff to redeem</li>
+                    
+                </ul>
+            </div>
+        </div>
+
+        <div id="noSpinsScreen" class="no-spins" style="display: none;">
+            <h2>🕐 No Spins Left Today</h2>
+            <p></p>
+            <p style="font-size: 0.9em; color: #999;">spins reset at midnight</p>
+        </div>
+    </div>
+
+    <!-- Prize Modal -->
+    <div class="prize-modal" id="prizeModal">
+        <div class="prize-content">
+            <div class="prize-emoji" id="prizeEmoji">🎉</div>
+            <div class="prize-title" id="prizeTitle">Congratulations!</div>
+            <div class="prize-description" id="prizeDescription">You've won a prize!</div>
+            <div class="prize-code" id="prizeCode">CODE: PRIZE123</div>
+            <button class="btn" onclick="claimPrize()">Claim Prize</button>
+            <button class="btn btn-secondary" onclick="closePrizeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Prize configuration (customize for each venue)
+        const prizes = [
+            { id: 1, label: '10% OFF', value: 10, emoji: '💰', description: '10% off your entire bill', color: '#ef4444', probability: 25 },
+            { id: 2, label: 'FREE DRINK', value: 'drink', emoji: '🍹', description: 'Complimentary beverage of your choice', color: '#f59e0b', probability: 20 },
+            { id: 3, label: '15% OFF', value: 15, emoji: '🎁', description: '15% off your entire bill', color: '#10b981', probability: 15 },
+            { id: 4, label: 'TRY AGAIN', value: 0, emoji: '🔄', description: 'Better luck next spin!', color: '#6b7280', probability: 15 },
+            { id: 5, label: 'FREE DESSERT', value: 'dessert', emoji: '🍰', description: 'Complimentary dessert from our menu', color: '#ec4899', probability: 15 },
+            { id: 6, label: '20% OFF', value: 20, emoji: '🌟', description: '20% off your entire bill', color: '#8b5cf6', probability: 5 },
+            { id: 7, label: '5% OFF', value: 5, emoji: '🎯', description: '5% off your entire bill', color: '#3b82f6', probability: 25 },
+            { id: 8, label: 'FREE STARTER', value: 'starter', emoji: '🥗', description: 'Complimentary starter of your choice', color: '#14b8a6', probability: 10 }
+        ];
+
+        let gameState = {
+            spinsLeft: 3,
+            spinning: false,
+            lastSpinDate: null,
+            wonPrizes: []
+        };
+
+        // Initialize wheel
+        function init() {
+            loadGameState();
+            createWheel();
+            updateUI();
+            
+            document.getElementById('loadingScreen').style.display = 'none';
+            
+            if (gameState.spinsLeft > 0) {
+                document.getElementById('gameScreen').style.display = 'block';
+            } else {
+                document.getElementById('noSpinsScreen').style.display = 'block';
+            }
+        }
+
+        function createWheel() {
+            const wheel = document.getElementById('wheel');
+            wheel.innerHTML = '';
+            
+            const segmentAngle = 360 / prizes.length;
+            
+            prizes.forEach((prize, index) => {
+                const segment = document.createElement('div');
+                segment.className = 'wheel-segment';
+                segment.style.background = prize.color;
+                segment.style.transform = `rotate(${segmentAngle * index}deg)`;
+                
+                const text = document.createElement('div');
+                text.className = 'segment-text';
+                text.innerHTML = `${prize.emoji}<br>${prize.label}`;
+                
+                segment.appendChild(text);
+                wheel.appendChild(segment);
+            });
+        }
+
+        function spin() {
+            if (gameState.spinning || gameState.spinsLeft <= 0) return;
+            
+            gameState.spinning = true;
+            gameState.spinsLeft--;
+            
+            const wheelCenter = document.getElementById('wheelCenter');
+            wheelCenter.classList.add('spinning');
+            
+            // Select prize based on probability
+            const selectedPrize = selectPrizeByProbability();
+            const prizeIndex = prizes.findIndex(p => p.id === selectedPrize.id);
+            
+            // Calculate rotation
+            const segmentAngle = 360 / prizes.length;
+            const targetAngle = (prizeIndex * segmentAngle) + (segmentAngle / 2);
+            const spins = 5; // Number of full rotations
+            const totalRotation = (spins * 360) + (360 - targetAngle);
+            
+            const wheel = document.getElementById('wheel');
+            const currentRotation = parseInt(wheel.style.transform?.match(/rotate\((\d+)deg\)/)?.[1] || 0);
+            wheel.style.transform = `rotate(${currentRotation + totalRotation}deg)`;
+            
+            // Update UI
+            updateUI();
+            
+            // Show prize after spin
+            setTimeout(() => {
+                gameState.spinning = false;
+                wheelCenter.classList.remove('spinning');
+                showPrize(selectedPrize);
+                saveGameState();
+            }, 4500);
+        }
+
+        function selectPrizeByProbability() {
+            const totalProbability = prizes.reduce((sum, prize) => sum + prize.probability, 0);
+            let random = Math.random() * totalProbability;
+            
+            for (const prize of prizes) {
+                if (random < prize.probability) {
+                    return prize;
+                }
+                random -= prize.probability;
+            }
+            
+            return prizes[0]; // Fallback
+        }
+
+        function showPrize(prize) {
+            const modal = document.getElementById('prizeModal');
+            document.getElementById('prizeEmoji').textContent = prize.emoji;
+            document.getElementById('prizeTitle').textContent = prize.label;
+            document.getElementById('prizeDescription').textContent = prize.description;
+            
+            // Generate unique prize code
+            const code = generatePrizeCode(prize);
+            document.getElementById('prizeCode').textContent = `CODE: ${code}`;
+            
+            // Store prize
+            gameState.wonPrizes.push({
+                prize: prize,
+                code: code,
+                timestamp: new Date().toISOString()
+            });
+            
+            createConfetti();
+            modal.classList.add('show');
+            
+            saveGameState();
+            savePrizeToBackend(prize, code);
+        }
+
+        function generatePrizeCode(prize) {
+            const timestamp = Date.now().toString(36).toUpperCase();
+            const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+            return `${prize.label.substring(0, 3)}${timestamp}${random}`.replace(/\s/g, '');
+        }
+
+        function createConfetti() {
+            const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
+            const modal = document.querySelector('.prize-content');
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = confetti.style.width;
+                confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
+                
+                modal.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        function claimPrize() {
+            alert('Show this code to staff to claim your prize!');
+            closePrizeModal();
+        }
+
+        function closePrizeModal() {
+            document.getElementById('prizeModal').classList.remove('show');
+            
+            // Check if any spins left
+            if (gameState.spinsLeft <= 0) {
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('noSpinsScreen').style.display = 'block';
+            }
+        }
+
+        function updateUI() {
+            const spinsText = gameState.spinsLeft === 1 ? 'Spin' : 'Spins';
+            document.getElementById('spinsLeft').textContent = `${gameState.spinsLeft} ${spinsText} Left`;
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('spinWheelState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                
+                // Check if new day - reset spins
+                const today = new Date().toDateString();
+                if (gameState.lastSpinDate !== today) {
+                    gameState.spinsLeft = 3;
+                    gameState.lastSpinDate = today;
+                    gameState.wonPrizes = [];
+                }
+            } else {
+                gameState.lastSpinDate = new Date().toDateString();
+            }
+        }
+
+        function saveGameState() {
+            localStorage.setItem('spinWheelState', JSON.stringify(gameState));
+        }
+
+        async function savePrizeToBackend(prize, code) {
+            try {
+                await fetch('YOUR_API_ENDPOINT/api/spin-wheel/prize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prize_id: prize.id,
+                        prize_label: prize.label,
+                        prize_value: prize.value,
+                        prize_code: code,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving prize:', error);
+            }
+        }
+
+        // Add falling animation for confetti
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(400px) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>
