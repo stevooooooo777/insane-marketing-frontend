@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHUUSH Trivia - Display Mode</title>
+    
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        .display-container {
+            padding: 40px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .venue-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .venue-header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .venue-header .tagline {
+            font-size: 1.5em;
+            opacity: 0.8;
+        }
+
+        /* Waiting Screen */
+        .waiting-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .waiting-screen .icon {
+            font-size: 8em;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .waiting-screen h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .waiting-screen p {
+            font-size: 1.5em;
+            opacity: 0.7;
+        }
+
+        .room-code-input {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .room-code-input input {
+            font-size: 2em;
+            padding: 20px;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            text-transform: uppercase;
+            width: 300px;
+        }
+
+        .room-code-input button {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Game Screen */
+        .game-screen {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+        }
+
+        .game-screen.active {
+            display: flex;
+        }
+
+        .question-display {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .question-number {
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .timer-display.warning {
+            color: #f59e0b;
+        }
+
+        .timer-display.danger {
+            color: #ef4444;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .question-text {
+            font-size: 2.5em;
+            line-height: 1.4;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .answers-display {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .answer-option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .answer-option.correct {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-color: #16a34a;
+            transform: scale(1.05);
+        }
+
+        .scoreboard-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .scoreboard-display h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .score-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3em;
+        }
+
+        .score-item:nth-child(1) {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            font-size: 1.5em;
+        }
+
+        .score-item:nth-child(2) {
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            color: #3730a3;
+        }
+
+        .score-item:nth-child(3) {
+            background: linear-gradient(135deg, #fed7aa, #fdba74);
+            color: #7c2d12;
+        }
+
+        /* Winner Screen */
+        .winner-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .winner-screen.active {
+            display: flex;
+        }
+
+        .winner-screen .trophy {
+            font-size: 15em;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .winner-screen h2 {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .winner-screen .winner-name {
+            font-size: 5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+        }
+
+        .connection-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #10b981;
+            border-radius: 25px;
+            font-size: 1.2em;
+        }
+
+        .connection-indicator.disconnected {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-indicator" id="connectionStatus">
+        <span id="statusText">●</span>
+    </div>
+
+    <div class="display-container">
+        <div class="venue-header">
+            <h1 id="venueName">TRIVIA NIGHT</h1>
+            <p class="tagline" id="venueTagline">Scan QR code to join!</p>
+        </div>
+
+        <!-- Waiting for Room Code -->
+        <div class="waiting-screen" id="waitingScreen">
+            <div class="icon">🎮</div>
+            <h2>Display Mode</h2>
+            <p>Enter room code to connect</p>
+            
+            <div class="room-code-input">
+                <input type="text" id="displayRoomCode" placeholder="ROOM CODE" maxlength="4">
+                <br>
+                <button onclick="connectToRoom()">Connect</button>
+            </div>
+        </div>
+
+        <!-- Game in Progress -->
+        <div class="game-screen" id="gameScreen">
+            <div class="question-display">
+                <div class="question-header">
+                    <span class="question-number" id="questionNumber">Question 1/10</span>
+                    <span class="timer-display" id="timerDisplay">15</span>
+                </div>
+                <div class="question-text" id="questionText">
+                    Waiting for question...
+                </div>
+                <div class="answers-display" id="answersDisplay"></div>
+            </div>
+
+            <div class="scoreboard-display">
+                <h2>🏆 Leaderboard</h2>
+                <div id="scoresDisplay"></div>
+            </div>
+        </div>
+
+        <!-- Winner Display -->
+        <div class="winner-screen" id="winnerScreen">
+            <div class="trophy">🏆</div>
+            <h2>WINNER!</h2>
+            <div class="winner-name" id="winnerNameDisplay">---</div>
+            
+            <div class="scoreboard-display" style="width: 100%; max-width: 800px;">
+                <h2>Final Scores</h2>
+                <div id="finalScoresDisplay"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection
+        const SOCKET_URL = 'https://shuush-trivia-server-production.up.railway.app';
+        const socket = io(SOCKET_URL, {
+            transports: ['websocket', 'polling']
+        });
+
+        let displayState = {
+            roomCode: null,
+            currentTimer: null
+        };
+
+        // Get venue name from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const venueName = urlParams.get('venue') || 'TRIVIA NIGHT';
+        document.getElementById('venueName').textContent = venueName;
+
+        // Auto-connect if room code in URL
+        const autoRoom = urlParams.get('room');
+        if (autoRoom) {
+            document.getElementById('displayRoomCode').value = autoRoom;
+            setTimeout(() => connectToRoom(), 1000);
+        }
+
+        // Socket connection handlers
+        socket.on('connect', () => {
+            document.getElementById('connectionStatus').className = 'connection-indicator';
+            document.getElementById('statusText').textContent = '● LIVE';
+        });
+
+        socket.on('disconnect', () => {
+            document.getElementById('connectionStatus').className = 'connection-indicator disconnected';
+            document.getElementById('statusText').textContent = '● OFFLINE';
+        });
+
+        // Display mode socket events
+        socket.on('display_update', (data) => {
+            updateScoreboard(data.players);
+        });
+
+        socket.on('new_question', (data) => {
+            showQuestion(data);
+            startDisplayTimer(data.timeLimit || 15);
+        });
+
+        socket.on('scores_update', (data) => {
+            updateScoreboard(data.players);
+            if (data.correctAnswer !== undefined) {
+                highlightCorrectAnswer(data.correctAnswer);
+            }
+        });
+
+        socket.on('game_ended', (data) => {
+            showWinner(data);
+        });
+
+        socket.on('error', (data) => {
+            alert(data.message);
+        });
+
+        // Functions
+        function connectToRoom() {
+            const code = document.getElementById('displayRoomCode').value.trim().toUpperCase();
+            if (!code) {
+                alert('Please enter room code');
+                return;
+            }
+
+            displayState.roomCode = code;
+            socket.emit('join_as_display', { roomCode: code });
+            
+            document.getElementById('waitingScreen').style.display = 'none';
+            document.getElementById('gameScreen').classList.add('active');
+        }
+
+        function showQuestion(data) {
+            document.getElementById('questionNumber').textContent = 
+                `Question ${data.questionNumber}/${data.totalQuestions}`;
+            document.getElementById('questionText').textContent = data.question;
+            
+            const grid = document.getElementById('answersDisplay');
+            grid.innerHTML = data.answers.map((answer, index) => `
+                <div class="answer-option" id="answer-${index}">
+                    ${String.fromCharCode(65 + index)}. ${answer}
+                </div>
+            `).join('');
+        }
+
+        function startDisplayTimer(seconds) {
+            if (displayState.currentTimer) {
+                clearInterval(displayState.currentTimer);
+            }
+
+            let timeLeft = seconds;
+            const timerEl = document.getElementById('timerDisplay');
+            timerEl.className = 'timer-display';
+            
+            displayState.currentTimer = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft + 's';
+                
+                if (timeLeft <= 3) {
+                    timerEl.className = 'timer-display danger';
+                } else if (timeLeft <= 7) {
+                    timerEl.className = 'timer-display warning';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(displayState.currentTimer);
+                }
+            }, 1000);
+        }
+
+        function highlightCorrectAnswer(index) {
+            if (displayState.currentTimer) {
+                clearInterval(displayState.currentTimer);
+            }
+            
+            const answer = document.getElementById(`answer-${index}`);
+            if (answer) {
+                answer.classList.add('correct');
+            }
+        }
+
+        function updateScoreboard(players) {
+            if (!players || players.length === 0) return;
+            
+            const list = document.getElementById('scoresDisplay');
+            list.innerHTML = players.map((player, index) => `
+                <div class="score-item">
+                    <span>${index + 1}. ${player.name}</span>
+                    <span><strong>${player.score || 0}</strong> pts</span>
+                </div>
+            `).join('');
+        }
+
+        function showWinner(data) {
+            document.getElementById('gameScreen').classList.remove('active');
+            document.getElementById('winnerScreen').classList.add('active');
+            
+            document.getElementById('winnerNameDisplay').textContent = data.winner.name;
+            
+            const finalList = document.getElementById('finalScoresDisplay');
+            finalList.innerHTML = data.players.map((player, index) => `
+                <div class="score-item">
+                    <span>${index + 1}. ${player.name}</span>
+                    <span><strong>${player.score}</strong> pts</span>
+                </div>
+            `).join('');
+
+            // Return to waiting screen after 30 seconds
+            setTimeout(() => {
+                document.getElementById('winnerScreen').classList.remove('active');
+                document.getElementById('waitingScreen').style.display = 'flex';
+                document.getElementById('displayRoomCode').value = '';
+            }, 30000);
+        }
+    </script>
+</body>
+</html>
