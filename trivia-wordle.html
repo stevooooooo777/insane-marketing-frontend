@@ -1,0 +1,1024 @@
+<!--
+═══════════════════════════════════════════════════════════════
+insane.marketing - Luxury Hospitality Intelligence Platform
+═══════════════════════════════════════════════════════════════
+
+Copyright (c) 2024-2025 insane.marketing
+All Rights Reserved - Proprietary and Confidential
+
+This site and interface contains proprietary design elements and trade secrets.
+Unauthorized copying, modification, or distribution is strictly prohibited.
+
+AI powered tracking - active
+
+For licensing inquiries: steve@insane.marketing
+═══════════════════════════════════════════════════════════════
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Word Challenge - Insane Marketing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .game-board {
+            margin-bottom: 30px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tile {
+            aspect-ratio: 1;
+            border: 3px solid #d3d6da;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tile.filled {
+            border-color: #878a8c;
+            animation: pop 0.1s;
+        }
+
+        .tile.correct {
+            background: #6aaa64;
+            border-color: #6aaa64;
+            color: white;
+            animation: flip 0.5s ease;
+        }
+
+        .tile.present {
+            background: #c9b458;
+            border-color: #c9b458;
+            color: white;
+            animation: flip 0.5s ease;
+        }
+
+        .tile.absent {
+            background: #787c7e;
+            border-color: #787c7e;
+            color: white;
+            animation: flip 0.5s ease;
+        }
+
+        @keyframes pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes flip {
+            0% { transform: rotateX(0); }
+            50% { transform: rotateX(90deg); }
+            100% { transform: rotateX(0); }
+        }
+
+        .keyboard {
+            margin-bottom: 20px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .key {
+            background: #d3d6da;
+            border: none;
+            border-radius: 6px;
+            padding: 15px;
+            min-width: 40px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .key:hover {
+            background: #c0c3c6;
+            transform: translateY(-2px);
+        }
+
+        .key:active {
+            transform: translateY(0);
+        }
+
+        .key.wide {
+            min-width: 60px;
+            font-size: 0.9em;
+        }
+
+        .key.correct {
+            background: #6aaa64;
+            color: white;
+        }
+
+        .key.present {
+            background: #c9b458;
+            color: white;
+        }
+
+        .key.absent {
+            background: #787c7e;
+            color: white;
+        }
+
+        .message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .message.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .modal-stat {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .modal-stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .modal-stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .share-grid {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 1.5em;
+            line-height: 1.2;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 1.2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .help-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #667eea;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .example-row {
+            display: flex;
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .example-tile {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <span class="help-icon" onclick="showHelp()">❓</span>
+
+        <div class="header">
+            <h1>🔤 Daily Word</h1>
+            <p>Guess the word in 6 tries</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="gamesPlayed">0</div>
+                <div class="stat-label">Played</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="winPercentage">0%</div>
+                <div class="stat-label">Win %</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="currentStreak">0</div>
+                <div class="stat-label">Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="maxStreak">0</div>
+                <div class="stat-label">Best</div>
+            </div>
+        </div>
+
+        <div class="timer" id="nextWordTimer"></div>
+
+        <div class="message" id="message"></div>
+
+        <div class="game-board" id="gameBoard"></div>
+
+        <div class="keyboard" id="keyboard">
+            <div class="keyboard-row">
+                <button class="key" onclick="handleKey('Q')">Q</button>
+                <button class="key" onclick="handleKey('W')">W</button>
+                <button class="key" onclick="handleKey('E')">E</button>
+                <button class="key" onclick="handleKey('R')">R</button>
+                <button class="key" onclick="handleKey('T')">T</button>
+                <button class="key" onclick="handleKey('Y')">Y</button>
+                <button class="key" onclick="handleKey('U')">U</button>
+                <button class="key" onclick="handleKey('I')">I</button>
+                <button class="key" onclick="handleKey('O')">O</button>
+                <button class="key" onclick="handleKey('P')">P</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key" onclick="handleKey('A')">A</button>
+                <button class="key" onclick="handleKey('S')">S</button>
+                <button class="key" onclick="handleKey('D')">D</button>
+                <button class="key" onclick="handleKey('F')">F</button>
+                <button class="key" onclick="handleKey('G')">G</button>
+                <button class="key" onclick="handleKey('H')">H</button>
+                <button class="key" onclick="handleKey('J')">J</button>
+                <button class="key" onclick="handleKey('K')">K</button>
+                <button class="key" onclick="handleKey('L')">L</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key wide" onclick="handleKey('Enter')">Enter</button>
+                <button class="key" onclick="handleKey('Z')">Z</button>
+                <button class="key" onclick="handleKey('X')">X</button>
+                <button class="key" onclick="handleKey('C')">C</button>
+                <button class="key" onclick="handleKey('V')">V</button>
+                <button class="key" onclick="handleKey('B')">B</button>
+                <button class="key" onclick="handleKey('N')">N</button>
+                <button class="key" onclick="handleKey('M')">M</button>
+                <button class="key wide" onclick="handleKey('Backspace')">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <h2 id="resultsTitle">🎉 Victory!</h2>
+            <p id="resultsMessage"></p>
+
+            <div class="stats-grid">
+                <div class="modal-stat">
+                    <div class="modal-stat-value" id="modalGamesPlayed">0</div>
+                    <div class="modal-stat-label">Played</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-value" id="modalWinRate">0%</div>
+                    <div class="modal-stat-label">Win Rate</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-value" id="modalCurrentStreak">0</div>
+                    <div class="modal-stat-label">Current</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-value" id="modalMaxStreak">0</div>
+                    <div class="modal-stat-label">Best Streak</div>
+                </div>
+            </div>
+
+            <div class="share-grid" id="shareGrid"></div>
+
+            <button class="btn" onclick="shareResults()">Share Results</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2>How to Play</h2>
+            
+            <div class="instructions">
+                <h3>Rules:</h3>
+                <ul>
+                    <li>Guess the 5-letter word in 6 tries</li>
+                    <li>Each guess must be a valid word</li>
+                    <li>The color of tiles will change to show how close you are</li>
+                </ul>
+
+                <h3>Examples:</h3>
+                <div class="example-row">
+                    <div class="example-tile" style="background: #6aaa64;">W</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">O</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">R</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">D</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">S</div>
+                </div>
+                <p><strong>Green:</strong> Letter is correct and in the right spot</p>
+
+                <div class="example-row">
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">P</div>
+                    <div class="example-tile" style="background: #c9b458;">L</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">A</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">N</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">T</div>
+                </div>
+                <p><strong>Yellow:</strong> Letter is in the word but wrong spot</p>
+
+                <div class="example-row">
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">V</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">A</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">G</div>
+                    <div class="example-tile" style="background: #787c7e;">U</div>
+                    <div class="example-tile" style="background: #d3d6da; color: #333;">E</div>
+                </div>
+                <p><strong>Gray:</strong> Letter is not in the word</p>
+
+                <p style="margin-top: 20px;"><strong>A new word is available each day!</strong></p>
+            </div>
+
+            <button class="btn" onclick="closeHelp()">Got it!</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const WORD_LENGTH = 5;
+        const MAX_GUESSES = 6;
+
+        let gameState = {
+            solution: '',
+            guesses: [],
+            currentGuess: '',
+            currentRow: 0,
+            gameOver: false,
+            letterStates: {} // Track letter states for keyboard
+        };
+
+        // Statistics
+        let stats = {
+            gamesPlayed: 0,
+            gamesWon: 0,
+            currentStreak: 0,
+            maxStreak: 0
+        };
+
+        // Word list (you can expand this or fetch from API)
+        const VALID_WORDS = [
+            'ABOUT', 'ABOVE', 'ABUSE', 'ACTOR', 'ACUTE', 'ADMIT', 'ADOPT', 'ADULT', 'AFTER', 'AGAIN',
+            'AGENT', 'AGREE', 'AHEAD', 'ALARM', 'ALBUM', 'ALERT', 'ALIKE', 'ALIVE', 'ALLOW', 'ALONE',
+            'ALONG', 'ALTER', 'AMONG', 'ANGEL', 'ANGER', 'ANGLE', 'ANGRY', 'APART', 'APPLE', 'APPLY',
+            'ARENA', 'ARGUE', 'ARISE', 'ARRAY', 'ASIDE', 'ASSET', 'AUDIO', 'AVOID', 'AWARD', 'AWARE',
+            'BADLY', 'BAKER', 'BASES', 'BASIC', 'BEACH', 'BEGAN', 'BEGIN', 'BEING', 'BELOW', 'BENCH',
+            'BILLY', 'BIRTH', 'BLACK', 'BLAME', 'BLIND', 'BLOCK', 'BLOOD', 'BOARD', 'BOOST', 'BOOTH',
+            'BOUND', 'BRAIN', 'BRAND', 'BREAD', 'BREAK', 'BREED', 'BRIEF', 'BRING', 'BROAD', 'BROKE',
+            'BROWN', 'BUILD', 'BUILT', 'BUYER', 'CABLE', 'CALIF', 'CARRY', 'CATCH', 'CAUSE', 'CHAIN',
+            'CHAIR', 'CHART', 'CHASE', 'CHEAP', 'CHECK', 'CHEST', 'CHIEF', 'CHILD', 'CHINA', 'CHOSE',
+            'CIVIL', 'CLAIM', 'CLASS', 'CLEAN', 'CLEAR', 'CLICK', 'CLOCK', 'CLOSE', 'COACH', 'COAST',
+            'COULD', 'COUNT', 'COURT', 'COVER', 'CRAFT', 'CRASH', 'CRAZY', 'CREAM', 'CRIME', 'CROSS',
+            'CROWD', 'CROWN', 'CRUDE', 'DAILY', 'DANCE', 'DATED', 'DEALT', 'DEATH', 'DEBUT', 'DELAY',
+            'DENSE', 'DEPTH', 'DOING', 'DOUBT', 'DOZEN', 'DRAFT', 'DRAMA', 'DRANK', 'DRAWN', 'DREAM',
+            'DRESS', 'DRILL', 'DRINK', 'DRIVE', 'DROVE', 'DYING', 'EAGER', 'EARLY', 'EARTH', 'EIGHT',
+            'ELITE', 'EMPTY', 'ENEMY', 'ENJOY', 'ENTER', 'ENTRY', 'EQUAL', 'ERROR', 'EVENT', 'EVERY',
+            'EXACT', 'EXIST', 'EXTRA', 'FAITH', 'FALSE', 'FAULT', 'FIBER', 'FIELD', 'FIFTH', 'FIFTY',
+            'FIGHT', 'FINAL', 'FIRST', 'FIXED', 'FLASH', 'FLEET', 'FLOOR', 'FLUID', 'FOCUS', 'FORCE',
+            'FORTH', 'FORTY', 'FORUM', 'FOUND', 'FRAME', 'FRANK', 'FRAUD', 'FRESH', 'FRONT', 'FRUIT',
+            'FULLY', 'FUNNY', 'GIANT', 'GIVEN', 'GLASS', 'GLOBE', 'GOING', 'GRACE', 'GRADE', 'GRAND',
+            'GRANT', 'GRASS', 'GREAT', 'GREEN', 'GROSS', 'GROUP', 'GROWN', 'GUARD', 'GUESS', 'GUEST',
+            'GUIDE', 'HAPPY', 'HARRY', 'HEART', 'HEAVY', 'HENCE', 'HENRY', 'HORSE', 'HOTEL', 'HOUSE',
+            'HUMAN', 'IDEAL', 'IMAGE', 'INDEX', 'INNER', 'INPUT', 'ISSUE', 'JAPAN', 'JIMMY', 'JOINT',
+            'JONES', 'JUDGE', 'KNOWN', 'LABEL', 'LARGE', 'LASER', 'LATER', 'LAUGH', 'LAYER', 'LEARN',
+            'LEASE', 'LEAST', 'LEAVE', 'LEGAL', 'LEMON', 'LEVEL', 'LEWIS', 'LIGHT', 'LIMIT', 'LINKS',
+            'LIVES', 'LOCAL', 'LOGIC', 'LOOSE', 'LOWER', 'LUCKY', 'LUNCH', 'LYING', 'MAGIC', 'MAJOR',
+            'MAKER', 'MARCH', 'MARIA', 'MATCH', 'MAYBE', 'MAYOR', 'MEANT', 'MEDIA', 'METAL', 'MIGHT',
+            'MINOR', 'MINUS', 'MIXED', 'MODEL', 'MONEY', 'MONTH', 'MORAL', 'MOTOR', 'MOUNT', 'MOUSE',
+            'MOUTH', 'MOVED', 'MOVIE', 'MUSIC', 'NEEDS', 'NEVER', 'NEWLY', 'NIGHT', 'NOISE', 'NORTH',
+            'NOTED', 'NOVEL', 'NURSE', 'OCEAN', 'OFFER', 'OFTEN', 'ORDER', 'OTHER', 'OUGHT', 'PAINT',
+            'PANEL', 'PAPER', 'PARTY', 'PEACE', 'PETER', 'PHASE', 'PHONE', 'PHOTO', 'PIECE', 'PILOT',
+            'PITCH', 'PLACE', 'PLAIN', 'PLANE', 'PLANT', 'PLATE', 'POINT', 'POUND', 'POWER', 'PRESS',
+            'PRICE', 'PRIDE', 'PRIME', 'PRINT', 'PRIOR', 'PRIZE', 'PROOF', 'PROUD', 'PROVE', 'QUEEN',
+            'QUICK', 'QUIET', 'QUITE', 'RADIO', 'RAISE', 'RANGE', 'RAPID', 'RATIO', 'REACH', 'READY',
+            'REFER', 'RIGHT', 'RIVAL', 'RIVER', 'ROBIN', 'ROGER', 'ROMAN', 'ROUGH', 'ROUND', 'ROUTE',
+            'ROYAL', 'RURAL', 'SCALE', 'SCENE', 'SCOPE', 'SCORE', 'SENSE', 'SERVE', 'SEVEN', 'SHALL',
+            'SHAPE', 'SHARE', 'SHARP', 'SHEET', 'SHELF', 'SHELL', 'SHIFT', 'SHINE', 'SHIRT', 'SHOCK',
+            'SHOOT', 'SHORT', 'SHOWN', 'SIGHT', 'SINCE', 'SIXTH', 'SIXTY', 'SIZED', 'SKILL', 'SLEEP',
+            'SLIDE', 'SMALL', 'SMART', 'SMILE', 'SMITH', 'SMOKE', 'SOLID', 'SOLVE', 'SORRY', 'SOUND',
+            'SOUTH', 'SPACE', 'SPARE', 'SPEAK', 'SPEED', 'SPEND', 'SPENT', 'SPLIT', 'SPOKE', 'SPORT',
+            'STAFF', 'STAGE', 'STAKE', 'STAND', 'START', 'STATE', 'STEAM', 'STEEL', 'STICK', 'STILL',
+            'STOCK', 'STONE', 'STOOD', 'STORE', 'STORM', 'STORY', 'STRIP', 'STUCK', 'STUDY', 'STUFF',
+            'STYLE', 'SUGAR', 'SUITE', 'SUPER', 'SWEET', 'TABLE', 'TAKEN', 'TASTE', 'TAXES', 'TEACH',
+            'TEETH', 'TERRY', 'TEXAS', 'THANK', 'THEFT', 'THEIR', 'THEME', 'THERE', 'THESE', 'THICK',
+            'THING', 'THINK', 'THIRD', 'THOSE', 'THREE', 'THREW', 'THROW', 'TIGHT', 'TIMES', 'TITLE',
+            'TODAY', 'TOPIC', 'TOTAL', 'TOUCH', 'TOUGH', 'TOWER', 'TRACK', 'TRADE', 'TRAIN', 'TREAT',
+            'TREND', 'TRIAL', 'TRIBE', 'TRICK', 'TRIED', 'TRIES', 'TROOP', 'TRUCK', 'TRULY', 'TRUST',
+            'TRUTH', 'TWICE', 'UNCLE', 'UNDER', 'UNDUE', 'UNION', 'UNITY', 'UNTIL', 'UPPER', 'URBAN',
+            'USAGE', 'USUAL', 'VALID', 'VALUE', 'VIDEO', 'VIRUS', 'VISIT', 'VITAL', 'VOCAL', 'VOICE',
+            'WASTE', 'WATCH', 'WATER', 'WHEEL', 'WHERE', 'WHICH', 'WHILE', 'WHITE', 'WHOLE', 'WHOSE',
+            'WOMAN', 'WOMEN', 'WORLD', 'WORRY', 'WORSE', 'WORST', 'WORTH', 'WOULD', 'WOUND', 'WRITE',
+            'WRONG', 'WROTE', 'YIELD', 'YOUNG', 'YOUTH'
+        ];
+
+        // Initialize game
+        function init() {
+            loadStats();
+            loadGameState();
+            
+            // Check if already played today
+            const lastPlayedDate = localStorage.getItem('wordleLastPlayed');
+            const today = getDateString();
+            
+            if (lastPlayedDate === today && localStorage.getItem('wordleGameOver') === 'true') {
+                // Already played today, show results
+                gameState.gameOver = true;
+                updateBoard();
+                showMessage('Come back tomorrow for a new word!', 'info');
+            } else if (lastPlayedDate !== today) {
+                // New day, new game
+                startNewGame();
+            }
+            
+            createBoard();
+            updateStats();
+            updateTimer();
+            setInterval(updateTimer, 1000);
+            
+            // Add keyboard listener
+            document.addEventListener('keydown', handleKeyPress);
+        }
+
+        function getDateString() {
+            const date = new Date();
+            return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        }
+
+        function getDailySolution() {
+            // Generate consistent word for today
+            const today = getDateString();
+            const seed = today.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            const index = seed % VALID_WORDS.length;
+            return VALID_WORDS[index];
+        }
+
+        function startNewGame() {
+            gameState = {
+                solution: getDailySolution(),
+                guesses: [],
+                currentGuess: '',
+                currentRow: 0,
+                gameOver: false,
+                letterStates: {}
+            };
+            
+            localStorage.setItem('wordleGameState', JSON.stringify(gameState));
+            localStorage.setItem('wordleLastPlayed', getDateString());
+            localStorage.setItem('wordleGameOver', 'false');
+        }
+
+        function createBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+            
+            for (let i = 0; i < MAX_GUESSES; i++) {
+                const row = document.createElement('div');
+                row.className = 'row';
+                
+                for (let j = 0; j < WORD_LENGTH; j++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    tile.id = `tile-${i}-${j}`;
+                    row.appendChild(tile);
+                }
+                
+                board.appendChild(row);
+            }
+            
+            updateBoard();
+        }
+
+        function updateBoard() {
+            // Update guessed rows
+            gameState.guesses.forEach((guess, rowIndex) => {
+                const evaluation = evaluateGuess(guess);
+                
+                for (let i = 0; i < WORD_LENGTH; i++) {
+                    const tile = document.getElementById(`tile-${rowIndex}-${i}`);
+                    tile.textContent = guess[i];
+                    tile.className = `tile filled ${evaluation[i]}`;
+                }
+            });
+            
+            // Update current row
+            if (!gameState.gameOver && gameState.currentRow < MAX_GUESSES) {
+                for (let i = 0; i < WORD_LENGTH; i++) {
+                    const tile = document.getElementById(`tile-${gameState.currentRow}-${i}`);
+                    tile.textContent = gameState.currentGuess[i] || '';
+                    tile.className = gameState.currentGuess[i] ? 'tile filled' : 'tile';
+                }
+            }
+            
+            updateKeyboard();
+        }
+
+        function evaluateGuess(guess) {
+            const solution = gameState.solution;
+            const evaluation = Array(WORD_LENGTH).fill('absent');
+            const solutionLetters = solution.split('');
+            const guessLetters = guess.split('');
+            
+            // First pass: mark correct letters
+            guessLetters.forEach((letter, i) => {
+                if (letter === solutionLetters[i]) {
+                    evaluation[i] = 'correct';
+                    solutionLetters[i] = null;
+                }
+            });
+            
+            // Second pass: mark present letters
+            guessLetters.forEach((letter, i) => {
+                if (evaluation[i] === 'absent' && solutionLetters.includes(letter)) {
+                    evaluation[i] = 'present';
+                    solutionLetters[solutionLetters.indexOf(letter)] = null;
+                }
+            });
+            
+            // Update letter states for keyboard
+            guessLetters.forEach((letter, i) => {
+                const currentState = gameState.letterStates[letter];
+                const newState = evaluation[i];
+                
+                if (!currentState || 
+                    (currentState === 'absent' && newState !== 'absent') ||
+                    (currentState === 'present' && newState === 'correct')) {
+                    gameState.letterStates[letter] = newState;
+                }
+            });
+            
+            return evaluation;
+        }
+
+        function updateKeyboard() {
+            Object.keys(gameState.letterStates).forEach(letter => {
+                const key = Array.from(document.querySelectorAll('.key'))
+                    .find(k => k.textContent === letter);
+                
+                if (key) {
+                    key.classList.remove('correct', 'present', 'absent');
+                    key.classList.add(gameState.letterStates[letter]);
+                }
+            });
+        }
+
+        function handleKey(key) {
+            if (gameState.gameOver) return;
+            
+            if (key === 'Enter') {
+                submitGuess();
+            } else if (key === 'Backspace') {
+                gameState.currentGuess = gameState.currentGuess.slice(0, -1);
+                updateBoard();
+            } else if (gameState.currentGuess.length < WORD_LENGTH) {
+                gameState.currentGuess += key;
+                updateBoard();
+            }
+            
+            saveGameState();
+        }
+
+        function handleKeyPress(e) {
+            const key = e.key.toUpperCase();
+            
+            if (key === 'ENTER') {
+                handleKey('Enter');
+            } else if (key === 'BACKSPACE') {
+                handleKey('Backspace');
+            } else if (/^[A-Z]$/.test(key)) {
+                handleKey(key);
+            }
+        }
+
+        function submitGuess() {
+            if (gameState.currentGuess.length !== WORD_LENGTH) {
+                showMessage('Not enough letters!', 'error');
+                return;
+            }
+            
+            if (!VALID_WORDS.includes(gameState.currentGuess)) {
+                showMessage('Not in word list!', 'error');
+                return;
+            }
+            
+            gameState.guesses.push(gameState.currentGuess);
+            updateBoard();
+            
+            // Check if won
+            if (gameState.currentGuess === gameState.solution) {
+                gameState.gameOver = true;
+                stats.gamesWon++;
+                stats.currentStreak++;
+                if (stats.currentStreak > stats.maxStreak) {
+                    stats.maxStreak = stats.currentStreak;
+                }
+                
+                showMessage('🎉 Brilliant!', 'success');
+                setTimeout(() => showResults(true), 2000);
+                
+                saveGameOver();
+            } else if (gameState.currentRow >= MAX_GUESSES - 1) {
+                // Game over - lost
+                gameState.gameOver = true;
+                stats.currentStreak = 0;
+                
+                showMessage(`The word was: ${gameState.solution}`, 'error');
+                setTimeout(() => showResults(false), 2000);
+                
+                saveGameOver();
+            } else {
+                gameState.currentRow++;
+                gameState.currentGuess = '';
+            }
+            
+            saveGameState();
+            saveStats();
+            updateStats();
+        }
+
+        function showResults(won) {
+            const modal = document.getElementById('resultsModal');
+            const title = document.getElementById('resultsTitle');
+            const message = document.getElementById('resultsMessage');
+            
+            if (won) {
+                title.textContent = '🎉 Victory!';
+                message.textContent = `You solved it in ${gameState.guesses.length} guess${gameState.guesses.length > 1 ? 'es' : ''}!`;
+            } else {
+                title.textContent = '😔 Better Luck Tomorrow!';
+                message.textContent = `The word was: ${gameState.solution}`;
+            }
+            
+            // Update modal stats
+            document.getElementById('modalGamesPlayed').textContent = stats.gamesPlayed;
+            document.getElementById('modalWinRate').textContent = 
+                Math.round((stats.gamesWon / stats.gamesPlayed) * 100) + '%';
+            document.getElementById('modalCurrentStreak').textContent = stats.currentStreak;
+            document.getElementById('modalMaxStreak').textContent = stats.maxStreak;
+            
+            // Generate share grid
+            generateShareGrid();
+            
+            modal.classList.add('show');
+        }
+
+        function generateShareGrid() {
+            const shareGrid = document.getElementById('shareGrid');
+            let grid = `Daily Word ${getDateString()}\n${gameState.guesses.length}/${MAX_GUESSES}\n\n`;
+            
+            gameState.guesses.forEach(guess => {
+                const evaluation = evaluateGuess(guess);
+                evaluation.forEach(state => {
+                    if (state === 'correct') grid += '🟩';
+                    else if (state === 'present') grid += '🟨';
+                    else grid += '⬜';
+                });
+                grid += '\n';
+            });
+            
+            shareGrid.textContent = grid;
+        }
+
+        function shareResults() {
+            const text = document.getElementById('shareGrid').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Daily Word Challenge',
+                    text: text
+                });
+            } else {
+                navigator.clipboard.writeText(text);
+                showMessage('Results copied to clipboard!', 'success');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('resultsModal').classList.remove('show');
+        }
+
+        function showHelp() {
+            document.getElementById('helpModal').classList.add('show');
+        }
+
+        function closeHelp() {
+            document.getElementById('helpModal').classList.remove('show');
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                message.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateTimer() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            
+            const diff = tomorrow - now;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('nextWordTimer').textContent = 
+                `Next word in: ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        function updateStats() {
+            document.getElementById('gamesPlayed').textContent = stats.gamesPlayed;
+            document.getElementById('winPercentage').textContent = 
+                stats.gamesPlayed > 0 ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) + '%' : '0%';
+            document.getElementById('currentStreak').textContent = stats.currentStreak;
+            document.getElementById('maxStreak').textContent = stats.maxStreak;
+        }
+
+        function loadStats() {
+            const savedStats = localStorage.getItem('wordleStats');
+            if (savedStats) {
+                stats = JSON.parse(savedStats);
+            }
+        }
+
+        function saveStats() {
+            localStorage.setItem('wordleStats', JSON.stringify(stats));
+        }
+
+        function loadGameState() {
+            const savedState = localStorage.getItem('wordleGameState');
+            if (savedState) {
+                const loaded = JSON.parse(savedState);
+                // Verify it's today's game
+                const lastPlayed = localStorage.getItem('wordleLastPlayed');
+                if (lastPlayed === getDateString()) {
+                    gameState = loaded;
+                }
+            }
+        }
+
+        function saveGameState() {
+            localStorage.setItem('wordleGameState', JSON.stringify(gameState));
+        }
+
+        function saveGameOver() {
+            stats.gamesPlayed++;
+            localStorage.setItem('wordleGameOver', 'true');
+            
+            // Save to backend API
+            saveToBackend();
+        }
+
+        async function saveToBackend() {
+            try {
+                await fetch('YOUR_API_ENDPOINT/api/wordle/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: getDateString(),
+                        won: gameState.guesses[gameState.guesses.length - 1] === gameState.solution,
+                        guesses: gameState.guesses.length,
+                        word: gameState.solution
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving to backend:', error);
+            }
+        }
+
+        // Initialize game on load
+        window.onload = init;
+    </script>
+</body>
+</html>
